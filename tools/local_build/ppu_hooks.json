@@ -1,0 +1,514 @@
+{
+  "description": "Reviewed host integration edits only; original generated lines are identified by hashes, not distributed.",
+  "files": [
+    {
+      "file": "ppu_recomp_000.cpp",
+      "input_sha256": "69499d303acd84b752a43001f82d1e160e927505d23a53b733ac059e2eceb44f",
+      "output_sha256": "2dcd393b020081fcf9956ab700cbdf26fc542e19b33d801333a6541b2cd07b62",
+      "edits": [
+        {
+          "start": 2,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include \"../battle_voice_subtitles.h\"\n#include \"../realtime_step.h\"\n"
+        },
+        {
+          "start": 30400,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        const double macross_step_incoming = ctx->fpr[1];\n        macross_realtime_step_consumer(ctx->thread_id, macross_step_incoming);\n"
+        },
+        {
+          "start": 30497,
+          "remove": 1,
+          "removed_sha256": "04e058178b92e748c6c2eb88e1b995c5386472d658fa4d5e6cde2d3365c2ce25",
+          "insert": "        { uint32_t tmp = vm_read32(ctx->gpr[2] + -0x6BA4); float ftmp; memcpy(&ftmp, &tmp, 4); ctx->fpr[1] = macross_realtime_step_value(ctx->thread_id, 0x0002AC1C, ctx->gpr[2] - 0x6BA4, double(ftmp), macross_step_incoming); }\n"
+        },
+        {
+          "start": 30528,
+          "remove": 1,
+          "removed_sha256": "04e058178b92e748c6c2eb88e1b995c5386472d658fa4d5e6cde2d3365c2ce25",
+          "insert": "        { uint32_t tmp = vm_read32(ctx->gpr[2] + -0x6BA4); float ftmp; memcpy(&ftmp, &tmp, 4); ctx->fpr[1] = macross_realtime_step_value(ctx->thread_id, 0x0002AC8C, ctx->gpr[2] - 0x6BA4, double(ftmp), macross_step_incoming); }\n"
+        },
+        {
+          "start": 30562,
+          "remove": 1,
+          "removed_sha256": "d5b0e9e27c5587f1a02831beccc208ee9399a888e3f545f976c10ed80f3c5ffc",
+          "insert": "        { uint32_t tmp = vm_read32(ctx->gpr[2] + -0x6BA4); float ftmp; memcpy(&ftmp, &tmp, 4); ctx->fpr[31] = macross_realtime_step_value(ctx->thread_id, 0x0002AD00, ctx->gpr[2] - 0x6BA4, double(ftmp), macross_step_incoming); }\n"
+        },
+        {
+          "start": 109553,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_battle_subtitles_selected(ctx, (uint32_t)(ctx->gpr[1] + 0x70)); // battle-voice: selected\n"
+        },
+        {
+          "start": 109584,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_battle_subtitles_commit(ctx); // battle-voice: commit\n"
+        },
+        {
+          "start": 109859,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_battle_subtitles_reset(ctx); // battle-voice: reset\n"
+        }
+      ]
+    },
+    {
+      "file": "ppu_recomp_001.cpp",
+      "input_sha256": "f59ca7f1042d25cdda315e0016966570a3606b264aebf75cfcf5a6c973a1fa54",
+      "output_sha256": "aba8b126e3540781aa82cba9e83dbf83fcca3d77d6b524ab4554066d896e7aff",
+      "edits": [
+        {
+          "start": 0,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include \"../ppu_wait_backoff.h\"\n"
+        },
+        {
+          "start": 2,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include \"../realtime_step.h\"\n"
+        },
+        {
+          "start": 5,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include \"../lua_probe.h\"\n"
+        },
+        {
+          "start": 23009,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_entity_probe(ctx, 0x0008EED8, ctx->gpr[3], ctx->gpr[4], ctx->gpr[5], ctx->gpr[6], ctx->gpr[7], ctx->lr, ctx->gpr[2]);\n"
+        },
+        {
+          "start": 25086,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_entity_probe(ctx, 0x00090C5C, ctx->gpr[3], ctx->gpr[4], ctx->gpr[5], ctx->gpr[6], ctx->gpr[7], ctx->lr, ctx->gpr[2]);\n"
+        },
+        {
+          "start": 25109,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_entity_probe(ctx, 0x00090CA4, ctx->gpr[3], ctx->gpr[4], ctx->gpr[5], ctx->gpr[6], ctx->gpr[7], ctx->lr, ctx->gpr[2]);\n"
+        },
+        {
+          "start": 25257,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_entity_probe(ctx, 0x00090E7C, ctx->gpr[3], ctx->gpr[4], ctx->gpr[5], ctx->gpr[6], ctx->gpr[7], ctx->lr, ctx->gpr[2]);\n"
+        },
+        {
+          "start": 37021,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        const bool macross_wait_on_0009B220 = macross_ppu_wait_backoff_enabled()!=0;\n        uint32_t macross_wait_failed_0009B220 = 0; /* MACROSS_WAIT_V2_0009B220 */\n"
+        },
+        {
+          "start": 37056,
+          "remove": 1,
+          "removed_sha256": "12e357e673d0f58a2694d2b2a497222b57d09adfdb55af07f3c64f1487ea58e5",
+          "insert": "        if (((ctx->cr >> 1) & 1)) { if (macross_wait_on_0009B220) { ++macross_wait_failed_0009B220; if (macross_wait_failed_0009B220 == 1 || (macross_wait_failed_0009B220 & 4095u) == 0) macross_ppu_wait_backoff(0x0009B220u, (uint32_t)ctx->gpr[31], macross_wait_failed_0009B220); } goto loc_0009B220; }\n"
+        },
+        {
+          "start": 54693,
+          "remove": 1,
+          "removed_sha256": "26c51aa62c011a19be5257730784af6c6d20c4b051e072342339cfa5a44eba58",
+          "insert": "        ctx->fpr[13] = macross_variable_step_floor(ctx->thread_id, ctx->fpr[13], ctx->fpr[12]);\n"
+        },
+        {
+          "start": 86062,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_entity_probe(ctx, 0x000C5DE8, ctx->gpr[3], ctx->gpr[4], ctx->gpr[5], ctx->gpr[6], ctx->gpr[7], ctx->lr, ctx->gpr[2]);\n"
+        },
+        {
+          "start": 92517,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        const uint64_t entity_probe_args[] = {ctx->gpr[3], ctx->gpr[4], ctx->gpr[5], ctx->gpr[6], ctx->gpr[7], ctx->lr, ctx->gpr[2]};\n        macross_entity_probe(ctx, 0x000CBA00, entity_probe_args[0], entity_probe_args[1], entity_probe_args[2], entity_probe_args[3], entity_probe_args[4], entity_probe_args[5], entity_probe_args[6]);\n"
+        },
+        {
+          "start": 92816,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_entity_probe(ctx, 0x800CBA00, entity_probe_args[0], entity_probe_args[1], entity_probe_args[2], entity_probe_args[3], entity_probe_args[4], entity_probe_args[5], entity_probe_args[6]);\n"
+        },
+        {
+          "start": 93035,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_entity_probe(ctx, 0x000CC100, ctx->gpr[3], ctx->gpr[4], ctx->gpr[5], ctx->gpr[6], ctx->gpr[7], ctx->lr, ctx->gpr[2]);\n"
+        }
+      ]
+    },
+    {
+      "file": "ppu_recomp_003.cpp",
+      "input_sha256": "93c19d174b06e0383cfb13fc6014463ac463f8c9e5743667cc179978fa5eac82",
+      "output_sha256": "e8a66257b4c3908690a5e38833fdca736aa036677b3e873e135155eded4be790",
+      "edits": [
+        {
+          "start": 0,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include \"../ppu_wait_backoff.h\"\n"
+        },
+        {
+          "start": 2,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include \"../font_probe.h\"\n"
+        },
+        {
+          "start": 84395,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_font_probe_entry(ctx);\n"
+        },
+        {
+          "start": 92505,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        const bool macross_wait_on_001A279C = macross_ppu_wait_backoff_enabled()!=0;\n        uint32_t macross_wait_failed_001A279C = 0; /* MACROSS_WAIT_V2_001A279C */\n"
+        },
+        {
+          "start": 92508,
+          "remove": 1,
+          "removed_sha256": "27d5079a951a0c73910763147878bdfeab94891e08989eec64879553a3414bc0",
+          "insert": "        if (((ctx->cr >> 1) & 1)) { if (macross_wait_on_001A279C) { ++macross_wait_failed_001A279C; if (macross_wait_failed_001A279C == 1 || (macross_wait_failed_001A279C & 4095u) == 0) macross_ppu_wait_backoff(0x001A279Cu, (uint32_t)ctx->gpr[3], macross_wait_failed_001A279C); } goto loc_001A279C; }\n"
+        }
+      ]
+    },
+    {
+      "file": "ppu_recomp_004.cpp",
+      "input_sha256": "8559e718df39bc3dbd2f42a14057cee07c4e1d28153c5679b210fb40d44ad1e5",
+      "output_sha256": "0218b3791eb9524664bb190aeb8c9d3ee91ce8501a207093d5f071e3d8d2d88f",
+      "edits": [
+        {
+          "start": 1,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include \"../battle_voice_acceptance_probe.h\"\n"
+        },
+        {
+          "start": 2,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include \"../battle_voice_file_subtitles.h\"\n"
+        },
+        {
+          "start": 3,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include <stdlib.h>\n#ifdef _WIN32\n#include <windows.h>\n#endif\n"
+        },
+        {
+          "start": 9870,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_battle_voice_probe_open(ctx, (uint32_t)ctx->gpr[29], (int32_t)ctx->gpr[3]); // acceptance-probe: open-result\n"
+        },
+        {
+          "start": 17237,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_battle_voice_probe_request(ctx, (uint32_t)ctx->gpr[3]); // acceptance-probe: request\n        macross_battle_subtitles_file_selected(ctx, (uint32_t)ctx->gpr[3]); // battle-voice: file-selected\n"
+        },
+        {
+          "start": 17268,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_battle_subtitles_commit(ctx); // battle-voice: file-commit\n"
+        },
+        {
+          "start": 17848,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        /* Host-only diagnostic: preserve every guest register, CR and byte.\n         * The common Stop wrapper is also reached by automatic state changes;\n         * its stock \"stop pressed\" text does not establish an input event. */\n        { static const bool enabled = []() {\n              const char* e = getenv(\"MACROSS_MOVIE_STOP_PROBE\");\n              return e && strcmp(e, \"1\") == 0;\n          }();\n          static unsigned lines = 0;\n          if (enabled && __atomic_load_n(&lines, __ATOMIC_RELAXED) < 16) {\n              const auto readable = [](uint64_t ea, uint64_t bytes) {\n                  if (!vm_base || ea >= 0x100000000ull || bytes > 0x100000000ull - ea) return false;\n#ifdef _WIN32\n                  const uintptr_t begin = (uintptr_t)vm_base + ea;\n                  const uintptr_t end = begin + bytes;\n                  if (begin < (uintptr_t)vm_base || end < begin) return false;\n                  uintptr_t p = begin;\n                  while (p < end) {\n                      MEMORY_BASIC_INFORMATION mbi;\n                      if (!VirtualQuery((const void*)p, &mbi, sizeof(mbi)) || mbi.State != MEM_COMMIT ||\n                          (mbi.Protect & (PAGE_GUARD | PAGE_NOACCESS)) ||\n                          !(mbi.Protect & (PAGE_READONLY | PAGE_READWRITE | PAGE_WRITECOPY |\n                              PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY))) return false;\n                      const uintptr_t next = (uintptr_t)mbi.BaseAddress + mbi.RegionSize;\n                      if (next <= p) return false;\n                      p = next;\n                  }\n                  return true;\n#else\n                  return false;\n#endif\n              };\n              const unsigned line = __atomic_fetch_add(&lines, 1u, __ATOMIC_RELAXED);\n              if (line >= 16) goto movie_stop_probe_done;\n              const uint32_t self = (uint32_t)ctx->gpr[3];\n              const uint32_t caller = (uint32_t)ctx->lr;\n              const uint32_t parent = (caller == 0x001CB78Cu || caller == 0x001CB7F4u || caller == 0x001CC604u) && readable(ctx->gpr[1] + 0xA0, 8)\n                  ? (uint32_t)vm_read64(ctx->gpr[1] + 0xA0) : 0;\n              const uint32_t origin = parent == 0x000A0B60u && readable(ctx->gpr[1] + 0x130, 8)\n                  ? (uint32_t)vm_read64(ctx->gpr[1] + 0x130) : 0;\n              uint32_t returns[6] = {}; unsigned depth = 0;\n              uint64_t frame = ctx->gpr[1];\n              while (depth < 6 && !(frame & 15u) && readable(frame, 8)) {\n                  const uint64_t previous = vm_read64(frame);\n                  if (previous <= frame || previous - frame > 0x100000u || (previous & 15u) ||\n                      previous >= 0x100000000ull || !readable(previous + 16, 8)) break;\n                  returns[depth++] = (uint32_t)vm_read64(previous + 16);\n                  frame = previous;\n              }\n              fprintf(stderr, \"[movie-stop-probe] n=%u caller=%08X parent=%08X origin=%08X path=%s self=%08X outer_state=%u sail_state=%u r4=%08X r28=%08X r31=%08X abi_depth=%u returns=%08X,%08X,%08X,%08X,%08X,%08X\\n\",\n                  line + 1, caller, parent, origin, caller == 0x001CC604u ? \"automatic_state4\" :\n                  caller == 0x001CB78Cu ? \"explicit_stop\" : caller == 0x001CB7F4u ? \"explicit_stop_alt\" : \"other\",\n                  self, readable((uint64_t)self + 4, 4) ? vm_read32((uint64_t)self + 4) : 0xFFFFFFFFu,\n                  readable((uint64_t)self + 0x698, 4) ? vm_read32((uint64_t)self + 0x698) : 0xFFFFFFFFu,\n                  (uint32_t)ctx->gpr[4], (uint32_t)ctx->gpr[28], (uint32_t)ctx->gpr[31], depth,\n                  returns[0], returns[1], returns[2], returns[3], returns[4], returns[5]);\n              fflush(stderr);\n          }\n        }\nmovie_stop_probe_done:\n"
+        }
+      ]
+    },
+    {
+      "file": "ppu_recomp_007.cpp",
+      "input_sha256": "204fb8135305244911269b30a135087cd4689e3683b65cc3b8b535d9639f8c65",
+      "output_sha256": "ca856f1906240599604e1e9e2fef2c378965236684125e263bdf5750d3407cfd",
+      "edits": [
+        {
+          "start": 2,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include \"../battle_voice_subtitles.h\"\n"
+        },
+        {
+          "start": 5,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include \"../lua_probe.h\"\n#include \"../lua_unwind.h\"\n"
+        },
+        {
+          "start": 13022,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_battle_subtitles_script_caption(ctx); // battle-voice: script-caption\n"
+        },
+        {
+          "start": 14370,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        const uint32_t obj_probe_out = (uint32_t)ctx->gpr[3];\n        const uint32_t obj_probe_name = (uint32_t)ctx->gpr[4];\n        const uint32_t obj_probe_field = (uint32_t)ctx->gpr[5];\n        macross_lua_obj_probe(ctx, 0, obj_probe_out, obj_probe_name, obj_probe_field, 0, -1);\n"
+        },
+        {
+          "start": 14392,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_lua_obj_probe(ctx, 1, obj_probe_out, obj_probe_name, obj_probe_field,\n                              (uint32_t)ctx->gpr[31], (int32_t)ctx->gpr[3]);\n"
+        },
+        {
+          "start": 14400,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_lua_obj_probe(ctx, 2, obj_probe_out, obj_probe_name, obj_probe_field,\n                              (uint32_t)ctx->gpr[31], (int32_t)ctx->gpr[29]);\n"
+        },
+        {
+          "start": 14420,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_lua_obj_probe(ctx, 2, obj_probe_out, obj_probe_name, obj_probe_field,\n                              (uint32_t)ctx->gpr[31], (int32_t)ctx->gpr[29]);\n"
+        },
+        {
+          "start": 14435,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_lua_obj_probe(ctx, 2, obj_probe_out, obj_probe_name, obj_probe_field,\n                              (uint32_t)ctx->gpr[31], (int32_t)ctx->gpr[29]);\n"
+        },
+        {
+          "start": 15262,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        MacrossPilotProbe pilot_probe{ctx, (uint32_t)ctx->gpr[3], (uint32_t)ctx->gpr[4], (uint32_t)ctx->gpr[5], (uint32_t)ctx->gpr[2]};\n"
+        },
+        {
+          "start": 15574,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_entity_probe(ctx, 0x0030AFF0, ctx->gpr[3], ctx->gpr[4], ctx->gpr[5], ctx->gpr[6], ctx->gpr[7], ctx->lr, ctx->gpr[2]);\n"
+        },
+        {
+          "start": 56796,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_lua_protected_probe(ctx, (uint32_t)ctx->gpr[30], (uint32_t)ctx->gpr[3], 0, ctx->gpr[1], ctx->lr, ctx->gpr[2], 0);\n        {\n        MacrossLuaBoundary jump_boundary(ctx, (uint32_t)ctx->gpr[3]);\n"
+        },
+        {
+          "start": 56797,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "loc_lua_setjmp_resume_0032E348:\n        macross_lua_protected_probe(ctx, (uint32_t)ctx->gpr[30], (uint32_t)(ctx->gpr[1] + 0x74), ctx->gpr[3], ctx->gpr[1], ctx->lr, ctx->gpr[2], 1);\n"
+        },
+        {
+          "start": 56807,
+          "remove": 1,
+          "removed_sha256": "dac6b95e6abd0c008d4988c522a75083771c566f7cd72e79bbe313795689cc95",
+          "insert": "        try {\n            ctx->lr = 0x0032E374; ps3_indirect_call(ctx); DRAIN_TRAMPOLINE(ctx);\n        } catch (const MacrossLuaJump& jump) {\n            if (!jump_boundary.accepts(jump)) throw;\n            goto loc_lua_setjmp_resume_0032E348;\n        }\n"
+        },
+        {
+          "start": 56809,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        }\n"
+        },
+        {
+          "start": 57020,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_lua_error_probe(ctx, (uint32_t)ctx->gpr[3], (uint32_t)ctx->gpr[4], ctx->gpr[1], ctx->lr);\n"
+        },
+        {
+          "start": 57268,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_lua_precall_probe(ctx, (uint32_t)ctx->gpr[30], ctx->lr, ctx->gpr[2]);\n"
+        }
+      ]
+    },
+    {
+      "file": "ppu_recomp_008.cpp",
+      "input_sha256": "fca576c94a6d813e51226d404cdab66881da4bcd9b2093a72252aa57c5513369",
+      "output_sha256": "169431268715d285c3b2768fe1ea7d0d17fed30d744862621dc5b8de4ab46c82",
+      "edits": [
+        {
+          "start": 2,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include \"../battle_voice_subtitles.h\"\n#include \"../subtitle_visibility.h\"\n"
+        },
+        {
+          "start": 53943,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        if (!macross_caption_visible()) return; // MACROSS_CAPTION_VISIBILITY\n"
+        },
+        {
+          "start": 53986,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_battle_subtitles_tick(ctx); // battle-voice: tick\n"
+        }
+      ]
+    },
+    {
+      "file": "ppu_recomp_012.cpp",
+      "input_sha256": "fcf08ed9c00af9f7385be1d6eb1c024afce6449e79082d51807f08743dd175fe",
+      "output_sha256": "a919594b289b7329a7ea3ceafcda226193eb35ef727c9f10ed03848e000bf1b0",
+      "edits": [
+        {
+          "start": 2,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include \"../realtime_step.h\"\n/* Diagnostic selected internal resolution; native helper guards original RAM. */\nextern \"C\" uint32_t macross_internal_video_resolution_id(uint32_t original_id, uint32_t instruction_pc);\n"
+        },
+        {
+          "start": 3,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include <stdlib.h>\n"
+        },
+        {
+          "start": 77601,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        MacrossRealtimeStepFrame macross_step_scope(ctx->thread_id);\n"
+        },
+        {
+          "start": 77794,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "extern \"C\" void macross_dt_step_frame(void);\n"
+        },
+        {
+          "start": 77795,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_dt_step_frame();\n        /* MACROSS_FREE_RUN=1 (with the 60 Hz gate and elapsed-time step of\n         * --uncapped): if a vblank has already passed since the last frame\n         * (counter at +0x38, reset by the caller after this wait), do not\n         * wait for the next one -- a frame slower than one vblank would\n         * otherwise always round up to two (30 FPS). */\n        /* The threshold is the frame's vblank count (MACROSS_FRAME_VBLANKS,\n         * default 2): at the default the game never runs faster than 30 FPS\n         * (its fixed 1/30 step stays correct), but a 34-50 ms frame no longer\n         * waits for a third vblank (20 FPS). */\n        { static int free_run = -1; static unsigned threshold = 2;\n          if (free_run < 0) { const char* e = getenv(\"MACROSS_FREE_RUN\"); free_run = e && *e == '1';\n                              const char* v = getenv(\"MACROSS_FRAME_VBLANKS\"); threshold = (v && !strcmp(v, \"1\")) ? 1u : 2u; }\n          if (free_run && vm_read32((uint32_t)ctx->gpr[3] + 0x38) >= threshold) { ctx->gpr[3] = 0; return; } }\n        unsigned vblank_probe_call = 0;\n        { static unsigned calls, lines;\n          const char* e = getenv(\"MACROSS_VBLANK_PROBE\");\n          if (e && *e && strcmp(e, \"0\")) {\n              unsigned call = ++calls;\n              if (((call >= 1500 && call < 1560) || call <= 2) && lines++ < 80) {\n                  vblank_probe_call = call;\n                  fprintf(stderr, \"[vblank-wait] enter #%u mutex=%08X cond=%08X counter=%u monotonic_ms=%llu\\n\",\n                          call, (uint32_t)ctx->gpr[3], (uint32_t)ctx->gpr[3] + 0x18,\n                          vm_read32(ctx->gpr[3] + 0x38), (unsigned long long)(ppu_timebase_now() / 79800ull));\n                  fflush(stderr);\n              }\n          } }\n"
+        },
+        {
+          "start": 77813,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        if (vblank_probe_call) {\n            fprintf(stderr, \"[vblank-wait] return #%u rc=%08X mutex=%08X counter=%u monotonic_ms=%llu\\n\",\n                    vblank_probe_call, (uint32_t)ctx->gpr[3], (uint32_t)ctx->gpr[28],\n                    vm_read32(ctx->gpr[28] + 0x38), (unsigned long long)(ppu_timebase_now() / 79800ull));\n            fflush(stderr);\n        }\n"
+        },
+        {
+          "start": 77853,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "/* Diagnostic headroom experiment only. A single-vblank gate does not prove\n * normal game speed or stable 60 FPS. Default and invalid input preserve the\n * original two-vblank contract. The original guest code bytes stay intact. */\nstatic unsigned macross_frame_vblank_count(void)\n{\n    static const unsigned requested = []() -> unsigned {\n        const char* value = getenv(\"MACROSS_FRAME_VBLANKS\");\n        const unsigned count = value && strcmp(value, \"1\") == 0 ? 1u : 2u;\n        if (value) {\n            fprintf(stderr, \"[frame-vblank-gate] requested=%s selected=%u diagnostic_only=1 game_pace_verified=0 default=2\\n\", value, count);\n            fflush(stderr);\n        }\n        return count;\n    }();\n    const bool original_code = vm_read32(0x005590D0u) == 0x912B0178u &&\n                               vm_read32(0x005590D4u) == 0x800B0178u &&\n                               vm_read32(0x005590D8u) == 0x2B800001u &&\n                               vm_read32(0x005590DCu) == 0x409D000Cu;\n    if (requested == 1u && !original_code) {\n        static bool reported = false;\n        if (!reported) {\n            reported = true;\n            fprintf(stderr, \"[frame-vblank-gate] code_guard=0 effective=2 diagnostic request rejected\\n\");\n            fflush(stderr);\n        }\n    }\n    return original_code ? requested : 2u;\n}\n\n"
+        },
+        {
+          "start": 77854,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        const unsigned macross_frame_vblanks = macross_frame_vblank_count();\n"
+        },
+        {
+          "start": 77871,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        { static unsigned calls, lines;\n          const char* e = getenv(\"MACROSS_VBLANK_PROBE\");\n          if (e && *e && strcmp(e, \"0\")) {\n              unsigned call = ++calls;\n              if (((call >= 1500 && call < 1560) || call <= 2) && lines++ < 80) {\n                  fprintf(stderr, \"[vblank-callback] #%u singleton=%08X obj=%08X counter=%u willSignal=%d toc=%08X monotonic_ms=%llu effective_vblanks=%u\\n\",\n                          call, (uint32_t)ctx->gpr[31], (uint32_t)ctx->gpr[11],\n                          (uint32_t)ctx->gpr[9], (uint32_t)ctx->gpr[9] >= macross_frame_vblanks,\n                          (uint32_t)ctx->gpr[2],\n                          (unsigned long long)(ppu_timebase_now() / 79800ull), macross_frame_vblanks);\n                  fflush(stderr);\n              }\n          } }\n"
+        },
+        {
+          "start": 77872,
+          "remove": 1,
+          "removed_sha256": "137381852b4d43908f8123d30ed053195361f129898a30b1a444f822295142db",
+          "insert": "        { uint64_t a = (uint32_t)ctx->gpr[0]; uint64_t b = (uint64_t)(macross_frame_vblanks - 1u); uint32_t cr_val = ((a < b) ? 8 : (a > b) ? 4 : 2) | ((ctx->xer >> 31) & 1u); ctx->cr = (ctx->cr & ~(0xFu << 0)) | (cr_val << 0); }\n"
+        },
+        {
+          "start": 79739,
+          "remove": 1,
+          "removed_sha256": "52436189afcdeda062616b95c3b0179037300bcc10c0cc0b9c152f98bb5e1607",
+          "insert": "        ctx->gpr[3] = (int64_t)(int32_t)macross_internal_video_resolution_id(2u, 0x0055AB68u);\n"
+        }
+      ]
+    },
+    {
+      "file": "ppu_recomp_016.cpp",
+      "input_sha256": "a3f8ad2f7bf5e29411d1431be3bfae816c8840156de65f28c471105b173f4125",
+      "output_sha256": "8ea7e54d66ecad7d2d879949f1cf60c4afd779ef11b15cc33acae2d5cdf992d6",
+      "edits": [
+        {
+          "start": 3,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include <stdlib.h>\n#include \"../lua_unwind.h\"\n"
+        },
+        {
+          "start": 26763,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        const uint32_t jump_buffer = ((uint32_t)ctx->gpr[3] + 15u) & ~15u;\n        /* Diagnostic only: observe whether Lua's guest longjmp is reached\n         * before introducing any host-stack unwind behavior. */\n        { static int probe_count;\n          const char* probe = getenv(\"MACROSS_LUA_PROBE\");\n          if (probe && *probe && strcmp(probe, \"0\") && probe_count < 12) {\n              ++probe_count;\n              uint32_t env = (uint32_t)ctx->gpr[3];\n              uint32_t aligned = (env + 15u) & ~15u;\n              fprintf(stderr, \"[lua-longjmp] #%d env=%08X aligned=%08X r3=%08X r4=%08X sp=%08X lr=%08X savedSP=%08X savedTOC=%08X savedLR=%08X savedCR=%08X\\n\",\n                      probe_count, env, aligned, (uint32_t)ctx->gpr[3],\n                      (uint32_t)ctx->gpr[4], (uint32_t)ctx->gpr[1], (uint32_t)ctx->lr,\n                      (uint32_t)vm_read64(aligned), (uint32_t)vm_read64(aligned + 8),\n                      (uint32_t)vm_read64(aligned + 0xA8), (uint32_t)vm_read64(aligned + 0xB0));\n              fflush(stderr);\n          } }\n"
+        },
+        {
+          "start": 26844,
+          "remove": 1,
+          "removed_sha256": "02b405ba1a4dd22cbd7790c07372e427a8a39492bfe74220d81aba219d716f4c",
+          "insert": "        macross_lua_guest_longjmp(ctx, jump_buffer);\n"
+        }
+      ]
+    },
+    {
+      "file": "ppu_recomp_090.cpp",
+      "input_sha256": "46c802d9f8aada97846200295f1b577d63cb4c6fd35e991b5e3e55d9f1c32376",
+      "output_sha256": "fd3c5bca028e3ad25da95175ea5df05f79062ef361fe606a32aee7755176feaf",
+      "edits": [
+        {
+          "start": 5,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include \"../lua_probe.h\"\n"
+        },
+        {
+          "start": 92948,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        const uint64_t entity_probe_args[] = {ctx->gpr[3], ctx->gpr[4], ctx->gpr[5], ctx->gpr[6], ctx->gpr[7], ctx->lr, ctx->gpr[2]};\n        macross_entity_probe(ctx, 0x0070B87C, ctx->gpr[3], ctx->gpr[4], ctx->gpr[5], ctx->gpr[6], ctx->gpr[7], ctx->lr, ctx->gpr[2]);\n"
+        },
+        {
+          "start": 93099,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "        macross_entity_probe(ctx, 0x8070B87C, entity_probe_args[0], entity_probe_args[1], entity_probe_args[2], entity_probe_args[3], entity_probe_args[4], entity_probe_args[5], entity_probe_args[6]);\n"
+        }
+      ]
+    },
+    {
+      "directory": "spu_gameplay/geom1",
+      "file": "spu_recomp.c",
+      "input_sha256": "6325d3ab6816c893fa5f1471b7b6bd0651421cd035afca63633353aa8a182ea3",
+      "output_sha256": "cd6d5828fda75784fa55b73c339c0db89cee7a7f6653ea65077493ad0a998706",
+      "edits": [
+        {
+          "start": 0,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "#include \"../../geom_c5b0_capture.h\"\n"
+        },
+        {
+          "start": 75471,
+          "remove": 1,
+          "removed_sha256": "ecd5069a6a1e32033beca876bf0aaa70127cffcd64d2000010946d74f6502c0a",
+          "insert": "static void macross_geom1_c5b0_original_body(spu_context* ctx) {\n"
+        },
+        {
+          "start": 76418,
+          "remove": 0,
+          "removed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "insert": "/* MACROSS_C5B0_CAPTURE_WRAPPER_BEGIN */\nvoid macross_geom1_spu_func_0000C5B0(spu_context* ctx) {\n    if (!g_macross_geom_c5b0_capture_on) { macross_geom1_c5b0_original_body(ctx); return; }\n    const int token = macross_geom_c5b0_capture_pre(ctx);\n    macross_geom1_c5b0_original_body(ctx);\n    macross_geom_c5b0_capture_post(ctx, token);\n}\n/* MACROSS_C5B0_CAPTURE_WRAPPER_END */\n"
+        }
+      ]
+    }
+  ]
+}

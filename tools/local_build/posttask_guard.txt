@@ -1,0 +1,208 @@
+/* Guarded raw posttask plugins. OFF unless MACROSS_POSTTASK_NATIVE=1.
+ * No global SPU function registration: unknown image/PC/bytes retain interpreter.
+ */
+#include "../../../vendor/ps3recomp-master/runtime/spu/spu_context.h"
+#include <windows.h>
+#include "../../../vendor/ps3recomp-master/runtime/spu/spu_posttask_dma_trace.h"
+#include <stdio.h>
+#include "family0.h"
+LOCAL_EXPECTED_0
+#include "family1.h"
+LOCAL_EXPECTED_1
+#include "family2.h"
+LOCAL_EXPECTED_2
+#include "family4.h"
+LOCAL_EXPECTED_4
+#include "family6.h"
+LOCAL_EXPECTED_6
+#include "family8.h"
+LOCAL_EXPECTED_8
+#include "boundary_perf.h"
+#include "family9.h"
+LOCAL_EXPECTED_9
+#include "family10.h"
+LOCAL_EXPECTED_10
+#include "family11.h"
+#ifdef MACROSS_POSTTASK_F11_LUT_BUILT
+#include "family11_lut.h"
+#endif
+LOCAL_EXPECTED_11
+static INIT_ONCE init_once=INIT_ONCE_STATIC_INIT;
+static int enabled;
+static int f11_lut_enabled;
+static volatile LONG hits[9],misses;
+static BOOL CALLBACK init_config(PINIT_ONCE once,PVOID arg,PVOID*out){
+ const char*e=getenv("MACROSS_POSTTASK_NATIVE");enabled=e&&atoi(e)!=0;
+#ifdef MACROSS_POSTTASK_F11_LUT_BUILT
+ const char*lut=getenv("MACROSS_POSTTASK_F11_LUT");
+ /* Test capability in baseline guard TU before entering any AVX2 TU.
+  * Raw LUT stores intentionally reject LS write instrumentation. */
+ f11_lut_enabled=lut&&atoi(lut)!=0&&IsProcessorFeaturePresent(PF_AVX2_INSTRUCTIONS_AVAILABLE)&&
+     !getenv("SPU_LS_WATCH")&&!getenv("SPU_SMC_WATCH");
+#endif
+#if defined(MACROSS_POSTTASK_ISA_LEVEL) && MACROSS_POSTTASK_ISA_LEVEL == 2
+ if(!IsProcessorFeaturePresent(PF_AVX2_INSTRUCTIONS_AVAILABLE))enabled=0;
+#elif defined(MACROSS_POSTTASK_ISA_LEVEL) && MACROSS_POSTTASK_ISA_LEVEL == 1
+ if(!IsProcessorFeaturePresent(PF_SSE4_1_INSTRUCTIONS_AVAILABLE))enabled=0;
+#endif
+#ifdef MACROSS_POSTTASK_ISA_LEVEL
+ fprintf(stderr,"[posttask-native] isa_level=%d enabled=%d\n",MACROSS_POSTTASK_ISA_LEVEL,enabled);
+#endif
+ return TRUE;
+}
+/* pp_calls file in the working directory: log the next 400 plugin calls
+ * (family, thread, r3..r12) -- the post-process command list. */
+/* pp_f11 file: log the next 300 family11 inner calls (r3..r10) to tell the
+ * final scene composite apart from the bloom-stage uses. */
+void pp_f11_log(spu_context*ctx){
+ static volatile LONG left; static ULONGLONG chk;
+ if(left<=0){ULONGLONG now=GetTickCount64();if(now-chk<300)return;chk=now;
+  if(GetFileAttributesA("pp_f11")==INVALID_FILE_ATTRIBUTES)return;DeleteFileA("pp_f11");left=300;}
+ if(InterlockedDecrement(&left)<0)return;
+ char line[400];int n=snprintf(line,sizeof line,"[pp-f11] tid=%lu",GetCurrentThreadId());
+ for(int r=3;r<=10;r++)n+=snprintf(line+n,sizeof line-n," r%d=%08X",r,ctx->gpr[r]._u32[0]);
+ fprintf(stderr,"%s\n",line);
+}
+static void pp_call_log(int fam,spu_context*ctx){
+ static volatile LONG left; static ULONGLONG chk;
+ if(left<=0){ULONGLONG now=GetTickCount64();if(now-chk<300)return;chk=now;
+  if(GetFileAttributesA("pp_calls")==INVALID_FILE_ATTRIBUTES)return;DeleteFileA("pp_calls");left=400;}
+ if(InterlockedDecrement(&left)<0)return;
+ LARGE_INTEGER t,f;QueryPerformanceCounter(&t);QueryPerformanceFrequency(&f);
+ fprintf(stderr,"[pp-call] t=%.3fms fam=%d tid=%lu",(double)t.QuadPart*1000.0/(double)f.QuadPart,fam,GetCurrentThreadId());
+ for(int r=3;r<=12;r++)fprintf(stderr," r%d=%08X/%08X",r,ctx->gpr[r]._u32[0],ctx->gpr[r]._u32[1]);
+ fprintf(stderr,"\n");
+}
+/* When the renderer applied the GPU stand-in for families 10/11 within the
+ * last second, their SPU work only produces a main-memory image nobody shows:
+ * return straight to the caller (bi $lr) instead. Family 11 still runs about
+ * four times a second so the captured gains stay current. A spu_pp_run file
+ * in the working directory forces the original work (A/B). */
+static int pp_gpu_skip(int fam){
+ extern volatile unsigned long g_pp_gpu_last_ms;
+ static ULONGLONG chk; static int force; static volatile ULONGLONG f11_last;
+ ULONGLONG now=GetTickCount64();
+ if(now-chk>1000){chk=now;force=GetFileAttributesA("spu_pp_run")!=INVALID_FILE_ATTRIBUTES;}
+ if(force||!g_pp_gpu_last_ms||(unsigned long)now-g_pp_gpu_last_ms>1000u)return 0;
+ if(fam==11){if(now-f11_last>250){f11_last=now;return 0;}}
+ return 1;
+}
+/* Families 1/2/4 (the bloom chain): with the GPU post-process active their
+ * output is never shown -- the renderer blurs the host glow mask itself --
+ * so they return straight to the caller (macross_spu_postfx_skip; a
+ * spu_postfx_run file runs them). Screenshots identical, 2026-10-25. */
+extern int macross_spu_postfx_skip(void);
+static int pp_chain_skip(void){ return macross_spu_postfx_skip(); }
+int macross_posttask_native_try(spu_context*ctx,uint32_t pc){
+ if(ctx->image_id!=318051041)return 0;
+ InitOnceExecuteOnce(&init_once,init_config,NULL,NULL);
+ if(!enabled)return 0;
+ /* Runtime A/B: a no_posttask_native file in the working directory routes
+  * every family back to the original lifted body (checked ~once a second). */
+ { static volatile LONG off; static volatile ULONGLONG next;
+   const ULONGLONG now=GetTickCount64();
+   if(now>=next){ next=now+1000; const LONG was=off;
+     off=GetFileAttributesA("no_posttask_native")!=INVALID_FILE_ATTRIBUTES;
+     if(was!=off)fprintf(stderr,"[posttask-native] runtime %s (no_posttask_native file)\n",off?"OFF":"ON"); }
+   if(off)return 0; }
+ if(pc==0x6260u&&!memcmp(ctx->ls+0x6230,expected0,sizeof(expected0))){
+  LONG n=InterlockedIncrement(&hits[0]);if(n<=2)fprintf(stderr,"[posttask-native] family=0 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected0),n);pp_call_log(0,ctx);
+  ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
+  int perf_token=macross_posttask_perf_begin(ctx,pc,0);
+  macross_posttask_f0_spu_func_00006260(ctx);
+  macross_posttask_perf_end(perf_token);
+  return 1;
+ }
+ if(pc==0x6264u&&!memcmp(ctx->ls+0x6230,expected1,sizeof(expected1))){
+  LONG n=InterlockedIncrement(&hits[1]);if(n<=2)fprintf(stderr,"[posttask-native] family=1 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected1),n);pp_call_log(1,ctx);
+  ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
+  int perf_token=macross_posttask_perf_begin(ctx,pc,1);
+  if(pp_chain_skip())ctx->pc=ctx->gpr[0]._u32[0]&SPU_LS_MASK; else
+  macross_posttask_f1_spu_func_00006264(ctx);
+  macross_posttask_perf_end(perf_token);
+  return 1;
+ }
+ if(pc==0x6264u&&!memcmp(ctx->ls+0x6230,expected2,sizeof(expected2))){
+  LONG n=InterlockedIncrement(&hits[2]);if(n<=2)fprintf(stderr,"[posttask-native] family=2 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected2),n);pp_call_log(2,ctx);
+  ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
+  int perf_token=macross_posttask_perf_begin(ctx,pc,2);
+  if(pp_chain_skip())ctx->pc=ctx->gpr[0]._u32[0]&SPU_LS_MASK; else
+  macross_posttask_f2_spu_func_00006264(ctx);
+  macross_posttask_perf_end(perf_token);
+  return 1;
+ }
+ if(pc==0x6524u&&!memcmp(ctx->ls+0x6230,expected4,sizeof(expected4))){
+  LONG n=InterlockedIncrement(&hits[3]);if(n<=2)fprintf(stderr,"[posttask-native] family=4 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected4),n);pp_call_log(4,ctx);
+  ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
+  int perf_token=macross_posttask_perf_begin(ctx,pc,4);
+  if(pp_chain_skip())ctx->pc=ctx->gpr[0]._u32[0]&SPU_LS_MASK; else
+  macross_posttask_f4_spu_func_00006524(ctx);
+  macross_posttask_perf_end(perf_token);
+  return 1;
+ }
+ if(pc==0x659Cu&&!memcmp(ctx->ls+0x6230,expected6,sizeof(expected6))){
+  LONG n=InterlockedIncrement(&hits[4]);if(n<=2)fprintf(stderr,"[posttask-native] family=6 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected6),n);pp_call_log(6,ctx);
+  ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
+  int perf_token=macross_posttask_perf_begin(ctx,pc,6);
+  macross_posttask_f6_spu_func_0000659C(ctx);
+  macross_posttask_perf_end(perf_token);
+  return 1;
+ }
+ if(pc==0x6724u&&!memcmp(ctx->ls+0x6230,expected8,sizeof(expected8))){
+  LONG n=InterlockedIncrement(&hits[5]);if(n<=2)fprintf(stderr,"[posttask-native] family=8 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected8),n);pp_call_log(8,ctx);
+  ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
+  int perf_token=macross_posttask_perf_begin(ctx,pc,8);
+  macross_posttask_f8_spu_func_00006724(ctx);
+  macross_posttask_perf_end(perf_token);
+  return 1;
+ }
+ if(pc==0x6264u&&!memcmp(ctx->ls+0x6230,expected9,sizeof(expected9))){
+  LONG n=InterlockedIncrement(&hits[6]);if(n<=2)fprintf(stderr,"[posttask-native] family=9 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected9),n);pp_call_log(9,ctx);
+  ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
+  int perf_token=macross_posttask_perf_begin(ctx,pc,9);
+  macross_posttask_f9_spu_func_00006264(ctx);
+  macross_posttask_perf_end(perf_token);
+  return 1;
+ }
+ if(pc==0x631Cu&&!memcmp(ctx->ls+0x6230,expected10,sizeof(expected10))){
+  LONG n=InterlockedIncrement(&hits[7]);if(n<=2)fprintf(stderr,"[posttask-native] family=10 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected10),n);pp_call_log(10,ctx);
+  ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
+  int perf_token=macross_posttask_perf_begin(ctx,pc,10);
+  /* The LUT the SPU is about to apply (R,G,B x256 at LS 0x6590): handed to
+   * the renderer, which applies the same stage on the GPU. */
+  /* Gains come from family11 directly (g_pp_scale9/10): every family11
+   * call of a frame carries the same gain, so the last write is the
+   * current frame. Per-worker copies lagged a frame while exposure
+   * adapted and made the image pulse. */
+  { extern unsigned char g_pp_lut[768]; extern volatile long g_pp_lut_seq;
+    memcpy(g_pp_lut,ctx->ls+0x6590,768); InterlockedIncrement(&g_pp_lut_seq); }
+  if(pp_gpu_skip(10))ctx->pc=ctx->gpr[0]._u32[0]&SPU_LS_MASK; else
+  macross_posttask_f10_spu_func_0000631C(ctx);
+  macross_posttask_perf_end(perf_token);
+  return 1;
+ }
+ if(pc==0x6914u&&!memcmp(ctx->ls+0x6230,expected11,sizeof(expected11))){
+  LONG n=InterlockedIncrement(&hits[8]);if(n<=2)fprintf(stderr,"[posttask-native] family=11 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected11),n);pp_call_log(11,ctx);
+  ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
+  int perf_token=macross_posttask_perf_begin(ctx,pc,11);
+  spu_posttask_dma_trace_mark(ctx,11);
+  /* The bloom chain has finished when the final composite (family11) starts:
+   * snapshot the 640x360 bloom buffer now (main 0x017C0000 = EA 0x19AC0000) so
+   * the GPU stand-in never reads it half-written by the next frame's chain. */
+  { extern unsigned char g_pp_bloom_snap[640*360*4]; extern volatile long g_pp_bloom_seq;
+    extern uint8_t* vm_base; static volatile ULONGLONG last_snap;
+    ULONGLONG now=GetTickCount64();
+    if(now-last_snap>20){last_snap=now;memcpy(g_pp_bloom_snap,vm_base+0x19AC0000u,640*360*4);InterlockedIncrement(&g_pp_bloom_seq);} }
+  if(pp_gpu_skip(11)){ctx->pc=ctx->gpr[0]._u32[0]&SPU_LS_MASK;macross_posttask_perf_end(perf_token);return 1;}
+#ifdef MACROSS_POSTTASK_F11_LUT_BUILT
+  if(f11_lut_enabled&&g_spu_ls_watch_n==0&&g_spu_smc_watch==0)
+   macross_posttask_f11_dispatch_6914(ctx);
+  else
+#endif
+   macross_posttask_f11_spu_func_00006914(ctx);
+  macross_posttask_perf_end(perf_token);
+  return 1;
+ }
+ LONG n=InterlockedIncrement(&misses);if(n<=8)fprintf(stderr,"[posttask-native] fallback pc=%05X exact_guard_miss=%ld\n",pc,n);
+ return 0;
+}

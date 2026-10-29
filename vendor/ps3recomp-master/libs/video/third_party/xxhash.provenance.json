@@ -1,0 +1,8 @@
+{
+  "project": "xxHash",
+  "version": "0.8.3",
+  "source": "https://github.com/Cyan4973/xxHash/blob/v0.8.3/xxhash.h",
+  "sha256": "69ebc0100b249750833dbf9ad0a7a6006810f20eb0d990bf61436c06fe1079c9",
+  "license": "BSD-2-Clause; upstream notice retained in header",
+  "transport": "connected GitHub fetch tool; direct shell network unavailable"
+}

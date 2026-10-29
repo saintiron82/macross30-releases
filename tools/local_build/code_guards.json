@@ -1,0 +1,18 @@
+{
+  "file": "geom_c5b0_capture_contract.h",
+  "sha256": "84998751628fbde161e3a65f46ffa94b57cb91f3d94aedf55c1fbcdc55aaa1f8",
+  "arrays": [
+    {
+      "name": "expected_c5b0",
+      "offset": 10555440,
+      "size": 3712,
+      "sha256": "25b56feb8f32fa8be730e8c3ff6eb1576a1d3c4206118b64e22ae95dfc3cff91"
+    },
+    {
+      "name": "expected_88e0",
+      "offset": 9924544,
+      "size": 24,
+      "sha256": "467181b2c070d2bdcefde98723a3f2d21a1343f97bed849750b1a73847a359b6"
+    }
+  ]
+}
