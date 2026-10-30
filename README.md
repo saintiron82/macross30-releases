@@ -1,27 +1,19 @@
 # Macross 30 — Downloads
 
-**[런처 다운로드 / Download launcher / ランチャーをダウンロード](https://github.com/saintiron82/macross30-releases/releases/download/launcher-v0.1.7/Macross30-launcher-0.1.7.zip)**
+**[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.1/Macross30-launcher-0.3.0.zip)**
 
-게임 0.2.0 · 런처 0.1.7. [릴리스와 설치 안내](https://github.com/saintiron82/macross30-releases/releases/latest)
+게임 / Game **0.3.1** · 런처 / Launcher **0.3.0**
 
-ZIP을 풀고 Macross30Launcher.exe 실행 → 표시/게임 언어 선택 → 적용 → 본인 소유 일본판 ISO 선택 → 자동 생성·컴파일·설치 → 게임 실행.
+**[English installation and usage guide](README.en.md)** · [Release notes](https://github.com/saintiron82/macross30-releases/releases/tag/v0.3.1) · [Discord](https://discord.gg/WqaaJ6hTmY)
 
-이 저장소는 배포 전용입니다. 과거 개발 이력, 완성된 게임 EXE/ELF, 원작에서 생성한 PPU/SPU 소스는 포함하지 않습니다. 런처가 사용자 ISO에서 필요한 파일을 로컬 생성합니다. 개인 정보가 담긴 게임 로그나 세이브는 공개 게시하지 마세요.
+ZIP 압축 해제 → `Macross30Launcher.exe` 실행 → 플레이 언어 선택 → **플레이/업데이트** → 첫 설치 시 본인 정품에서 직접 덤프한 지원 일본판 ISO 선택.
 
-Windows 10/11 x64, .NET Framework 4.5 이상이 필요합니다. Python과 C++ 빌드 도구 등은 공식 배포처에서 자동 준비하며 관리자 권한을 요청할 수 있습니다. 첫 설치는 시간과 디스크 공간이 필요합니다. 실제 FPS와 새 Windows의 첫 도구 설치는 추가 검증 대상입니다.
+한국어·영어팩을 제공하며 일본어는 원본 데이터를 사용합니다. 영어는 검수 중입니다. 게임 코드를 사용자 PC에서 컴파일하지 않으며, 프로그램팩의 사전 빌드 Windows 실행 파일과 선택 언어팩을 런처가 설치합니다. 원본 EBOOT와 게임 데이터는 사용자 ISO에서 로컬로 준비합니다.
 
-한국어 및 원본 일본어 지원. 영어 게임팩은 준비 중입니다. 런처 화면은 한국어·영어·일본어를 지원합니다.
+Windows 10/11 x64, D3D12 GPU, AVX2/SSE4.1 CPU가 필요합니다. 런처를 위해 Python이나 브라우저 엔진을 따로 설치할 필요는 없습니다. 전체 진행·영어 번역·새 PC 최초 설치 검증은 계속 진행 중인 테스트 배포입니다.
 
-## English
-
-Download the launcher ZIP above, extract it and run Macross30Launcher.exe. Select your UI/game language, click Apply and select your own Japanese Macross 30 ISO. No GitHub login or token is needed for public downloads. Complete game executables and generated game source are not distributed. Build tools may require administrator permission. First-time compilation can take time. Gameplay FPS and clean-Windows tool setup need further validation.
-
-## 日本語
-
-上のZIPを展開してMacross30Launcher.exeを起動し、表示言語・ゲーム言語を選択後、「適用」からご自身の日本版ISOを選んでください。GitHubへのログインは不要です。ゲーム実行ファイルはこのPCで生成・ビルドします。初回はツール導入・管理者権限の確認・時間・空き容量が必要な場合があります。
+**본인 소유 정품에서 직접 덤프한 ISO만 사용하세요.** 게임 ISO·원본 EBOOT/ELF와 불법 다운로드 링크는 제공하거나 공유하지 않습니다. 비공식·비상업 팬 프로젝트이며 관련 권리자의 승인이나 제휴를 받은 프로젝트가 아닙니다. 원본 소유가 모든 복제·변경·배포를 자동 허용하는 것은 아닙니다. 관련 법과 이용 조건을 준수하세요. **권리자 요청이나 프로젝트 사정에 따라 사전 예고 없이 언제든 배포가 중단될 수 있습니다.**
 
 ## Source and attribution
 
-This repository contains a standalone reviewed source snapshot, not development history. The launcher downloads versioned release assets automatically. Based on ps3recomp; see vendor/ps3recomp-master/LICENSE and bundled third-party notices. Game rights remain with their owners. This distribution structure does not establish permission or guarantee legal status.
-
-설치 중에는 별도 진행 창에 단계와 경과 시간을 표시합니다. 실패하면 마지막 로그가 남고 전체 로그를 열 수 있습니다.
+The repository currently retains an earlier source snapshot from the local-build distribution. It is separate from the current precompiled release assets. Based on ps3recomp; its MIT license is retained at `vendor/ps3recomp-master/LICENSE`. Bundled third-party notices also apply. The English guide describes the current installation flow.
