@@ -1,6 +1,6 @@
 # Macross 30 — Downloads
 
-**[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.1/Macross30-launcher-0.3.1.zip)**
+**[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.2/Macross30-launcher-0.3.2.zip)**
 
 게임 / Game **0.3.1** · 런처 / Launcher **0.3.1**
 
@@ -26,3 +26,6 @@ The repository currently retains an earlier source snapshot from the local-build
 3. 자동 업데이트에 실패하면 최종 0.3.1 ZIP을 받아 런처를 종료한 뒤 기존 런처 파일을 교체하세요.
 
 기존 게임 설치 폴더와 저장 파일은 삭제하지 마세요. 원본 데이터 복구가 필요하면 기존에 사용하던 본인 소유 ISO를 지정하세요.
+
+
+런처 0.3.2부터 실행 시 새 런처를 자동으로 다운로드·교체·재시작합니다. 게임 실행 중에는 런처를 유지하고 버튼에 실행 중으로 표시합니다. 기존 0.3.0/0.3.1은 런처 업데이트를 한 번 눌러 0.3.2로 교체하세요. 게임·언어팩 버전은 0.3.1입니다.
