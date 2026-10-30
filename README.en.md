@@ -43,3 +43,12 @@ Include game/launcher versions, game language, Windows/GPU details, mission or l
 This is an unofficial, non-commercial fan project, not affiliated with or endorsed by Bandai Namco or other rights holders. All game, character, audiovisual and trademark rights remain with their respective owners. Owning the original does not automatically authorize every form of copying, modification or redistribution; comply with applicable laws and terms in your jurisdiction.
 
 **Distribution may be discontinued at any time without prior notice**, including in response to a rights-holder request or project circumstances.
+
+
+## For launcher 0.3.0 users
+
+1. Click **Launcher update** at the bottom of your existing launcher and approve the replacement.
+2. When it reopens, select your usual play language and click **Update/Play** to apply the game fixes too.
+3. If automatic updating fails, download the final 0.3.1 ZIP above, close the launcher, and replace the existing launcher files.
+
+Keep your installed game folder and save files. If original data needs repair, select the same supported ISO dumped from your own copy; you do not need to obtain another ISO.
