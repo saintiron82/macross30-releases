@@ -479,7 +479,7 @@ public sealed class LauncherWindow : Form {
             string arguments="-NoProfile -NonInteractive -ExecutionPolicy Bypass -File \""+script+"\" -Root \""+root+"\" -Iso \""+isoPath+"\" -Payload \""+payload+"\" -Runtime \""+runtime+"\" -Language "+gameLocale;
             var start=new ProcessStartInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),"WindowsPowerShell/v1.0/powershell.exe"),arguments) { UseShellExecute=false,CreateNoWindow=true,WorkingDirectory=source,RedirectStandardOutput=true,RedirectStandardError=true };
             string logFile=Path.Combine(root,"play/local-build.log");
-            using(var progress=new InstallProgress(logFile)) {
+            using(var progress=new InstallProgress(logFile,source)) {
                 await progress.RunAsync(async ()=> {
                     using(var process=new Process {StartInfo=start})
                     using(var writer=new StreamWriter(new FileStream(logFile,FileMode.Create,FileAccess.Write,FileShare.Read),new UTF8Encoding(false))) {
@@ -488,7 +488,7 @@ public sealed class LauncherWindow : Form {
                             if(e.Data==null)return;
                             lock(sync) {
                                 writer.WriteLine(e.Data);
-                                bool important=e.Data.StartsWith("LOCAL_",StringComparison.Ordinal) || e.Data.StartsWith("LOCAL GENERATE:",StringComparison.Ordinal);
+                                bool important=e.Data.StartsWith("LOCAL_",StringComparison.Ordinal) || e.Data.StartsWith("LOCAL GENERATE:",StringComparison.Ordinal) || Regex.IsMatch(e.Data,@"^\[\d+/\d+\]|(?:lifted|emitting)\s+\d+/\d+");
                                 if(important || clock.ElapsedMilliseconds-lastFlush>=1000){writer.Flush();lastFlush=clock.ElapsedMilliseconds;}
                                 if(important || clock.ElapsedMilliseconds-lastDisplay>=1000){progress.Receive(e.Data);lastDisplay=clock.ElapsedMilliseconds;}
                             }

@@ -1,8 +1,8 @@
 # Macross 30 — Downloads
 
-**[런처 다운로드 / Download launcher / ランチャーをダウンロード](https://github.com/saintiron82/macross30-releases/releases/download/launcher-v0.1.6/Macross30-launcher-0.1.6.zip)**
+**[런처 다운로드 / Download launcher / ランチャーをダウンロード](https://github.com/saintiron82/macross30-releases/releases/download/launcher-v0.1.7/Macross30-launcher-0.1.7.zip)**
 
-게임 0.2.0 · 런처 0.1.6. [릴리스와 설치 안내](https://github.com/saintiron82/macross30-releases/releases/latest)
+게임 0.2.0 · 런처 0.1.7. [릴리스와 설치 안내](https://github.com/saintiron82/macross30-releases/releases/latest)
 
 ZIP을 풀고 Macross30Launcher.exe 실행 → 표시/게임 언어 선택 → 적용 → 본인 소유 일본판 ISO 선택 → 자동 생성·컴파일·설치 → 게임 실행.
 
