@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-30T23:01:02.356545+00:00",
+  "updated_at": "2026-10-30T23:25:38.887343+00:00",
   "closed": false,
   "default_language": "ko",
   "message": {
@@ -13,7 +13,7 @@
       "version": "0.3.1"
     },
     "launcher": {
-      "version": "0.3.1"
+      "version": "0.3.2"
     },
     "language_packs": {
       "ko-KR": {
@@ -41,6 +41,21 @@
     }
   ],
   "patch_notes": [
+    {
+      "id": "launcher-0.3.2",
+      "component": "launcher",
+      "version": "0.3.2",
+      "title": {
+        "ko": "런처 0.3.2 — 시작 시 자동 업데이트",
+        "en": "Launcher 0.3.2 — automatic startup updates",
+        "ja": "ランチャー 0.3.2 — 起動時の自動更新"
+      },
+      "body": {
+        "ko": "실행 시 새 런처를 자동으로 확인·다운로드·교체·재시작합니다. 설치 경로와 언어 설정을 유지하며, 새 실행에 실패하면 이전 파일로 복구합니다. 게임 실행 중에도 런처 창을 유지하고 버튼을 실행 중으로 표시합니다. 게임 종료 후 플레이 버튼으로 돌아옵니다. 게임과 언어팩은 기존 승인 절차를 유지합니다.",
+        "en": "On startup, newer launchers automatically download, replace and restart. Install path and language settings are retained; failed startup restores the previous binary. The launcher stays open while the game runs, shows Game running, and restores Play after exit. Game/language update approval remains separate.",
+        "ja": "起動時に新しいランチャーを自動取得・置換・再起動。導入先と言語設定を維持し、起動失敗時は旧版に復元。ゲーム中もランチャーを維持して実行中と表示し、終了後はプレイに戻ります。ゲームと言語更新の確認は従来どおりです。"
+      }
+    },
     {
       "id": "launcher-0.3.1",
       "component": "launcher",
