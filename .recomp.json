@@ -1,0 +1,30 @@
+{
+  "$schema": "https://recomp.fyi/schema/v1.json",
+  "game": "Macross 30: Ginga o Tsunagu Utagoe",
+  "system": "PS3",
+  "type": "recomp",
+  "project": "Macross 30 Recompiled",
+  "status": "released",
+  "targets": [
+    "Windows"
+  ],
+  "toolchain": "Ps3recomp",
+  "approach": "Static recompilation with a native Windows runtime and GPU replacements for selected SPU work.",
+  "maintainers": [
+    {
+      "name": "saintiron82",
+      "link": "https://github.com/saintiron82"
+    }
+  ],
+  "links": [
+    {
+      "label": "Discord",
+      "url": "https://discord.gg/WqaaJ6hTmY"
+    }
+  ],
+  "help": [
+    "English translation review",
+    "Gameplay bug reports"
+  ],
+  "notes": "Windows test release with Korean and English localization; original Japanese supported. High-resolution options and controller input. English review and full-playthrough validation remain ongoing."
+}
