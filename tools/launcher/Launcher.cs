@@ -310,7 +310,7 @@ public sealed class LauncherWindow : Form {
             using (var d = new FolderBrowserDialog()) { d.SelectedPath = folder.Text; if (d.ShowDialog() == DialogResult.OK) folder.Text = d.SelectedPath; } SaveSettings(); RefreshState();
         }));
         var primary = new FlowLayoutPanel { Dock = DockStyle.Fill };
-        primary.Controls.Add(Button("최신 패치 다운로드", async () => await Busy(InstallWizard)));
+        primary.Controls.Add(Button("적용", async () => await Busy(InstallWizard)));
         primary.Controls.Add(Button("게임 실행", async () => await Busy(Play))); layout.Controls.Add(primary);
         state.Dock = DockStyle.Fill; state.ForeColor = Color.LightSkyBlue; layout.Controls.Add(state);
         notice.Dock = DockStyle.Fill; notice.Text = UiText.T("준비되었습니다. 위 안내에 따라 시작하세요."); layout.Controls.Add(notice);
@@ -381,7 +381,7 @@ public sealed class LauncherWindow : Form {
     void RefreshState() {
         try {
             string installed = Packages.InstalledVersion(folder.Text);
-            state.Text = UiText.F("설치 버전: {0} · {1}", UiText.T(installed), UiText.T(LocalBuild.Ready(folder.Text,gameLocale) ? "실행 준비됨" : "최신 패치 다운로드를 눌러주세요"));
+            state.Text = UiText.F("설치 버전: {0} · {1}", UiText.T(installed), UiText.T(LocalBuild.Ready(folder.Text,gameLocale) ? "실행 준비됨" : "적용을 눌러주세요"));
             foreach (ListViewItem row in files.Items) {
                 var release = (ReleaseFiles)row.Tag; row.SubItems[3].Text = UiText.T(release.ComparedTo(installed));
                 row.ForeColor = release.CanDownload(installed) ? Color.Gainsboro : Color.Gray;

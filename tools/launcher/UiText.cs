@@ -38,8 +38,8 @@ public static class UiText {
         {"런처",new[]{"Launcher","ランチャー"}},
         {"런처 언어",new[]{"Launcher language","ランチャー言語"}},
         {"게임 언어",new[]{"Game language","ゲーム言語"}},
-        {"최신 패치 다운로드",new[]{"Download latest patch","最新パッチを取得"}},
-        {"최신 패치 다운로드를 먼저 눌러주세요.",new[]{"Click Download latest patch first.","先に「最新パッチを取得」を押してください。"}},
+        {"적용",new[]{"Apply","適用"}},
+        {"적용을 먼저 눌러주세요.",new[]{"Click Apply first.","先に「適用」を押してください。"}},
         {"게임 언어 정보가 버전과 맞지 않습니다.",new[]{"Game language information does not match this version.","ゲーム言語の情報がこのバージョンと一致しません。"}},
         {"선택한 게임 언어팩은 아직 준비 중입니다. 다른 게임 언어를 선택하세요.",new[]{"The selected game language is still in development. Choose another game language.","選択したゲーム言語は準備中です。別のゲーム言語を選択してください。"}},
         {"게임 데이터를 설치하고 있습니다. 창을 닫지 말고 기다려주세요.",new[]{"Installing game data. Please keep the launcher open.","ゲームデータをインストール中です。ランチャーを閉じずにお待ちください。"}},
@@ -75,7 +75,7 @@ public static class UiText {
         {"현재 설치 버전",new[]{"Installed version","インストール済み"}},
         {"설치 버전: {0} · {1}",new[]{"Installed: {0} · {1}","インストール版: {0} · {1}"}},
         {"실행 준비됨",new[]{"Ready to play","起動できます"}},
-        {"최신 패치 다운로드를 눌러주세요",new[]{"Click Download latest patch","最新パッチを取得を押してください"}},
+        {"적용을 눌러주세요",new[]{"Click Apply","適用を押してください"}},
         {"설치 정보를 읽을 수 없습니다. 폴더를 확인하세요.",new[]{"Cannot read installation information. Check the folder.","インストール情報を読めません。フォルダーを確認してください。"}},
         {"안내",new[]{"Instructions","使い方"}},
         {"준비되었습니다. 위 안내에 따라 시작하세요.",new[]{"Ready. Follow the instructions above to get started.","準備できました。上の案内に沿って始めてください。"}},
@@ -89,7 +89,7 @@ public static class UiText {
         {"최신 설치 파일이 준비되어 있습니다.",new[]{"Your installation files are up to date.","インストールファイルは最新です。"}},
         {"설치 완료. 게임 실행을 누르세요.",new[]{"Installation complete. Click Play.","インストール完了。ゲーム起動を押してください。"}},
         {"설치를 계속하려면 본인 소유의 게임 ISO를 선택하세요.",new[]{"Select your own game ISO to continue installation.","続けるには、ご自身のゲームISOを選択してください。"}},
-        {"ISO를 선택하지 않았습니다. 설치 · 업데이트를 눌러 이어서 진행할 수 있습니다.",new[]{"No ISO selected. Click Download latest patch when you are ready to continue.","ISOが選択されていません。インストール・更新から再開できます。"}},
+        {"ISO를 선택하지 않았습니다. 설치 · 업데이트를 눌러 이어서 진행할 수 있습니다.",new[]{"No ISO selected. Click Apply when you are ready to continue.","ISOが選択されていません。インストール・更新から再開できます。"}},
         {"게시된 설치 패키지가 없습니다. 나중에 다시 시도하거나 고급 메뉴에서 로컬 패치를 선택하세요.",new[]{"No installation packages are published. Try later, or use a local patch under Advanced.","公開済みのインストールパッケージがありません。後で再試行するか、詳細設定でローカルパッチを指定してください。"}},
         {"접근 가능한 GitHub 릴리스가 없습니다. 저장소·토큰을 확인하거나 로컬 패치 적용을 사용하세요.",new[]{"No accessible release. Check the repository/token or choose a local patch under Advanced.","アクセス可能なリリースがありません。リポジトリ・トークンを確認するか、詳細設定でローカルパッチを指定してください。"}},
         {"저장된 런처 설정을 읽지 못해 기본값을 사용합니다.",new[]{"Saved settings could not be read. Using defaults.","保存設定を読めないため、初期設定を使用します。"}},
@@ -103,7 +103,7 @@ public static class UiText {
         {"게임 실행 중…",new[]{"Game running…","ゲーム起動中…"}},
         {"게임 종료 (",new[]{"Game exited (","ゲーム終了 ("}},
         {"). 로그는 설치 폴더의 play에 있습니다.",new[]{"). Logs are in the game folder's play directory.","). ログはインストール先のplayフォルダーにあります。"}},
-        {"동일 버전의 두 팩을 적용하고 ISO 설치를 완료하세요.",new[]{"Click Download latest patch and complete the ISO installation first.","先にインストール・更新からISOのインストールを完了してください。"}},
+        {"동일 버전의 두 팩을 적용하고 ISO 설치를 완료하세요.",new[]{"Click Apply and complete the ISO installation first.","先にインストール・更新からISOのインストールを完了してください。"}},
         {"프로그램팩과 한국어팩을 먼저 적용하세요.",new[]{"Install the program and Korean packages first.","先にプログラムと韓国語パックを適用してください。"}},
         {"현재 작업이 끝난 뒤 런처를 닫을 수 있습니다.",new[]{"Wait for the current operation before closing the launcher.","現在の処理が完了するまでランチャーを閉じないでください。"}},
         {"릴리스 파일 목록을 불러오는 중…",new[]{"Loading release file list…","リリース一覧を取得中…"}},
@@ -177,9 +177,9 @@ public static class UiText {
     public static string F(string key, params object[] args) { return String.Format(T(key),args); }
     public static string Guide {
         get {
-            if (Language == "en") return "FIRST INSTALL\r\n1. Choose the launcher language and game language above.\r\n2. Click Download latest patch. No patch files or versions need to be selected.\r\n3. Select your own Macross 30 ISO when asked, then wait for local generation and compilation. The first install downloads build tools; Windows may ask for administrator permission. Allow extra time and disk space.\r\n4. Click Play.\r\n\r\nKorean and original Japanese game data are supported. The English game pack is still in development; the launcher UI is available in all three languages.\r\n\r\nAlready installed? Choose your existing game folder. The same download button installs updates. Saves and settings are kept.";
-            if (Language == "ja") return "初めて使う場合\r\n1. 上でランチャー言語とゲーム言語を選びます。\r\n2.「最新パッチを取得」を押します。パッチファイルやバージョンの選択は不要です。\r\n3. 案内に従ってご自身のマクロス30 ISOを選び、このPCでの生成・コンパイル完了まで待ちます。初回はビルドツールを取得します。Windowsから管理者権限の確認が表示される場合があります。時間と空き容量が必要です。\r\n4.「ゲーム起動」を押します。\r\n\r\n韓国語とオリジナルの日本語に対応しています。英語ゲームパックは準備中です。ランチャーの表示は3言語に対応しています。\r\n\r\nインストール済みの場合は既存フォルダーを指定してください。同じ取得ボタンから更新できます。セーブと設定は保持されます。";
-            return "처음 설치하는 경우\r\n1. 위에서 런처 언어와 게임 언어를 고르세요.\r\n2. ‘최신 패치 다운로드’를 누르세요. 패치 파일이나 버전은 고를 필요가 없습니다.\r\n3. 안내가 나오면 본인 소유의 마크로스 30 ISO를 선택하고 이 PC에서 생성·컴파일이 끝날 때까지 기다리세요. 첫 설치는 빌드 도구를 받으며 Windows에서 관리자 권한을 요청할 수 있습니다. 시간과 디스크 여유 공간이 필요합니다.\r\n4. ‘게임 실행’을 누르세요.\r\n\r\n게임은 한국어와 원본 일본어를 지원합니다. 영어 게임팩은 준비 중이며, 런처 화면은 세 언어 모두 사용할 수 있습니다.\r\n\r\n이미 설치했다면 기존 게임 폴더를 지정하세요. 같은 다운로드 버튼으로 업데이트할 수 있습니다. 기존 세이브와 설정은 유지됩니다.";
+            if (Language == "en") return "FIRST INSTALL\r\n1. Choose the launcher language and game language above.\r\n2. Click Apply. No patch files or versions need to be selected.\r\n3. Select your own Macross 30 ISO when asked, then wait for local generation and compilation. The first install downloads build tools; Windows may ask for administrator permission. Allow extra time and disk space.\r\n4. Click Play.\r\n\r\nKorean and original Japanese game data are supported. The English game pack is still in development; the launcher UI is available in all three languages.\r\n\r\nAlready installed? Choose your existing game folder. The same Apply button installs updates. Saves and settings are kept.";
+            if (Language == "ja") return "初めて使う場合\r\n1. 上でランチャー言語とゲーム言語を選びます。\r\n2.「適用」を押します。パッチファイルやバージョンの選択は不要です。\r\n3. 案内に従ってご自身のマクロス30 ISOを選び、このPCでの生成・コンパイル完了まで待ちます。初回はビルドツールを取得します。Windowsから管理者権限の確認が表示される場合があります。時間と空き容量が必要です。\r\n4.「ゲーム起動」を押します。\r\n\r\n韓国語とオリジナルの日本語に対応しています。英語ゲームパックは準備中です。ランチャーの表示は3言語に対応しています。\r\n\r\nインストール済みの場合は既存フォルダーを指定してください。同じ適用ボタンから更新できます。セーブと設定は保持されます。";
+            return "처음 설치하는 경우\r\n1. 위에서 런처 언어와 게임 언어를 고르세요.\r\n2. ‘적용’을 누르세요. 패치 파일이나 버전은 고를 필요가 없습니다.\r\n3. 안내가 나오면 본인 소유의 마크로스 30 ISO를 선택하고 이 PC에서 생성·컴파일이 끝날 때까지 기다리세요. 첫 설치는 빌드 도구를 받으며 Windows에서 관리자 권한을 요청할 수 있습니다. 시간과 디스크 여유 공간이 필요합니다.\r\n4. ‘게임 실행’을 누르세요.\r\n\r\n게임은 한국어와 원본 일본어를 지원합니다. 영어 게임팩은 준비 중이며, 런처 화면은 세 언어 모두 사용할 수 있습니다.\r\n\r\n이미 설치했다면 기존 게임 폴더를 지정하세요. 같은 적용 버튼으로 업데이트할 수 있습니다. 기존 세이브와 설정은 유지됩니다.";
         }
     }
 }

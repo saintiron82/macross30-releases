@@ -1,10 +1,10 @@
 # Macross 30 — Downloads
 
-**[런처 다운로드 / Download launcher / ランチャーをダウンロード](https://github.com/saintiron82/macross30-releases/releases/download/launcher-v0.1.5/Macross30-launcher-0.1.5.zip)**
+**[런처 다운로드 / Download launcher / ランチャーをダウンロード](https://github.com/saintiron82/macross30-releases/releases/download/launcher-v0.1.6/Macross30-launcher-0.1.6.zip)**
 
-게임 0.2.0 · 런처 0.1.5. [릴리스와 설치 안내](https://github.com/saintiron82/macross30-releases/releases/latest)
+게임 0.2.0 · 런처 0.1.6. [릴리스와 설치 안내](https://github.com/saintiron82/macross30-releases/releases/latest)
 
-ZIP을 풀고 Macross30Launcher.exe 실행 → 표시/게임 언어 선택 → 최신 패치 다운로드 → 본인 소유 일본판 ISO 선택 → 자동 생성·컴파일·설치 → 게임 실행.
+ZIP을 풀고 Macross30Launcher.exe 실행 → 표시/게임 언어 선택 → 적용 → 본인 소유 일본판 ISO 선택 → 자동 생성·컴파일·설치 → 게임 실행.
 
 이 저장소는 배포 전용입니다. 과거 개발 이력, 완성된 게임 EXE/ELF, 원작에서 생성한 PPU/SPU 소스는 포함하지 않습니다. 런처가 사용자 ISO에서 필요한 파일을 로컬 생성합니다. 개인 정보가 담긴 게임 로그나 세이브는 공개 게시하지 마세요.
 
@@ -14,11 +14,11 @@ Windows 10/11 x64, .NET Framework 4.5 이상이 필요합니다. Python과 C++ �
 
 ## English
 
-Download the launcher ZIP above, extract it and run Macross30Launcher.exe. Select your UI/game language, click Download latest patch and select your own Japanese Macross 30 ISO. No GitHub login or token is needed for public downloads. Complete game executables and generated game source are not distributed. Build tools may require administrator permission. First-time compilation can take time. Gameplay FPS and clean-Windows tool setup need further validation.
+Download the launcher ZIP above, extract it and run Macross30Launcher.exe. Select your UI/game language, click Apply and select your own Japanese Macross 30 ISO. No GitHub login or token is needed for public downloads. Complete game executables and generated game source are not distributed. Build tools may require administrator permission. First-time compilation can take time. Gameplay FPS and clean-Windows tool setup need further validation.
 
 ## 日本語
 
-上のZIPを展開してMacross30Launcher.exeを起動し、表示言語・ゲーム言語を選択後、「最新パッチを取得」からご自身の日本版ISOを選んでください。GitHubへのログインは不要です。ゲーム実行ファイルはこのPCで生成・ビルドします。初回はツール導入・管理者権限の確認・時間・空き容量が必要な場合があります。
+上のZIPを展開してMacross30Launcher.exeを起動し、表示言語・ゲーム言語を選択後、「適用」からご自身の日本版ISOを選んでください。GitHubへのログインは不要です。ゲーム実行ファイルはこのPCで生成・ビルドします。初回はツール導入・管理者権限の確認・時間・空き容量が必要な場合があります。
 
 ## Source and attribution
 

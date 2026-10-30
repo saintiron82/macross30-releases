@@ -36,7 +36,7 @@ public sealed class InstallProgress : Form {
         StartPosition=FormStartPosition.CenterParent;Font=new Font("맑은 고딕",10);BackColor=Color.FromArgb(22,29,42);ForeColor=Color.WhiteSmoke;
         MinimizeBox=false;MaximizeBox=false;
         var layout=new TableLayoutPanel {Dock=DockStyle.Fill,Padding=new Padding(20),ColumnCount=1,RowCount=6};
-        foreach(int size in new[]{64,32,34,124})layout.RowStyles.Add(new RowStyle(SizeType.Absolute,size));
+        foreach(int size in new[]{64,32,34,164})layout.RowStyles.Add(new RowStyle(SizeType.Absolute,size));
         layout.RowStyles.Add(new RowStyle(SizeType.Percent,100));layout.RowStyles.Add(new RowStyle(SizeType.Absolute,48));
         stage.Dock=elapsed.Dock=steps.Dock=bar.Dock=tail.Dock=DockStyle.Fill;
         stage.Font=new Font(Font.FontFamily,13,FontStyle.Bold);stage.ForeColor=Color.LightSkyBlue;bar.Style=ProgressBarStyle.Marquee;
@@ -54,7 +54,7 @@ public sealed class InstallProgress : Form {
         elapsed.Text=UiText.F("경과 시간: {0}분 {1}초 · 설치가 끝나면 게임 실행 버튼이 활성화됩니다.",(int)watch.Elapsed.TotalMinutes,watch.Elapsed.Seconds);
         if(finished)return;
         stage.Text=UiText.F("{0}/7 · {1}",phase,UiText.T(names[phase-1]))+(detail.Length==0 ? "" : "\r\n"+detail);
-        string summary="";for(int i=0;i<names.Length;i++)summary+=(i+1==phase ? "▶ " : i+1<phase ? "✓ " : "· ")+UiText.T(names[i])+(i%2==0 ? "     " : "\r\n");steps.Text=summary;
+        string summary="";for(int i=0;i<names.Length;i++)summary+=(i+1)+"/7  "+(i+1==phase ? "▶ " : i+1<phase ? "✓ " : "· ")+UiText.T(names[i])+Environment.NewLine;steps.Text=summary;
     }
     public void Receive(string line) {
         if(IsDisposed || Disposing)return;
