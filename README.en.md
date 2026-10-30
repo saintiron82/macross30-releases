@@ -1,6 +1,6 @@
 # Macross 30 — English setup guide
 
-**[Download the Windows launcher](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.1/Macross30-launcher-0.3.1.zip)**
+**[Download the Windows launcher](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.2/Macross30-launcher-0.3.2.zip)**
 
 Game **0.3.1** · Launcher **0.3.1** · Windows x64 test release.
 
@@ -52,3 +52,6 @@ This is an unofficial, non-commercial fan project, not affiliated with or endors
 3. If automatic updating fails, download the final 0.3.1 ZIP above, close the launcher, and replace the existing launcher files.
 
 Keep your installed game folder and save files. If original data needs repair, select the same supported ISO dumped from your own copy; you do not need to obtain another ISO.
+
+
+From launcher 0.3.2, startup automatically downloads, replaces and restarts newer launchers. The launcher stays open while the game runs and shows Game running. Existing 0.3.0/0.3.1 users must click Launcher update once to migrate. Game/language packages remain 0.3.1.
