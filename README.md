@@ -1,8 +1,8 @@
 # Macross 30 — Downloads
 
-**[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.1/Macross30-launcher-0.3.0.zip)**
+**[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.1/Macross30-launcher-0.3.1.zip)**
 
-게임 / Game **0.3.1** · 런처 / Launcher **0.3.0**
+게임 / Game **0.3.1** · 런처 / Launcher **0.3.1**
 
 **[English installation and usage guide](README.en.md)** · [Release notes](https://github.com/saintiron82/macross30-releases/releases/tag/v0.3.1) · [Discord](https://discord.gg/WqaaJ6hTmY)
 
