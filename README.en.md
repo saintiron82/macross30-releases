@@ -17,7 +17,7 @@ The common program package contains a precompiled Windows game executable. Game 
 
 ## Languages and features
 
-- **English:** available as a separate language pack; translation and display review are ongoing.
+- **English:** available as a separate language pack. Translation or display problems may occur; reports are welcome.
 - **Korean:** available as a separate language pack.
 - **Japanese:** uses the original game data; no Japanese language pack is required.
 - Keyboard/gamepad input, remappable controls and FHD/QHD resolution options are supported. Performance depends on hardware, settings and scene.
@@ -28,7 +28,7 @@ The launcher and game have separate version numbers. A game update does not nece
 
 Windows 10/11 x64, a Direct3D 12-capable GPU, and an AVX2/SSE4.1-capable CPU are required by the current Windows runtime. First setup needs internet access, sufficient free disk space and your own supported original game dump. The first-time installer may prepare additional extraction tools when needed.
 
-This is a test release. English translation, full-game progression and scene-by-scene graphics checks are still ongoing. Complete first-time installation on a new PC and actual launcher replacement by a future published version remain additional acceptance checks. Do not interpret a successful build or screenshot as full-playthrough validation.
+This is a test release. Problems may occur in all supported languages, including startup failures, graphics that differ from the original, rendering errors, missing or incorrect events, progression stalls, controls, saves, audio, translations or subtitles. We welcome reports of these issues. Complete first-time installation on a new PC and actual launcher replacement by a future published version remain additional acceptance checks. Do not interpret a successful build or screenshot as full-playthrough validation.
 
 ## Report problems
 
