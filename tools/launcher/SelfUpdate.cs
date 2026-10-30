@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace MacrossLauncher {
 public static class SelfUpdate {
-    public const string Version = "0.1.4";
+    public const string Version = "0.1.5";
     public static void ValidateManifest(Dictionary<string,object> manifest) {
         string version = Packages.Text(manifest,"version"); Packages.VersionOf(version);
         if (Packages.Text(manifest,"file") != "Macross30Launcher-" + version + ".exe" ||

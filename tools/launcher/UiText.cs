@@ -7,6 +7,22 @@ public static class UiText {
     public static string Language = Normalize(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
     public static string Normalize(string language) { return language == "en" || language == "ja" ? language : "ko"; }
     static readonly Dictionary<string,string[]> Texts = new Dictionary<string,string[]> {
+        {"경과 시간: {0}분 {1}초 · 설치를 완료하지 못했습니다.",new[]{"Elapsed: {0}m {1}s · Installation did not complete.","経過: {0}分 {1}秒 · インストールは完了しませんでした。"}},
+        {"게임 설치 진행",new[]{"Game installation","ゲームのインストール"}},
+        {"닫기",new[]{"Close","閉じる"}},
+        {"전체 로그 열기",new[]{"Open full log","全ログを開く"}},
+        {"설치 실패",new[]{"Installation failed","インストール失敗"}},
+        {"도구 준비",new[]{"Prepare tools","ツール準備"}},
+        {"ISO 원본 준비",new[]{"Prepare ISO original","ISO原本の準備"}},
+        {"PPU·SPU 코드 생성",new[]{"Generate PPU/SPU code","PPU・SPUコード生成"}},
+        {"수정 사항 적용",new[]{"Apply fixes","修正の適用"}},
+        {"실행 파일 컴파일",new[]{"Compile executable","実行ファイルのビルド"}},
+        {"게임 데이터·한글 설치",new[]{"Install game/language data","ゲーム・言語データのインストール"}},
+        {"최종 검증",new[]{"Final verification","最終検証"}},
+        {"경과 시간: {0}분 {1}초 · 설치가 끝나면 게임 실행 버튼이 활성화됩니다.",new[]{"Elapsed: {0}m {1}s · Play becomes available after installation.","経過: {0}分 {1}秒 · インストール完了後にゲームを起動できます。"}},
+        {"아래 마지막 로그를 확인하세요. 전체 로그는 설치 폴더의 play/local-build.log에 저장됩니다.",new[]{"Review the final log below. The full log is saved in play/local-build.log in the game folder.","以下の最終ログを確認してください。全ログはインストール先のplay/local-build.logに保存されます。"}},
+        {"PPU 코드를 생성하고 있습니다. 시간이 걸릴 수 있습니다.",new[]{"Generating PPU code. This can take time.","PPUコードを生成中です。時間がかかる場合があります。"}},
+        {"SPU 코드를 생성하고 있습니다. 시간이 걸릴 수 있습니다.",new[]{"Generating SPU code. This can take time.","SPUコードを生成中です。時間がかかる場合があります。"}},
         {"처음 설치는 도구 준비와 코드 생성·컴파일에 시간이 걸립니다. 진행 창을 닫지 마세요.",new[]{"The first install prepares tools, generates code and compiles it. Please keep this window open.","初回はツール準備・コード生成・ビルドに時間がかかります。このウィンドウを閉じないでください。"}},
         {"사용자 원본 기반 로컬 빌드 패키지만 지원합니다.",new[]{"Only local-build packages using your original game are supported.","ご自身の原本を使うローカルビルドパッケージのみ対応しています。"}},
         {"완성된 게임 실행 파일이나 생성 코드가 패키지에 있어 설치를 중단했습니다.",new[]{"Installation stopped: the package contains prebuilt game code.","パッケージに生成済みゲームコードが含まれているため中止しました。"}},

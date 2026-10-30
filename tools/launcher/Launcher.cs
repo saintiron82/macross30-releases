@@ -374,7 +374,7 @@ public sealed class LauncherWindow : Form {
         if (button != null) { var browse = Button(button, click); browse.AutoSize = false; browse.MinimumSize = Size.Empty; browse.Width = 70; browse.Height = 30; browse.Dock = DockStyle.None; browse.Margin = new Padding(2, 0, 0, 0); panel.Controls.Add(browse); } return panel;
     }
     Button Button(string label, Action click) {
-        var b = new Button { Tag = label, Text = UiText.T(label), AutoSize = true, Height = 38, MinimumSize = new Size(120, 38), FlatStyle = FlatStyle.Flat, BackColor = Color.FromArgb(38, 55, 76), ForeColor = Color.White, Margin = new Padding(0, 4, 12, 4) };
+        var b = new ReadableButton { Tag = label, Text = UiText.T(label), AutoSize = true, Height = 38, MinimumSize = new Size(120, 38), FlatStyle = FlatStyle.Flat, BackColor = Color.FromArgb(38, 55, 76), ForeColor = Color.White, Margin = new Padding(0, 4, 12, 4) };
         b.Click += (s,e) => click(); actions.Add(b); return b;
     }
     void Log(string message) { if (InvokeRequired) { BeginInvoke(new Action<string>(Log), message); return; } string text=UiText.T(message); notice.Text=text; output.AppendText(DateTime.Now.ToString("HH:mm:ss") + "  " + text + Environment.NewLine); }
@@ -396,7 +396,8 @@ public sealed class LauncherWindow : Form {
             if (response != null && response.StatusCode == HttpStatusCode.NotFound)
                 Log(UiText.T("접근 가능한 GitHub 릴리스가 없습니다. 저장소·토큰을 확인하거나 로컬 패치 적용을 사용하세요."));
             else Log(UiText.T("다운로드 실패: ") + ex.Message);
-        } catch (Exception ex) { Log(UiText.T("실패: ") + UiText.T(ex.Message)); }
+            MessageBox.Show(this,notice.Text,UiText.T("설치 실패"),MessageBoxButtons.OK,MessageBoxIcon.Error);
+        } catch (Exception ex) { Log(UiText.T("실패: ") + UiText.T(ex.Message)); if(!ex.Data.Contains("InstallProgressShown")) MessageBox.Show(this,ex.ToString(),UiText.T("설치 실패"),MessageBoxButtons.OK,MessageBoxIcon.Error); }
         finally { if (!updatingSelf) { foreach (var b in actions) b.Enabled = true; files.Enabled = folder.Enabled = repo.Enabled = token.Enabled = language.Enabled = true; RefreshState(); } }
     }
     Downloads Client(bool binary) {
@@ -477,19 +478,28 @@ public sealed class LauncherWindow : Form {
         using(var lease=new FileStream(Path.Combine(root,"play/runner.lock"),FileMode.OpenOrCreate,FileAccess.ReadWrite,FileShare.None)) {
             string arguments="-NoProfile -NonInteractive -ExecutionPolicy Bypass -File \""+script+"\" -Root \""+root+"\" -Iso \""+isoPath+"\" -Payload \""+payload+"\" -Runtime \""+runtime+"\" -Language "+gameLocale;
             var start=new ProcessStartInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),"WindowsPowerShell/v1.0/powershell.exe"),arguments) { UseShellExecute=false,CreateNoWindow=true,WorkingDirectory=source,RedirectStandardOutput=true,RedirectStandardError=true };
-            using(var process=new Process {StartInfo=start}) {
-                var capture=new StringBuilder();
-                DataReceivedEventHandler receive=(sender,e)=> {
-                    if(e.Data==null)return;lock(capture)capture.AppendLine(e.Data);
-                    if(e.Data.StartsWith("LOCAL_SETUP",StringComparison.Ordinal)) Log(UiText.T("처음 실행에 필요한 도구를 준비하고 있습니다…"));
-                    else if(e.Data.StartsWith("LOCAL_ORIGINAL",StringComparison.Ordinal)) Log(UiText.T("선택한 ISO에서 원본 준비를 완료했습니다."));
-                    else if(e.Data.StartsWith("LOCAL_GENERATE",StringComparison.Ordinal)) Log(UiText.T("사용자 원본에서 게임 코드를 생성하고 있습니다…"));
-                    else if(e.Data.StartsWith("LOCAL_BUILD_COMPLETE",StringComparison.Ordinal)) Log(UiText.T("이 PC에서 게임 실행 파일을 만들었습니다."));
-                    var progress=Regex.Match(e.Data,@"^\[(\d+)/(\d+)\]");if(progress.Success)Log(UiText.F("설치 진행: {0}/{1}",progress.Groups[1].Value,progress.Groups[2].Value));
-                };
-                process.OutputDataReceived+=receive;process.ErrorDataReceived+=receive;process.Start();process.BeginOutputReadLine();process.BeginErrorReadLine();await Task.Run(()=>process.WaitForExit());
-                File.WriteAllText(Path.Combine(root,"play/local-build.log"),capture.ToString(),new UTF8Encoding(false));
-                if(process.ExitCode!=0) throw new IOException(UiText.T("로컬 생성 또는 빌드에 실패했습니다. 고급 메뉴의 로그 폴더에서 local-build.log를 확인하세요."));
+            string logFile=Path.Combine(root,"play/local-build.log");
+            using(var progress=new InstallProgress(logFile)) {
+                await progress.RunAsync(async ()=> {
+                    using(var process=new Process {StartInfo=start})
+                    using(var writer=new StreamWriter(new FileStream(logFile,FileMode.Create,FileAccess.Write,FileShare.Read),new UTF8Encoding(false))) {
+                        var sync=new object();var clock=Stopwatch.StartNew();long lastFlush=0,lastDisplay=0;
+                        DataReceivedEventHandler receive=(sender,e)=> {
+                            if(e.Data==null)return;
+                            lock(sync) {
+                                writer.WriteLine(e.Data);
+                                bool important=e.Data.StartsWith("LOCAL_",StringComparison.Ordinal) || e.Data.StartsWith("LOCAL GENERATE:",StringComparison.Ordinal);
+                                if(important || clock.ElapsedMilliseconds-lastFlush>=1000){writer.Flush();lastFlush=clock.ElapsedMilliseconds;}
+                                if(important || clock.ElapsedMilliseconds-lastDisplay>=1000){progress.Receive(e.Data);lastDisplay=clock.ElapsedMilliseconds;}
+                            }
+                        };
+                        process.OutputDataReceived+=receive;process.ErrorDataReceived+=receive;
+                        process.Start();process.BeginOutputReadLine();process.BeginErrorReadLine();await Task.Run(()=>process.WaitForExit());
+                        writer.Flush();
+                        if(process.ExitCode!=0) throw new IOException(UiText.T("로컬 생성 또는 빌드에 실패했습니다. 고급 메뉴의 로그 폴더에서 local-build.log를 확인하세요.")+" ("+process.ExitCode+")");
+                    }
+                    if(!LocalBuild.Ready(root,gameLocale)) throw new IOException("Local generation completion verification failed");
+                },this);
             }
         }
         if(!LocalBuild.Ready(root,gameLocale)) throw new IOException("Local generation completion verification failed");

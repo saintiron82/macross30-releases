@@ -1,8 +1,8 @@
 # Macross 30 — Downloads
 
-**[런처 다운로드 / Download launcher / ランチャーをダウンロード](https://github.com/saintiron82/macross30-releases/releases/download/v0.2.0/Macross30-launcher-0.1.4.zip)**
+**[런처 다운로드 / Download launcher / ランチャーをダウンロード](https://github.com/saintiron82/macross30-releases/releases/download/launcher-v0.1.5/Macross30-launcher-0.1.5.zip)**
 
-게임 0.2.0 · 런처 0.1.4. [릴리스와 설치 안내](https://github.com/saintiron82/macross30-releases/releases/latest)
+게임 0.2.0 · 런처 0.1.5. [릴리스와 설치 안내](https://github.com/saintiron82/macross30-releases/releases/latest)
 
 ZIP을 풀고 Macross30Launcher.exe 실행 → 표시/게임 언어 선택 → 최신 패치 다운로드 → 본인 소유 일본판 ISO 선택 → 자동 생성·컴파일·설치 → 게임 실행.
 
@@ -23,3 +23,5 @@ Download the launcher ZIP above, extract it and run Macross30Launcher.exe. Selec
 ## Source and attribution
 
 This repository contains a standalone reviewed source snapshot, not development history. The launcher downloads versioned release assets automatically. Based on ps3recomp; see vendor/ps3recomp-master/LICENSE and bundled third-party notices. Game rights remain with their owners. This distribution structure does not establish permission or guarantee legal status.
+
+설치 중에는 별도 진행 창에 단계와 경과 시간을 표시합니다. 실패하면 마지막 로그가 남고 전체 로그를 열 수 있습니다.
