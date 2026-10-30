@@ -17,3 +17,12 @@ Windows 10/11 x64, D3D12 GPU, AVX2/SSE4.1 CPU가 필요합니다. 런처를 위�
 ## Source and attribution
 
 The repository currently retains an earlier source snapshot from the local-build distribution. It is separate from the current precompiled release assets. Based on ps3recomp; its MIT license is retained at `vendor/ps3recomp-master/LICENSE`. Bundled third-party notices also apply. The English guide describes the current installation flow.
+
+
+## 기존 런처 0.3.0 사용자
+
+1. 런처 하단 **런처 업데이트**를 누르고 교체를 승인하세요.
+2. 다시 열린 런처에서 기존 플레이 언어를 선택하고 **업데이트/플레이**를 눌러 게임 수정 파일도 적용하세요.
+3. 자동 업데이트에 실패하면 최종 0.3.1 ZIP을 받아 런처를 종료한 뒤 기존 런처 파일을 교체하세요.
+
+기존 게임 설치 폴더와 저장 파일은 삭제하지 마세요. 원본 데이터 복구가 필요하면 기존에 사용하던 본인 소유 ISO를 지정하세요.
