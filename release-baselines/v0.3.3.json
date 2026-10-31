@@ -1,0 +1,43 @@
+{
+  "version": "0.3.3",
+  "release_url": "https://github.com/saintiron82/macross30-releases/releases/tag/v0.3.3",
+  "release_tag": "v0.3.3",
+  "record_tag": "baseline-v0.3.3",
+  "private_source_repository": "saintiron82/macross30-recomp",
+  "private_source_commit": "c306a3bdfc58bf636bc5544434a43cdbd3bc6864",
+  "private_source_branch": "release/0.3.3",
+  "private_source_tag": "v0.3.3",
+  "release_artifacts": [
+    {
+      "file": "Macross30-language-ko-KR-0.3.3.zip",
+      "bytes": 47667458,
+      "sha256": "8eae0a0ba4ba98be9473ac897f677fb80b86c8506c58617f852566a62fd70d5b"
+    },
+    {
+      "file": "Macross30-program-0.3.3.zip",
+      "bytes": 75386021,
+      "sha256": "b3e20d42f37398b02f3007cae0384406173d691534a9d0eab34abb355be4d884"
+    },
+    {
+      "file": "Macross30-language-en-US-0.3.3.zip",
+      "bytes": 34654358,
+      "sha256": "d1406c2a664b08a57475b7cb348a884678945be0616b1691ba811c22a15400da"
+    },
+    {
+      "file": "Macross30-launcher-0.3.3.zip",
+      "bytes": 14990579,
+      "sha256": "3f9c6eb95baab307a1954df2b3408e462ecde999a43e42cbd306f30c99414284"
+    }
+  ],
+  "checks": {
+    "install_update_and_3_language_selection_verified": true,
+    "synthetic_save_settings_music_preserved": true,
+    "packaged_launcher_discord_zip_roundtrip_verified": true,
+    "duplicate_retry_verified": true,
+    "no_user_login_required": true,
+    "gameplay_performance_comparison_deferred": true,
+    "reported_random_crash_fix_claimed": false,
+    "latest_live_gameplay_test_performed": false
+  },
+  "policy": "Existing published tag and artifacts remain immutable. This record identifies the final post-publication metadata and the separately preserved private source baseline. Post-release speed changes are excluded. Original ISO/generated build dependencies remain separate inputs."
+}
