@@ -4,7 +4,7 @@
   "system": "PS3",
   "type": "recomp",
   "project": "Macross 30 Recompiled",
-  "status": "released",
+  "status": "in-progress",
   "targets": [
     "Windows"
   ],
@@ -26,5 +26,5 @@
     "English translation review",
     "Gameplay bug reports"
   ],
-  "notes": "Windows test release with Korean and English localization; original Japanese supported. High-resolution options and controller input. English review and full-playthrough validation remain ongoing."
+  "notes": "Work in progress. Public Windows test builds are provided for testing and bug reports, not as a finished release. Korean and English localization and original Japanese are supported, with high-resolution options and controller input. Gameplay, rendering, progression and translation validation remain ongoing; a complete playthrough has not been verified."
 }
