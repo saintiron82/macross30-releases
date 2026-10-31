@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-30T23:25:38.887343+00:00",
+  "updated_at": "2026-10-31T04:33:38.320311+00:00",
   "closed": false,
   "default_language": "ko",
   "message": {
@@ -10,17 +10,17 @@
   },
   "latest": {
     "game": {
-      "version": "0.3.1"
+      "version": "0.3.3"
     },
     "launcher": {
-      "version": "0.3.2"
+      "version": "0.3.3"
     },
     "language_packs": {
       "ko-KR": {
-        "version": "0.3.1"
+        "version": "0.3.3"
       },
       "en-US": {
-        "version": "0.3.1"
+        "version": "0.3.3"
       }
     }
   },
@@ -41,6 +41,68 @@
     }
   ],
   "patch_notes": [
+    {
+      "id": "launcher-0.3.3",
+      "component": "launcher",
+      "version": "0.3.3",
+      "title": {
+        "ko": "런처 0.3.3 — 마지막 플레이 로그 보내기",
+        "en": "Launcher 0.3.3 — send last play logs",
+        "ja": "ランチャー0.3.3 — 前回プレイのログ送信"
+      },
+      "body": {
+        "ko": "마지막 플레이 로그를 보존하고, 내용 확인 후 운영진 전용 Discord 채널로 ZIP을 전송합니다. 로그인과 자동 전송은 없으며 세이브는 선택 첨부입니다. 실패 시 로컬 ZIP 보존과 같은 제보 재시도를 지원합니다.",
+        "en": "Preserves the finished play session and sends a reviewed ZIP to the private Discord support channel. No user login or automatic sending; saves are optional. Local ZIP retention, retries and verified receipts are included.",
+        "ja": "前回プレイのログを保存し、確認後に運営専用DiscordへZIPを送信。ログイン・自動送信なし。セーブ添付は任意。ローカル保存・再試行・受付確認に対応。"
+      }
+    },
+    {
+      "id": "game-0.3.3",
+      "component": "game",
+      "version": "0.3.3",
+      "title": {
+        "ko": "게임 0.3.3 — 오디오·밝기·커스텀 음악",
+        "en": "Game 0.3.3 — audio, brightness and custom music",
+        "ja": "ゲーム0.3.3 — 音声・明るさ・カスタム音楽"
+      },
+      "body": {
+        "ko": "BGM 상태 처리, 음량·밝기 반영, 커스텀 사운드 편집 정지와 MP3/WAV 선택·미리듣기를 수정했습니다. F9 음악 폴더 설정과 경량 진단 로그를 추가했습니다. 제보된 간헐적 크래시의 원인 해결은 아직 확인되지 않았습니다.",
+        "en": "Updates BGM state handling, volume/brightness, the custom-sound editor, MP3/WAV selection and audition, and F9 music-folder controls. Adds sparse lifecycle/crash diagnostics. The reported intermittent crash is not confirmed fixed.",
+        "ja": "BGM状態・音量・明るさ、カスタムサウンド編集とMP3/WAV選択・試聴、F9音楽フォルダ設定を更新。軽量診断ログを追加。報告済みの断続的クラッシュの解消は未確認。"
+      }
+    },
+    {
+      "id": "ko-0.3.3",
+      "component": "language",
+      "version": "0.3.3",
+      "title": {
+        "ko": "한국어팩 0.3.3",
+        "en": "Korean pack 0.3.3",
+        "ja": "韓国語パック0.3.3"
+      },
+      "body": {
+        "ko": "커스텀 사운드 메뉴, 아이템 박스 탭, 퀘스트 배지를 갱신합니다. 곡명과 곡 정보는 원문을 유지합니다. 리소스 검증과 실제 화면 전체 검수는 구분합니다.",
+        "en": "Updates custom-sound menus, item-box tabs and quest badges. Song titles and music information remain original. Resource validation does not imply every in-game screen has been reviewed.",
+        "ja": "カスタムサウンド・アイテムボックス・クエスト表示を更新。曲名と曲情報は原文維持。全ゲーム画面の検収完了を意味しません。"
+      },
+      "pack_locale": "ko-KR"
+    },
+    {
+      "id": "en-0.3.3",
+      "component": "language",
+      "version": "0.3.3",
+      "title": {
+        "ko": "영어팩 0.3.3",
+        "en": "English pack 0.3.3",
+        "ja": "英語パック0.3.3"
+      },
+      "body": {
+        "ko": "고정된 v13 영어 자료를 반영합니다. 메뉴를 번역하고 곡명과 곡 정보는 원문을 유지합니다. 번역 의미·게임 화면·청취 검수는 계속 진행 중입니다.",
+        "en": "Includes frozen v13 English resources. Menus are localized while song titles and music information remain original. Semantic, live-screen and listening review continues.",
+        "ja": "固定v13英語資料を反映。メニューを翻訳し曲名・曲情報は原文維持。意味・実画面・音声の確認は継続中。"
+      },
+      "pack_locale": "en-US"
+    },
     {
       "id": "launcher-0.3.2",
       "component": "launcher",

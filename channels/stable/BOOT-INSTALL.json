@@ -1,1 +1,48 @@
-{"version": "0.3.1", "mode": "user-original-eboot", "min_launcher_version": "0.2.4", "source_only": false, "original_elf_sha256": "44d7112cbb5527314eb6192e59d861dacfcd4099f301a6e82ffc1681b0782b5b", "languages": ["ko-KR", "ja-JP", "en-US"], "runtime_requirements": {"avx2": true, "sse41": true}, "files": {"program": {"file": "Macross30-program-0.3.1.zip", "bytes": 75299600, "sha256": "f7dda26c1e08c4e0b6939a1386163517a1ed953c3601db69b6ca956662113886", "exe_sha256": "fca5376fee42e904a80f75a4a51caa7c8b3c562dd67068137756371bf1ea3ddf"}}, "language_packs": {"ko-KR": {"file": "Macross30-language-ko-KR-0.3.1.zip", "bytes": 46769716, "sha256": "9a43bfcf9ce33cb89466fffc3ac2cdbdc7d62aaf83af7c3bc71d330e501eceff", "data_id": "0bc851256dc4f9a5", "elf_sha256": "2861b6a838d376622fe89a4925712884279ae47fa1fe8ce8f50c135badc80230", "plan_sha256": "0bc851256dc4f9a5f99f0cb474ebd939521d45cdf351d0e4fef7d378a7669c40"}, "en-US": {"file": "Macross30-language-en-US-0.3.1.zip", "bytes": 34619353, "sha256": "322c9b0a1175b8ca71809828e49842896432e3c0ae36717e05a84e78a95395b1", "data_id": "148f2364e5788c83", "elf_sha256": "ec4607fc5bf82ed97147cc0cd34ca978d8d1132f08dfe5163b531349f17e923f", "plan_sha256": "148f2364e5788c831beedda9986b146ef2a44159a7bc3c9c52191366c1662182"}}, "base_language": {"locale": "ja-JP", "data_id": "6e02d8d6e431d2a0", "elf_sha256": "44d7112cbb5527314eb6192e59d861dacfcd4099f301a6e82ffc1681b0782b5b", "plan_sha256": "6e02d8d6e431d2a057c98ee9b6424a7403cb31a5c33df1bd26d0d0fc2ab29b47"}}
+{
+  "version": "0.3.3",
+  "mode": "user-original-eboot",
+  "min_launcher_version": "0.2.4",
+  "source_only": false,
+  "original_elf_sha256": "44d7112cbb5527314eb6192e59d861dacfcd4099f301a6e82ffc1681b0782b5b",
+  "languages": [
+    "ko-KR",
+    "ja-JP",
+    "en-US"
+  ],
+  "runtime_requirements": {
+    "avx2": true,
+    "sse41": true
+  },
+  "files": {
+    "program": {
+      "file": "Macross30-program-0.3.3.zip",
+      "bytes": 75386021,
+      "sha256": "b3e20d42f37398b02f3007cae0384406173d691534a9d0eab34abb355be4d884",
+      "exe_sha256": "66555e7d3f0be8b6d32e879a167028d377d6ebeb61592527db3edff9d3075d88"
+    }
+  },
+  "language_packs": {
+    "ko-KR": {
+      "file": "Macross30-language-ko-KR-0.3.3.zip",
+      "bytes": 47667458,
+      "sha256": "8eae0a0ba4ba98be9473ac897f677fb80b86c8506c58617f852566a62fd70d5b",
+      "data_id": "d6665397c94f2a1b",
+      "elf_sha256": "2861b6a838d376622fe89a4925712884279ae47fa1fe8ce8f50c135badc80230",
+      "plan_sha256": "d6665397c94f2a1bdfb047f1359ccc3f24fe8d0c76025e451dc7d2ded7f33532"
+    },
+    "en-US": {
+      "file": "Macross30-language-en-US-0.3.3.zip",
+      "bytes": 34654358,
+      "sha256": "d1406c2a664b08a57475b7cb348a884678945be0616b1691ba811c22a15400da",
+      "data_id": "12d9ff55c778229e",
+      "elf_sha256": "3fcbfb2c062dc7c09da37a4c07e2adfb253b0be42bcd27feaad0063173dafc57",
+      "plan_sha256": "12d9ff55c778229e4ad50e11ebd78e77f40326be52e4ae6953a0e3904d0b99b4"
+    }
+  },
+  "base_language": {
+    "locale": "ja-JP",
+    "data_id": "6e02d8d6e431d2a0",
+    "elf_sha256": "44d7112cbb5527314eb6192e59d861dacfcd4099f301a6e82ffc1681b0782b5b",
+    "plan_sha256": "6e02d8d6e431d2a057c98ee9b6424a7403cb31a5c33df1bd26d0d0fc2ab29b47"
+  }
+}

@@ -1,10 +1,10 @@
 # Macross 30 — Downloads
 
-**[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.2/Macross30-launcher-0.3.2.zip)**
+**[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.3/Macross30-launcher-0.3.3.zip)**
 
-게임 / Game **0.3.1** · 런처 / Launcher **0.3.1**
+게임 / Game **0.3.3** · 런처 / Launcher **0.3.3**
 
-**[English installation and usage guide](README.en.md)** · [Release notes](https://github.com/saintiron82/macross30-releases/releases/tag/v0.3.1) · [Discord](https://discord.gg/WqaaJ6hTmY)
+**[English installation and usage guide](README.en.md)** · [Release notes](https://github.com/saintiron82/macross30-releases/releases/tag/v0.3.3) · [Discord](https://discord.gg/WqaaJ6hTmY)
 
 ZIP 압축 해제 → `Macross30Launcher.exe` 실행 → 플레이 언어 선택 → **플레이/업데이트** → 첫 설치 시 본인 정품에서 직접 덤프한 지원 일본판 ISO 선택.
 
@@ -29,3 +29,6 @@ The repository currently retains an earlier source snapshot from the local-build
 
 
 런처 0.3.2부터 실행 시 새 런처를 자동으로 다운로드·교체·재시작합니다. 게임 실행 중에는 런처를 유지하고 버튼에 실행 중으로 표시합니다. 기존 0.3.0/0.3.1은 런처 업데이트를 한 번 눌러 0.3.2로 교체하세요. 게임·언어팩 버전은 0.3.1입니다.
+
+
+게임 종료 후 런처의 **로그 → 마지막 플레이 로그 보내기**에서 내용을 확인하고 전송할 수 있습니다. 로그인 없이 운영진 전용 Discord 채널로 보내며 세이브는 선택 첨부입니다. ZIP은 로컬 bug-reports에 남습니다.

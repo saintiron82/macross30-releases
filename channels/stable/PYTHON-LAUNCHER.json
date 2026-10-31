@@ -1,6 +1,6 @@
 {
-    "sha256":  "a918bf90506a7e101211443ddabb97bf2271fdd0cfb11999e841cf8df5a74f6c",
-    "version":  "0.3.2",
-    "bytes":  15255753,
-    "file":  "Macross30Launcher-0.3.2.exe"
+  "file": "Macross30Launcher-0.3.3.exe",
+  "bytes": 15272021,
+  "version": "0.3.3",
+  "sha256": "d88f7075d3a3f4e9a967244f3b90c68d71719db5a12e0d512650dcce11438df8"
 }
