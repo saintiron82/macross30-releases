@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-01T02:44:05.286400+00:00",
+  "updated_at": "2026-11-01T05:56:40.537078+00:00",
   "closed": false,
   "default_language": "ko",
   "message": {
@@ -13,7 +13,7 @@
       "version": "0.3.4"
     },
     "launcher": {
-      "version": "0.3.6"
+      "version": "0.3.7"
     },
     "language_packs": {
       "ko-KR": {
@@ -41,6 +41,21 @@
     }
   ],
   "patch_notes": [
+    {
+      "id": "launcher-0.3.7",
+      "component": "launcher",
+      "version": "0.3.7",
+      "title": {
+        "ko": "런처 0.3.7 — ISO 상태·수동 복호화 키 설정",
+        "en": "Launcher 0.3.7 — ISO status and manual disc keys",
+        "ja": "ランチャー0.3.7 — ISO状態・手動キー設定"
+      },
+      "body": {
+        "ko": "ISO 설정에 암호화 상태와 SHA-1 식별 해시, 키 파일 선택을 추가했습니다. 해당 게임의 키는 사용자가 준비합니다. 키 없음·형식 오류·불일치를 구분하고 설치 전에 멈춥니다. 올바른 키는 원본 보존과 지원 EBOOT 검증을 거쳐 설치를 이어갑니다. 별도 ISO를 위한 추가 공간이 필요하며 게임·언어팩은 0.3.4입니다.",
+        "en": "Adds ISO status, SHA-1 identity and user-supplied key selection. Missing, invalid and mismatching keys stop first setup with distinct guidance. A matching key prepares a separate ISO and verifies the supported EBOOT before continuing. Additional disk space is needed. Game and language packs remain 0.3.4.",
+        "ja": "ISO状態・SHA-1識別・ユーザー提供キーファイル選択を追加。キー不足・形式不正・不一致を区別し導入前に停止。適合時は原本を保持して別ISOと対応EBOOTを検証します。追加ディスク容量が必要。ゲーム・言語パックは0.3.4です。"
+      }
+    },
     {
       "id": "launcher-0.3.6",
       "component": "launcher",

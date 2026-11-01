@@ -62,3 +62,7 @@ From launcher 0.3.2, startup automatically downloads, replaces and restarts newe
 
 
 After the game exits, choose **Logs → Send last play logs**, review the files and send. No user login is needed; reports go to a private Discord support channel. Saves are optional and the ZIP remains in local bug-reports.
+
+## If the ISO is reported as encrypted
+
+In launcher 0.3.7, open **ISO settings**, check the SHA-1 identity hash, and select a matching `.dkey` or `.key` file you have prepared. Keys are not provided or downloaded automatically. Missing keys, invalid formats and mismatching keys have distinct messages. A matching key prepares a separate verified ISO while preserving the original, so additional space equal to the ISO size is needed. An already-decrypted ISO does not need a separate disc key.
