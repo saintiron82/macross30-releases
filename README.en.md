@@ -1,21 +1,22 @@
 # Macross 30 — English setup guide
 
-**Launcher 0.3.6 updates itself before game operations and recovers from stale update resources. Game, Korean and English packs remain 0.3.4.**
+**Launcher 0.3.7 lets you select a key file for an encrypted ISO. Game, Korean and English packs remain 0.3.4.**
 
 **0.3.4 adds 1800p/4K. FPS unlocking is under repair and unavailable; the 30 FPS cap remains enabled.**
 
-**[Download the Windows launcher](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.6/Macross30-launcher-0.3.6.zip)**
+**[Download the Windows launcher](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.7/Macross30-launcher-0.3.7.zip)**
 
-Game **0.3.4** · Launcher **0.3.6** · Windows x64 test release.
+Game **0.3.4** · Launcher **0.3.7** · Windows x64 test release.
 
 ## Install and play
 
-1. Download `Macross30-launcher-0.3.6.zip` and extract it to a folder.
+1. Download `Macross30-launcher-0.3.7.zip` and extract it to a folder.
 2. Run `Macross30Launcher.exe`. No separate Python, Node.js, browser engine or C++ build tools are needed for the launcher.
 3. Choose **English** as your play language. The launcher display language and game language are separate settings.
 4. Press **Play/Update** and approve the required downloads. The launcher installs the common program and the selected language pack.
 5. For first setup, select the supported Japanese Macross 30 ISO dumped from your own legitimate copy, and follow the installation prompts.
-6. Start the game. Existing installations and settings are reused where supported. If you are asked for an installation folder or ISO, choose your own installation and original dump.
+6. If the ISO is encrypted, open **ISO settings** and select a `.dkey` or `.key` file you prepared that matches your image. Keys are not provided or downloaded automatically.
+7. Start the game. Existing installations and settings are reused where supported. If you are asked for an installation folder or ISO, choose your own installation and original dump.
 
 The common program package contains a precompiled Windows game executable. Game code is not compiled on the player's PC. Required original data, including the original EBOOT, is prepared locally from the user's ISO. The launcher manages the language pack; do not extract the English pack over an existing installation manually.
 
@@ -53,12 +54,12 @@ This is an unofficial, non-commercial fan project, not affiliated with or endors
 
 1. Click **Launcher update** at the bottom of your existing launcher and approve the replacement.
 2. When it reopens, select your usual play language and click **Update/Play** to apply the game fixes too.
-3. If automatic updating fails, download the final 0.3.1 ZIP above, close the launcher, and replace the existing launcher files.
+3. If automatic updating fails, download the latest launcher ZIP above, close the launcher, and replace the existing launcher files.
 
 Keep your installed game folder and save files. If original data needs repair, select the same supported ISO dumped from your own copy; you do not need to obtain another ISO.
 
 
-From launcher 0.3.2, startup automatically downloads, replaces and restarts newer launchers. The launcher stays open while the game runs and shows Game running. Existing 0.3.0/0.3.1 users must click Launcher update once to migrate. Game/language packages remain 0.3.1.
+From launcher 0.3.2, startup automatically downloads, replaces and restarts newer launchers. The launcher stays open while the game runs and shows Game running. Existing 0.3.0/0.3.1 users must click Launcher update once to migrate. Game/language packages remain 0.3.4.
 
 
 After the game exits, choose **Logs → Send last play logs**, review the files and send. No user login is needed; reports go to a private Discord support channel. Saves are optional and the ZIP remains in local bug-reports.

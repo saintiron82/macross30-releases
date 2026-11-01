@@ -1,16 +1,18 @@
 # Macross 30 — Downloads
 
-**런처 0.3.6: 런처부터 자동 업데이트하며 구버전 업데이트 후 시작 오류를 보완했습니다. 게임·한글팩·영문팩은 0.3.4입니다.**
+**런처 0.3.7: 암호화 ISO에 필요한 키 파일을 선택할 수 있습니다. 게임·한글팩·영문팩은 0.3.4입니다.**
 
 **0.3.4: 1800p·4K 추가. 30 FPS 제한 해제는 수정 중으로 사용할 수 없습니다.**
 
-**[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.6/Macross30-launcher-0.3.6.zip)**
+**[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.7/Macross30-launcher-0.3.7.zip)**
 
-게임 / Game **0.3.4** · 런처 / Launcher **0.3.6**
+게임 / Game **0.3.4** · 런처 / Launcher **0.3.7**
 
-**[English installation and usage guide](README.en.md)** · [Release notes](https://github.com/saintiron82/macross30-releases/releases/tag/v0.3.4) · [Discord](https://discord.gg/WqaaJ6hTmY)
+**[English installation and usage guide](README.en.md)** · [Release notes](https://github.com/saintiron82/macross30-releases/releases/tag/v0.3.7) · [Discord](https://discord.gg/WqaaJ6hTmY)
 
 ZIP 압축 해제 → `Macross30Launcher.exe` 실행 → 플레이 언어 선택 → **플레이/업데이트** → 첫 설치 시 본인 정품에서 직접 덤프한 지원 일본판 ISO 선택.
+
+암호화된 ISO는 해당 이미지에 맞는 복호화 키가 필요합니다. 런처의 **ISO 설정**에서 직접 준비한 `.dkey` 또는 `.key` 파일을 선택하세요. 키는 제공하거나 자동으로 내려받지 않습니다.
 
 한국어·영어팩을 제공하며 일본어는 원본 데이터를 사용합니다. 모든 언어에서 실행·렌더링·진행 문제가 있을 수 있으며 제보를 받습니다. 게임 코드를 사용자 PC에서 컴파일하지 않으며, 프로그램팩의 사전 빌드 Windows 실행 파일과 선택 언어팩을 런처가 설치합니다. 원본 EBOOT와 게임 데이터는 사용자 ISO에서 로컬로 준비합니다.
 
@@ -32,7 +34,7 @@ The repository currently retains an earlier source snapshot from the local-build
 기존 게임 설치 폴더와 저장 파일은 삭제하지 마세요. 원본 데이터 복구가 필요하면 기존에 사용하던 본인 소유 ISO를 지정하세요.
 
 
-런처 0.3.2부터 실행 시 새 런처를 자동으로 다운로드·교체·재시작합니다. 게임 실행 중에는 런처를 유지하고 버튼에 실행 중으로 표시합니다. 기존 0.3.0/0.3.1은 런처 업데이트를 한 번 눌러 0.3.2로 교체하세요. 게임·언어팩 버전은 0.3.1입니다.
+런처 0.3.2부터 실행 시 새 런처를 자동으로 다운로드·교체·재시작합니다. 게임 실행 중에는 런처를 유지하고 버튼에 실행 중으로 표시합니다. 기존 0.3.0/0.3.1은 런처 업데이트를 한 번 눌러 최신 버전으로 교체하세요. 게임·언어팩 버전은 0.3.4입니다.
 
 
 게임 종료 후 런처의 **로그 → 마지막 플레이 로그 보내기**에서 내용을 확인하고 전송할 수 있습니다. 로그인 없이 운영진 전용 Discord 채널로 보내며 세이브는 선택 첨부입니다. ZIP은 로컬 bug-reports에 남습니다.
