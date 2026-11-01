@@ -1,0 +1,18 @@
+{
+  "ko-KR": {
+    "file": "Macross30-language-ko-KR-0.3.4.zip",
+    "bytes": 47667481,
+    "sha256": "4288851ae429d3b420eda31b69de1a2dae1e5490d99480e670fa251d0b822aff",
+    "data_id": "d6665397c94f2a1b",
+    "elf_sha256": "2861b6a838d376622fe89a4925712884279ae47fa1fe8ce8f50c135badc80230",
+    "plan_sha256": "d6665397c94f2a1bdfb047f1359ccc3f24fe8d0c76025e451dc7d2ded7f33532"
+  },
+  "en-US": {
+    "file": "Macross30-language-en-US-0.3.4.zip",
+    "bytes": 34654382,
+    "sha256": "30bdf436c47c9dbc1d6bd0c5c487f8e6c27975a1cf50d24296c62c672c9b5b60",
+    "data_id": "12d9ff55c778229e",
+    "elf_sha256": "3fcbfb2c062dc7c09da37a4c07e2adfb253b0be42bcd27feaad0063173dafc57",
+    "plan_sha256": "12d9ff55c778229e4ad50e11ebd78e77f40326be52e4ae6953a0e3904d0b99b4"
+  }
+}

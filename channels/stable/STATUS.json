@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-31T04:33:38.320311+00:00",
+  "updated_at": "2026-11-01T01:21:37.289237+00:00",
   "closed": false,
   "default_language": "ko",
   "message": {
@@ -10,17 +10,17 @@
   },
   "latest": {
     "game": {
-      "version": "0.3.3"
+      "version": "0.3.4"
     },
     "launcher": {
-      "version": "0.3.3"
+      "version": "0.3.4"
     },
     "language_packs": {
       "ko-KR": {
-        "version": "0.3.3"
+        "version": "0.3.4"
       },
       "en-US": {
-        "version": "0.3.3"
+        "version": "0.3.4"
       }
     }
   },
@@ -41,6 +41,68 @@
     }
   ],
   "patch_notes": [
+    {
+      "id": "game-0.3.4",
+      "component": "game",
+      "version": "0.3.4",
+      "title": {
+        "ko": "게임 0.3.4 — 4K 지원·안정성 개선",
+        "en": "Game 0.3.4 — 4K support and stability changes",
+        "ja": "ゲーム0.3.4 — 4K対応・安定性改善"
+      },
+      "body": {
+        "ko": "3200×1800과 3840×2160(4K)을 추가했습니다. 해상도는 재시작 후 적용됩니다. 30 FPS 제한 해제는 수정 중으로 사용할 수 없으며 이 빌드는 30 FPS 제한을 유지합니다. PPU·콜백 스택을 회수·재사용하고 타이틀 배경 주소 참조 및 한글 경로의 영상 열기 오류를 수정합니다. 장시간 종료 제보 구간의 해결 확인은 아직 남아 있습니다.",
+        "en": "Adds 3200×1800 and 3840×2160 (4K), applied after restarting. FPS unlocking is under repair and unavailable; this build retains the 30 FPS cap. Reclaims PPU/callback stacks and corrects title-background addressing and movie opening from Korean paths. The reported long-play crash sequences are not confirmed fixed.",
+        "ja": "3200×1800と3840×2160（4K）を追加。解像度は再起動後に適用。FPS制限解除は修正中のため使用不可、このビルドは30 FPS制限を維持します。PPUスタック再利用、タイトル背景参照、韓国語パスの動画オープンを修正。長時間終了報告の解決確認は未完了です。"
+      }
+    },
+    {
+      "id": "launcher-0.3.4",
+      "component": "launcher",
+      "version": "0.3.4",
+      "title": {
+        "ko": "런처 0.3.4 — 설치 진단 개선",
+        "en": "Launcher 0.3.4 — installation diagnostics",
+        "ja": "ランチャー0.3.4 — インストール診断改善"
+      },
+      "body": {
+        "ko": "EBOOT 형식 오류·준비 도구 누락·변환 실패를 구분하고 검증된 출력만 캐시를 교체합니다. GitHub #2의 개별 원인은 추가 로그 확인 전입니다.",
+        "en": "Distinguishes unsupported EBOOT headers, missing tools and conversion failure; replaces the cache only with verified output. GitHub issue #2 still needs its installation log.",
+        "ja": "EBOOT形式・準備ツール不足・変換失敗を区別し、検証後のみキャッシュを置換します。GitHub #2の個別原因は追加ログ待ちです。"
+      }
+    },
+    {
+      "id": "ko-KR-0.3.4",
+      "component": "language",
+      "version": "0.3.4",
+      "title": {
+        "ko": "한국어팩 0.3.4",
+        "en": "Korean pack 0.3.4",
+        "ja": "韓国語パック0.3.4"
+      },
+      "body": {
+        "ko": "0.3.3의 v18 번역 리소스를 유지합니다. 새 번역 추가는 없습니다.",
+        "en": "Retains v18 translation resources from 0.3.3; no new translations.",
+        "ja": "0.3.3のv18翻訳リソースを維持します。新規翻訳追加はありません。"
+      },
+      "pack_locale": "ko-KR"
+    },
+    {
+      "id": "en-US-0.3.4",
+      "component": "language",
+      "version": "0.3.4",
+      "title": {
+        "ko": "영어팩 0.3.4",
+        "en": "English pack 0.3.4",
+        "ja": "英語パック0.3.4"
+      },
+      "body": {
+        "ko": "0.3.3의 v13 번역 리소스를 유지합니다. 새 번역 추가는 없습니다.",
+        "en": "Retains v13 translation resources from 0.3.3; no new translations.",
+        "ja": "0.3.3のv13翻訳リソースを維持します。新規翻訳追加はありません。"
+      },
+      "pack_locale": "en-US"
+    },
     {
       "id": "launcher-0.3.3",
       "component": "launcher",

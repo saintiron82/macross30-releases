@@ -1,10 +1,12 @@
 # Macross 30 — Downloads
 
-**[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.3/Macross30-launcher-0.3.3.zip)**
+**0.3.4: 1800p·4K 추가. 30 FPS 제한 해제는 수정 중으로 사용할 수 없습니다.**
 
-게임 / Game **0.3.3** · 런처 / Launcher **0.3.3**
+**[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.4/Macross30-launcher-0.3.4.zip)**
 
-**[English installation and usage guide](README.en.md)** · [Release notes](https://github.com/saintiron82/macross30-releases/releases/tag/v0.3.3) · [Discord](https://discord.gg/WqaaJ6hTmY)
+게임 / Game **0.3.4** · 런처 / Launcher **0.3.4**
+
+**[English installation and usage guide](README.en.md)** · [Release notes](https://github.com/saintiron82/macross30-releases/releases/tag/v0.3.4) · [Discord](https://discord.gg/WqaaJ6hTmY)
 
 ZIP 압축 해제 → `Macross30Launcher.exe` 실행 → 플레이 언어 선택 → **플레이/업데이트** → 첫 설치 시 본인 정품에서 직접 덤프한 지원 일본판 ISO 선택.
 
