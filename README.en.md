@@ -11,14 +11,14 @@ Game **0.3.4** · Launcher **0.3.7** · Windows x64 test release.
 ## Install and play
 
 1. Download `Macross30-launcher-0.3.7.zip` and extract it to a folder.
-2. Run `Macross30Launcher.exe`. No separate Python, Node.js, browser engine or C++ build tools are needed for the launcher.
+2. Run `Macross30Launcher.exe`.
 3. Choose **English** as your play language. The launcher display language and game language are separate settings.
 4. Press **Play/Update** and approve the required downloads. The launcher installs the common program and the selected language pack.
 5. For first setup, select the supported Japanese Macross 30 ISO dumped from your own legitimate copy, and follow the installation prompts.
-6. If the ISO is encrypted, open **ISO settings** and select a `.dkey` or `.key` file you prepared that matches your image. Keys are not provided or downloaded automatically.
+6. If the ISO is encrypted, open **ISO settings** and select a `.dkey` or `.key` file you prepared that matches your image.
 7. Start the game. Existing installations and settings are reused where supported. If you are asked for an installation folder or ISO, choose your own installation and original dump.
 
-The common program package contains a precompiled Windows game executable. Game code is not compiled on the player's PC. Required original data, including the original EBOOT, is prepared locally from the user's ISO. The launcher manages the language pack; do not extract the English pack over an existing installation manually.
+The common program package contains a precompiled Windows game executable. Required original data, including the original EBOOT, is prepared locally from the user's ISO. The launcher manages the language pack; do not extract the English pack over an existing installation manually.
 
 ## Languages and features
 
@@ -43,7 +43,7 @@ Include game/launcher versions, game language, Windows/GPU details, mission or l
 
 ## Original ownership and rights
 
-**You must own a legitimate copy of Macross 30 and use a supported ISO dumped from your own copy.** Game ISOs and complete original PS3 EBOOT/ELF files are not provided. Do not request or share pirated copies, original game files or links to them.
+**You must own a legitimate copy of Macross 30 and use a supported ISO dumped from your own copy.**
 
 This is an unofficial, non-commercial fan project, not affiliated with or endorsed by Bandai Namco or other rights holders. All game, character, audiovisual and trademark rights remain with their respective owners. Owning the original does not automatically authorize every form of copying, modification or redistribution; comply with applicable laws and terms in your jurisdiction.
 
@@ -66,4 +66,4 @@ After the game exits, choose **Logs → Send last play logs**, review the files 
 
 ## If the ISO is reported as encrypted
 
-In launcher 0.3.7, open **ISO settings**, check the SHA-1 identity hash, and select a matching `.dkey` or `.key` file you have prepared. Keys are not provided or downloaded automatically. Missing keys, invalid formats and mismatching keys have distinct messages. A matching key prepares a separate verified ISO while preserving the original, so additional space equal to the ISO size is needed. An already-decrypted ISO does not need a separate disc key.
+In launcher 0.3.7, open **ISO settings**, check the SHA-1 identity hash, and select a matching `.dkey` or `.key` file you have prepared. Missing keys, invalid formats and mismatching keys have distinct messages. A matching key prepares a separate verified ISO while preserving the original, so additional space equal to the ISO size is needed. An already-decrypted ISO does not need a separate disc key.
