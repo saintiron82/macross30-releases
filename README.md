@@ -1,10 +1,12 @@
 # Macross 30 — Downloads
 
+**런처 0.3.6: 런처부터 자동 업데이트하며 구버전 업데이트 후 시작 오류를 보완했습니다. 게임·한글팩·영문팩은 0.3.4입니다.**
+
 **0.3.4: 1800p·4K 추가. 30 FPS 제한 해제는 수정 중으로 사용할 수 없습니다.**
 
-**[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.4/Macross30-launcher-0.3.4.zip)**
+**[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.6/Macross30-launcher-0.3.6.zip)**
 
-게임 / Game **0.3.4** · 런처 / Launcher **0.3.4**
+게임 / Game **0.3.4** · 런처 / Launcher **0.3.6**
 
 **[English installation and usage guide](README.en.md)** · [Release notes](https://github.com/saintiron82/macross30-releases/releases/tag/v0.3.4) · [Discord](https://discord.gg/WqaaJ6hTmY)
 
@@ -25,7 +27,7 @@ The repository currently retains an earlier source snapshot from the local-build
 
 1. 런처 하단 **런처 업데이트**를 누르고 교체를 승인하세요.
 2. 다시 열린 런처에서 기존 플레이 언어를 선택하고 **업데이트/플레이**를 눌러 게임 수정 파일도 적용하세요.
-3. 자동 업데이트에 실패하면 최종 0.3.1 ZIP을 받아 런처를 종료한 뒤 기존 런처 파일을 교체하세요.
+3. 자동 업데이트에 실패하면 최신 런처 ZIP을 받아 런처를 종료한 뒤 기존 런처 파일을 교체하세요.
 
 기존 게임 설치 폴더와 저장 파일은 삭제하지 마세요. 원본 데이터 복구가 필요하면 기존에 사용하던 본인 소유 ISO를 지정하세요.
 

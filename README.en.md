@@ -1,14 +1,16 @@
 # Macross 30 — English setup guide
 
+**Launcher 0.3.6 updates itself before game operations and recovers from stale update resources. Game, Korean and English packs remain 0.3.4.**
+
 **0.3.4 adds 1800p/4K. FPS unlocking is under repair and unavailable; the 30 FPS cap remains enabled.**
 
-**[Download the Windows launcher](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.4/Macross30-launcher-0.3.4.zip)**
+**[Download the Windows launcher](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.6/Macross30-launcher-0.3.6.zip)**
 
-Game **0.3.4** · Launcher **0.3.4** · Windows x64 test release.
+Game **0.3.4** · Launcher **0.3.6** · Windows x64 test release.
 
 ## Install and play
 
-1. Download `Macross30-launcher-0.3.4.zip` and extract it to a folder.
+1. Download `Macross30-launcher-0.3.6.zip` and extract it to a folder.
 2. Run `Macross30Launcher.exe`. No separate Python, Node.js, browser engine or C++ build tools are needed for the launcher.
 3. Choose **English** as your play language. The launcher display language and game language are separate settings.
 4. Press **Play/Update** and approve the required downloads. The launcher installs the common program and the selected language pack.

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-01T01:21:37.289237+00:00",
+  "updated_at": "2026-11-01T02:44:05.286400+00:00",
   "closed": false,
   "default_language": "ko",
   "message": {
@@ -13,7 +13,7 @@
       "version": "0.3.4"
     },
     "launcher": {
-      "version": "0.3.4"
+      "version": "0.3.6"
     },
     "language_packs": {
       "ko-KR": {
@@ -41,6 +41,21 @@
     }
   ],
   "patch_notes": [
+    {
+      "id": "launcher-0.3.6",
+      "component": "launcher",
+      "version": "0.3.6",
+      "title": {
+        "ko": "런처 0.3.6 — 런처 우선 자동 업데이트·시작 오류 수정",
+        "en": "Launcher 0.3.6 — launcher-first updates and startup recovery",
+        "ja": "ランチャー0.3.6 — ランチャー優先更新・起動修正"
+      },
+      "body": {
+        "ko": "게임·언어팩 처리 전에 런처를 먼저 자동 업데이트하고 재시작합니다. 런처 업데이트 실패 시 다음 작업을 중단하며 업데이트 확인으로 다시 시도할 수 있습니다. 구버전 임시 폴더 재사용을 감지해 새로 시작하고, 배경 이미지가 없어도 종료되지 않도록 보완했습니다. 게임·한국어팩·영어팩은 0.3.4를 유지합니다. ISO 디스크 복호화는 이번 런처에 추가되지 않았습니다.",
+        "en": "Automatically updates and restarts the launcher before game/language-pack operations. A failed launcher update stops those operations; Update Check retries. Recovers from an inherited old extraction directory and tolerates missing background artwork. Game, Korean and English packs remain 0.3.4. This update does not add disc ISO decryption.",
+        "ja": "ゲーム・言語パック処理前にランチャーを自動更新・再起動。更新失敗時は処理を停止し、更新確認から再試行できます。旧一時フォルダーの再利用を検出し、背景画像不足による終了を回避。ゲーム・韓国語・英語パックは0.3.4のままです。ISOディスク復号は今回追加されません。"
+      }
+    },
     {
       "id": "game-0.3.4",
       "component": "game",
