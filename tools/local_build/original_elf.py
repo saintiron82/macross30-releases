@@ -7,11 +7,12 @@ import hashlib
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools/play'))
 from inspect_iso import inventory, read_file
-from prepare import ORIGINAL_SHA256
+ORIGINAL_SHA256 = '44d7112cbb5527314eb6192e59d861dacfcd4099f301a6e82ffc1681b0782b5b'
 
 
 def extract(iso, destination, rpcs3):
@@ -23,21 +24,41 @@ def extract(iso, destination, rpcs3):
             raise ValueError('Supported user ISO EBOOT not found')
         data = read_file(stream, entry)
     plain = destination / 'EBOOT.elf'
+    tool_present = rpcs3 is not None and Path(rpcs3).is_file()
+    print('ORIGINAL_EBOOT_INPUT: magic=' + data[:4].hex() +
+          ' bytes=' + str(len(data)) + ' local_tool_present=' + str(tool_present).lower(), flush=True)
     if data[:4] == b'\x7fELF':
-        plain.write_bytes(data)
+        prepared = data
     else:
-        if data[:4] != b'SCE\0' or not Path(rpcs3).is_file():
-            raise ValueError('User-local SELF tool is required; no downloaded game ELF fallback')
-        encrypted = destination / 'EBOOT.BIN'
-        encrypted.write_bytes(data)
-        result = subprocess.run([str(Path(rpcs3).resolve()), '--decrypt', str(encrypted)], cwd=destination,
-                                input=b'', stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=90,
-                                creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == 'win32' else 0)
-        (destination / 'original-tool.log').write_bytes(result.stdout)
-        if result.returncode or not plain.exists():
-            raise ValueError('User-local original preparation failed')
-    if hashlib.sha256(plain.read_bytes()).hexdigest() != ORIGINAL_SHA256:
+        if data[:4] != b'SCE\0':
+            raise ValueError('Unsupported ISO EBOOT header ' + data[:4].hex() +
+                             '; expected ELF or SCE SELF. Check that the selected game ISO is decrypted and readable.')
+        if not tool_present:
+            raise ValueError('Original preparation tool missing: .local-build/tools/rpcs3/rpcs3.exe. '
+                             'Run installation again to prepare the official utility.')
+        # Validate a fresh result before replacing an existing cache. A stale
+        # EBOOT.elf must never make a successful tool exit look like decryption.
+        with tempfile.TemporaryDirectory(prefix='original-', dir=destination) as work:
+            encrypted = Path(work) / 'EBOOT.BIN'
+            encrypted.write_bytes(data)
+            result = subprocess.run([str(Path(rpcs3).resolve()), '--decrypt', str(encrypted)], cwd=work,
+                                    input=b'', stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=90,
+                                    creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == 'win32' else 0)
+            (destination / 'original-tool.log').write_bytes(result.stdout)
+            result_elf = Path(work) / 'EBOOT.elf'
+            if result.returncode or not result_elf.is_file():
+                raise ValueError('Original SELF preparation failed (exit=' + str(result.returncode) +
+                                 '); see .local-build/original/original-tool.log')
+            prepared = result_elf.read_bytes()
+    if hashlib.sha256(prepared).hexdigest() != ORIGINAL_SHA256:
         raise ValueError('Prepared original ELF does not match supported user game')
+    with tempfile.NamedTemporaryFile(prefix='verified-', suffix='.elf', dir=destination, delete=False) as stream:
+        verified = Path(stream.name)
+        stream.write(prepared)
+    try:
+        verified.replace(plain)
+    finally:
+        verified.unlink(missing_ok=True)
     return plain
 
 

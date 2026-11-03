@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace MacrossLauncher {
 public static class SelfUpdate {
-    public const string Version = "0.1.7";
+    public const string Version = "0.2.13";
     public static void ValidateManifest(Dictionary<string,object> manifest) {
         string version = Packages.Text(manifest,"version"); Packages.VersionOf(version);
         if (Packages.Text(manifest,"file") != "Macross30Launcher-" + version + ".exe" ||
@@ -17,17 +17,32 @@ public static class SelfUpdate {
     public static void ReplaceAndStart(string target, string pending, string backup, string currentHash, string nextHash, Action start) {
         if (Packages.Hash(target) != currentHash || Packages.Hash(pending) != nextHash)
             throw new InvalidDataException(UiText.T("런처 교체 전 해시가 변경됐습니다."));
-        File.Replace(pending,target,backup);
+        ReplaceFile(pending,target,backup);
         try { start(); }
         catch {
-            File.Replace(backup,target,null);
+            ReplaceFile(backup,target,null);
             throw;
         }
+    }
+    static void ReplaceFile(string source,string target,string backup) {
+        for(int attempt=0;;attempt++) {
+            try {File.Replace(source,target,backup);return;}
+            catch(IOException e) {
+                int code=e.HResult & 0xffff;
+                if(attempt>=49 || (code!=32 && code!=33))throw;
+                Thread.Sleep(100); // one-file bootloader may still be releasing the EXE
+            }
+        }
+    }
+    static ProcessStartInfo RestartInfo(string target,string args) {
+        var info=new ProcessStartInfo(target,args) {UseShellExecute=false,WorkingDirectory=Path.GetDirectoryName(target)};
+        info.EnvironmentVariables["PYINSTALLER_RESET_ENVIRONMENT"]="1";
+        return info;
     }
     public static void ValidatePlan(string path, Dictionary<string,object> plan) {
         string work = Path.GetDirectoryName(Path.GetFullPath(path));
         string target = Path.GetFullPath(Packages.Text(plan,"target"));
-        if (Path.GetFileName(path) != "plan.json" || Path.GetFileName(target) != "Macross30Launcher.exe" ||
+        if (Path.GetFileName(path) != "plan.json" || !System.Text.RegularExpressions.Regex.IsMatch(Path.GetFileName(target),@"^Macross30Launcher(?:-\d+\.\d+\.\d+)?\.exe$",System.Text.RegularExpressions.RegexOptions.IgnoreCase) ||
             !System.Text.RegularExpressions.Regex.IsMatch(Path.GetFileName(work), "^\\.launcher-update-[a-f0-9]{32}$") ||
             !String.Equals(Path.GetDirectoryName(work),Path.GetDirectoryName(target),StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException(UiText.T("런처 업데이트 계획의 경로가 잘못됐습니다."));
@@ -48,11 +63,14 @@ public static class SelfUpdate {
             }
         } catch (ArgumentException) { /* parent already exited */ }
         string health = Path.Combine(work,"health.txt");
+        string config=plan.ContainsKey("config") ? Packages.Text(plan,"config") : "";
+        if(config.Length>0 && (!Path.IsPathRooted(config) || config.IndexOf('"')>=0 || config.IndexOf('\0')>=0))throw new InvalidDataException("Invalid restart configuration path");
+        string configArgs=config.Length>0 ? " --config \""+config+"\"" : "";
         bool replaced = false;
         try {
             ReplaceAndStart(target,Path.Combine(work,"new.exe"),Path.Combine(work,"previous.exe"),Packages.Text(plan,"current_sha256"),Packages.Text(plan,"sha256"), () => {
                 replaced = true;
-                using (var child = Process.Start(new ProcessStartInfo(target,"--update-health \"" + health + "\"") { UseShellExecute = false, WorkingDirectory = Path.GetDirectoryName(target) })) {
+                using (var child = Process.Start(RestartInfo(target,"--update-health \"" + health + "\""+configArgs))) {
                     var timer = Stopwatch.StartNew();
                     while (timer.ElapsedMilliseconds < 15000) {
                         if (File.Exists(health) && File.ReadAllText(health) == Packages.Text(plan,"sha256")) return;
@@ -64,9 +82,9 @@ public static class SelfUpdate {
                 }
             });
             File.WriteAllText(Path.Combine(work,"result.txt"),"SUCCESS");
-        } catch {
-            File.WriteAllText(Path.Combine(work,"result.txt"),"FAILED; backup=" + Path.Combine(work,"previous.exe"));
-            if (replaced) Process.Start(new ProcessStartInfo(target) { UseShellExecute = false, WorkingDirectory = Path.GetDirectoryName(target) });
+        } catch (Exception error) {
+            File.WriteAllText(Path.Combine(work,"result.txt"),"FAILED: "+error.Message+"; backup=" + Path.Combine(work,"previous.exe"));
+            if (replaced) Process.Start(RestartInfo(target,"--skip-launcher-update"+configArgs));
             throw;
         }
     }

@@ -1,0 +1,56 @@
+Macross 30 Launcher 0.3.7
+
+Macross30Launcher.exe를 실행하세요. Python, Node.js, 브라우저 엔진을 따로 설치할 필요가 없습니다.
+플레이 언어를 고르고 플레이 또는 업데이트를 누르세요.
+최신 패치가 있으면 한 번 승인하고, 기본 게임 패치 → 선택한 언어팩 → 게임 실행 순서로 진행합니다.
+처음 게임을 준비할 때 본인 소유 ISO를 선택합니다.
+상단 업데이트 확인은 파일을 설치하지 않고 서버 상태·최신 버전·공지만 확인합니다.
+하단에서 ISO 변경, 설치 위치, 로그, 디스코드, 런처 업데이트를 사용할 수 있습니다.
+공지와 버전별 패치 내역은 런처 언어에 맞춰 표시됩니다.
+기존 설정은 자동으로 읽으며, 새 설정은 %LOCALAPPDATA%/Macross30Launcher/python-settings.json에 보관합니다.
+
+Run Macross30Launcher.exe. No separate Python, Node.js or browser runtime is required.
+Select a play language and press Play/Update. Approve available updates once; the game and selected language pack are applied, then the game starts.
+Your own ISO is required for first setup. Notices follow the launcher UI language.
+
+Macross30Launcher.exeを起動してください。Pythonやブラウザーの別途導入は不要です。
+プレイ言語を選んでプレイ／更新を押してください。承認後に必要な更新を適用し、ゲームを起動します。
+初回準備には原本ISOが必要です。
+
+실행할 때와 플레이/업데이트 전에 런처부터 자동으로 확인·다운로드·교체·재시작합니다. 런처 업데이트에 실패하면 게임/언어팩 작업을 진행하지 않습니다. 상단 업데이트 확인으로 다시 시도하세요. 게임/언어팩 업데이트 승인은 별도입니다.
+게임 실행 중에도 런처를 유지하며 버튼을 실행 중으로 표시합니다.
+At startup and before Play/Update, launcher updates download, replace and restart automatically first. A failed launcher check or update stops game/language-pack operations; use Update Check to retry. Game/language updates retain their own approval. The launcher stays open while the game runs.
+
+마지막 플레이 로그 보내기: 게임 종료 후 하단 로그 → 마지막 플레이 로그 보내기 → 수집 파일과 버전 확인 → 전송.
+GitHub/Discord 로그인 없이 운영진 전용 Discord 채널로 전송합니다. 자동 전송하지 않습니다.
+기본은 로그만 보내며, 세이브는 선택한 슬롯만 추가할 수 있습니다. 전송 전에 내용을 확인하세요.
+원본 로그/세이브는 수정하지 않습니다. 전송 사본의 개인 경로와 자격증명 형태를 정리하며, 텍스트 로그는 파일별 최근 192 KiB만 포함합니다.
+전송 ZIP은 설치 폴더의 bug-reports에 남고, 실패하면 같은 제보를 재시도할 수 있습니다. 수신이 확인된 경우에만 접수 완료와 번호를 표시합니다.
+ZIP 최대 8 MiB, 선택 세이브 최대 4 MiB입니다. 전송 결과가 불확실한 경우 확인 중으로 표시하고 중복 게시하지 않습니다.
+
+After the game exits: Logs → Send last play logs → review collected files and versions → Send.
+No GitHub or Discord login is needed. Reports go to the private Discord support channel only after you choose Send.
+Saves are excluded unless you explicitly select a slot. Original files are preserved. The upload copy redacts local paths and credential patterns; each text log is limited to its last 192 KiB.
+The ZIP remains in bug-reports for retry. A receipt is shown only after Discord confirms the message and attachment. ZIP limit: 8 MiB; optional save limit: 4 MiB.
+
+ゲーム終了後：ログ → 前回プレイのログを送信 → 内容・バージョン確認 → 送信。
+ログイン不要。自動送信なし。セーブは明示的に選択した場合のみ添付します。ZIPはbug-reportsに残り、受付確認後に番号を表示します。
+
+[Launch options / 실행 옵션 / 起動設定]
+The Launch options button below Play edits <configured installation folder>/play/settings.ini.
+Close the game before saving; settings take effect on the next game launch.
+The launcher checks for an externally started game before writing and does not
+send F9 or any input to a running game. An existing play directory is required.
+Resolution scales: 1 / 1.25 / 1.5 / 2 / 2.5 / 3 (all supported by game 0.3.4).
+Resolution by scale: 1 = 720p, 1.5 = 1080p, 2 = 1440p, 3 = 4K.
+FPS unlock is unavailable while under repair. Game 0.3.8 exposes optional HD
+textures through an explicit game capability; original 0.3.4 does not support it.
+HD resources are prepared locally from the user's original game data.
+Existing bloom is enabled as part of the game's default image and has no toggle.
+Only changed resolution, fullscreen, VSync, subtitles and supported HD settings
+are saved. Language, FPS and unknown settings are preserved.
+Whitespace before '=' belongs to the key, and values end at whitespace.
+Saving refuses a stale file or changed install folder. Write/replace failures
+preserve the old file. Cancel performs no write. The game F9 save routine may
+later rewrite its own file and remove comments; launcher preservation only
+covers saves through Launch options. No save, ISO, or launcher config is edited.

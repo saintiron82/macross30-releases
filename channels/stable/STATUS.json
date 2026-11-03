@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-01T05:56:40.537078+00:00",
+  "updated_at": "2026-11-03T15:33:26.110154+00:00",
   "closed": false,
   "default_language": "ko",
   "message": {
@@ -10,17 +10,17 @@
   },
   "latest": {
     "game": {
-      "version": "0.3.4"
+      "version": "0.3.8"
     },
     "launcher": {
-      "version": "0.3.7"
+      "version": "0.3.8"
     },
     "language_packs": {
       "ko-KR": {
-        "version": "0.3.4"
+        "version": "0.3.8"
       },
       "en-US": {
-        "version": "0.3.4"
+        "version": "0.3.8"
       }
     }
   },
@@ -41,6 +41,21 @@
     }
   ],
   "patch_notes": [
+    {
+      "id": "combined-0.3.8",
+      "component": "game",
+      "version": "0.3.8",
+      "title": {
+        "ko": "0.3.8 — HD 텍스처·셰이더 준비·번역 수정",
+        "en": "0.3.8 — HD textures, shader preparation and translations",
+        "ja": "0.3.8 — HDテクスチャ・シェーダー準備・翻訳修正"
+      },
+      "body": {
+        "ko": "HD 텍스처, 실행 전 로컬 셰이더 준비, 메뉴/HUD와 출격 표시 수정. 기존 블룸 기본 적용. 30 FPS 유지.",
+        "en": "HD textures, pre-launch local shader preparation, menu/HUD and launch prompt updates. Existing bloom enabled by default. 30 FPS retained.",
+        "ja": "HDテクスチャ、起動前のローカルシェーダー準備、メニュー/HUDと出撃表示を修正。既存ブルームを標準適用。30 FPS維持。"
+      }
+    },
     {
       "id": "launcher-0.3.7",
       "component": "launcher",

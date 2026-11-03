@@ -1,14 +1,14 @@
 # Macross 30 — Downloads
 
-**런처 0.3.7: 암호화 ISO에 필요한 키 파일을 선택할 수 있습니다. 게임·한글팩·영문팩은 0.3.4입니다.**
+**0.3.8: HD 텍스처·실행 전 셰이더 준비·메뉴/HUD 번역 수정. 게임·한글팩·영문팩·런처 모두 0.3.8입니다.**
 
-**0.3.4: 1800p·4K 추가. 30 FPS 제한 해제는 수정 중으로 사용할 수 없습니다.**
+**720p~4K 지원. 30 FPS 제한을 유지하며 제한 해제는 수정 중으로 사용할 수 없습니다.**
 
-**[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.7/Macross30-launcher-0.3.7.zip)**
+**[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.8/Macross30-launcher-0.3.8.zip)**
 
-게임 / Game **0.3.4** · 런처 / Launcher **0.3.7**
+게임 / Game **0.3.8** · 런처 / Launcher **0.3.8**
 
-**[English installation and usage guide](README.en.md)** · [Release notes](https://github.com/saintiron82/macross30-releases/releases/tag/v0.3.7) · [Discord](https://discord.gg/WqaaJ6hTmY)
+**[English installation and usage guide](README.en.md)** · [Release notes](https://github.com/saintiron82/macross30-releases/releases/tag/v0.3.8) · [Discord](https://discord.gg/WqaaJ6hTmY)
 
 ZIP 압축 해제 → `Macross30Launcher.exe` 실행 → 플레이 언어 선택 → **플레이/업데이트** → 첫 설치 시 본인 정품에서 직접 덤프한 지원 일본판 ISO 선택.
 
@@ -22,7 +22,7 @@ Windows 10/11 x64, D3D12 GPU, AVX2/SSE4.1 CPU가 필요합니다. 테스트 배�
 
 ## Source and attribution
 
-The repository currently retains an earlier source snapshot from the local-build distribution. It is separate from the current precompiled release assets. Based on ps3recomp; its MIT license is retained at `vendor/ps3recomp-master/LICENSE`. Bundled third-party notices also apply. The English guide describes the current installation flow.
+The v0.3.8 tag preserves updated renderer/options, launcher, installer and packaging component sources with hashes in release-baselines/0.3.8. Precompiled game assets retain previously verified link inputs; this is not a claim of a fully self-hosted game build from this snapshot. Based on ps3recomp; its MIT license is retained at `vendor/ps3recomp-master/LICENSE`. Bundled third-party notices also apply. The English guide describes the current installation flow.
 
 
 ## 기존 런처 0.3.0 사용자
@@ -34,7 +34,7 @@ The repository currently retains an earlier source snapshot from the local-build
 기존 게임 설치 폴더와 저장 파일은 삭제하지 마세요. 원본 데이터 복구가 필요하면 기존에 사용하던 본인 소유 ISO를 지정하세요.
 
 
-런처 0.3.2부터 실행 시 새 런처를 자동으로 다운로드·교체·재시작합니다. 게임 실행 중에는 런처를 유지하고 버튼에 실행 중으로 표시합니다. 기존 0.3.0/0.3.1은 런처 업데이트를 한 번 눌러 최신 버전으로 교체하세요. 게임·언어팩 버전은 0.3.4입니다.
+런처 0.3.2부터 실행 시 새 런처를 자동으로 다운로드·교체·재시작합니다. 게임 실행 중에는 런처를 유지하고 버튼에 실행 중으로 표시합니다. 기존 0.3.0/0.3.1은 런처 업데이트를 한 번 눌러 최신 버전으로 교체하세요. 게임·언어팩 버전은 0.3.8입니다.
 
 
 게임 종료 후 런처의 **로그 → 마지막 플레이 로그 보내기**에서 내용을 확인하고 전송할 수 있습니다. 로그인 없이 운영진 전용 Discord 채널로 보내며 세이브는 선택 첨부입니다. ZIP은 로컬 bug-reports에 남습니다.

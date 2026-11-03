@@ -1,0 +1,72 @@
+{
+  "version": "0.3.8",
+  "game_exe_sha256": "0b7ab1d7571caa77a8c3aadf66427bce965800a41577bfdc3531ca1493449ba2",
+  "artifacts": [
+    {
+      "file": "BOOT-INSTALL.json",
+      "bytes": 2655,
+      "sha256": "ad0dbf66a44ff658050105895f106cd1f3e1d6a878fcb9b47b4b58bd2a79787d"
+    },
+    {
+      "file": "LANGUAGE-PACKS.json",
+      "bytes": 781,
+      "sha256": "4b65f41428623482c5a280a37a2ae6eeef911f180c7124b37716356789caaf4e"
+    },
+    {
+      "file": "LAUNCHER.json",
+      "bytes": 173,
+      "sha256": "d38c874062b785a9f987389c0be3fef381e84b7392d8f96c1a6a330835703615"
+    },
+    {
+      "file": "Macross30-language-en-US-0.3.8.zip",
+      "bytes": 34928069,
+      "sha256": "4816978693aad12e9eea2b9c8e2fc38a7f80b889220ee6d5736aecbc83404ec2"
+    },
+    {
+      "file": "Macross30-language-ko-KR-0.3.8.zip",
+      "bytes": 52459877,
+      "sha256": "1ae56993565407e5ca73f7b0883c21472a94423c9da2e6e2419fa25e6a90cb8b"
+    },
+    {
+      "file": "Macross30-launcher-0.3.8.zip",
+      "bytes": 16178295,
+      "sha256": "ff5ed91bf2c7e9d48ec7f10a4a8f8ebc653e3102435a3617b16e65aff5d8cd17"
+    },
+    {
+      "file": "Macross30-program-0.3.8.zip",
+      "bytes": 76132380,
+      "sha256": "409098ab3525583af0ebbb3bcd8f1947237992c658e62033270fd75eb9f7fa02"
+    },
+    {
+      "file": "Macross30Launcher-0.3.8.exe",
+      "bytes": 16449121,
+      "sha256": "e39c68353b7ceab255547d235cf419937b423a78f4fbfc19e373dea864fd9f1d"
+    },
+    {
+      "file": "PYTHON-LAUNCHER.json",
+      "bytes": 173,
+      "sha256": "d38c874062b785a9f987389c0be3fef381e84b7392d8f96c1a6a330835703615"
+    },
+    {
+      "file": "RELEASE-NOTES.txt",
+      "bytes": 2005,
+      "sha256": "8f3f750b6cb09178fa20f60e8e5e00dbc3a39bed2c2f3689b0a78c3b390f8b68"
+    },
+    {
+      "file": "STATUS.json",
+      "bytes": 20865,
+      "sha256": "ff3fc917bdfaed53cb97b2f86782fccf93badaade40507560428e255c7928192"
+    }
+  ],
+  "unit_tests": {
+    "passed": 76,
+    "skipped": 1
+  },
+  "shader_seed_entries": 190,
+  "initial_pipeline_records": 203,
+  "hd_maps": 245,
+  "default_bloom": true,
+  "fps_cap": 30,
+  "user_confirmed_ko_launch_prompt": true,
+  "user_confirmed_sortie_scene_normal": true
+}

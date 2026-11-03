@@ -25,6 +25,9 @@ extern "C" {
  * Returns 0 on success. */
 int rsx_null_backend_init(u32 width, u32 height, const char* title);
 
+/* Called on the window thread. Callback returns the effective checkbox value. */
+void rsx_null_backend_set_fps_callback(int (*apply)(int unlocked));
+
 /* Shut down the null backend and close the window. */
 void rsx_null_backend_shutdown(void);
 
@@ -68,6 +71,8 @@ void  rsx_null_backend_suppress_present(int on);
 int rsx_null_backend_movie_subtitles_enabled(u32* epoch);
 /* Shared caption permission. Movie API remains an ABI-compatible alias. */
 int rsx_null_backend_subtitles_enabled(u32* epoch);
+/* Startup snapshot; F9 changes are persisted for the next process. */
+int rsx_null_backend_hd_textures_enabled(void);
 
 #ifdef __cplusplus
 }

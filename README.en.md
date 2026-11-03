@@ -1,16 +1,16 @@
 # Macross 30 — English setup guide
 
-**Launcher 0.3.7 lets you select a key file for an encrypted ISO. Game, Korean and English packs remain 0.3.4.**
+**0.3.8 adds optional HD textures, pre-launch shader preparation and menu/HUD translation updates. Game, Korean, English and launcher packages are all 0.3.8.**
 
-**0.3.4 adds 1800p/4K. FPS unlocking is under repair and unavailable; the 30 FPS cap remains enabled.**
+**720p through 4K supported. FPS unlocking is under repair and unavailable; the 30 FPS cap remains enabled.**
 
-**[Download the Windows launcher](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.7/Macross30-launcher-0.3.7.zip)**
+**[Download the Windows launcher](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.8/Macross30-launcher-0.3.8.zip)**
 
-Game **0.3.4** · Launcher **0.3.7** · Windows x64 test release.
+Game **0.3.8** · Launcher **0.3.8** · Windows x64 test release.
 
 ## Install and play
 
-1. Download `Macross30-launcher-0.3.7.zip` and extract it to a folder.
+1. Download `Macross30-launcher-0.3.8.zip` and extract it to a folder.
 2. Run `Macross30Launcher.exe`.
 3. Choose **English** as your play language. The launcher display language and game language are separate settings.
 4. Press **Play/Update** and approve the required downloads. The launcher installs the common program and the selected language pack.
@@ -59,7 +59,7 @@ This is an unofficial, non-commercial fan project, not affiliated with or endors
 Keep your installed game folder and save files. If original data needs repair, select the same supported ISO dumped from your own copy; you do not need to obtain another ISO.
 
 
-From launcher 0.3.2, startup automatically downloads, replaces and restarts newer launchers. The launcher stays open while the game runs and shows Game running. Existing 0.3.0/0.3.1 users must click Launcher update once to migrate. Game/language packages remain 0.3.4.
+From launcher 0.3.2, startup automatically downloads, replaces and restarts newer launchers. The launcher stays open while the game runs and shows Game running. Existing 0.3.0/0.3.1 users must click Launcher update once to migrate. Game/language packages are 0.3.8.
 
 
 After the game exits, choose **Logs → Send last play logs**, review the files and send. No user login is needed; reports go to a private Discord support channel. Saves are optional and the ZIP remains in local bug-reports.

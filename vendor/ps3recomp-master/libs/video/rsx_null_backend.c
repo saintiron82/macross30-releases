@@ -19,6 +19,10 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>
+#include <shlobj.h>
+#include <shellapi.h>
+#include "macross_ui_language.h"
+#include "../misc/custom_music.h"
 
 /* ---------------------------------------------------------------------------
  * Internal state
@@ -57,11 +61,16 @@ static int s_present_suppressed = 0;
 /* ---------------------------------------------------------------------------
  * Options window (F9) and borderless fullscreen (F11 / Alt+Enter).
  * Settings live in settings.ini in the working directory. Fullscreen, vsync
- * and bloom apply at once; resolution and the frame-rate unlock are read by
- * the launcher (tools/play_native.py) and apply from the next start.
+ * bloom, subtitles and the frame-rate unlock apply at once. Resolution is
+ * read by the launcher and applies from the next start.
  * -----------------------------------------------------------------------*/
-typedef struct { int scale_idx, fullscreen, vsync, fps_unlock, bloom, subtitles; } NullSettings;
-static NullSettings s_set = { 2, 0, 1, 0, 1, 1 };   /* 30 FPS cap by default: above 30, systems outside the 14 dt-step constants (animation, effects, timers) run fast */
+typedef struct { int scale_idx, fullscreen, vsync, fps_unlock, bloom, subtitles, language, hd_textures; } NullSettings;
+static NullSettings s_set = { 2, 0, 1, 0, 1, 1, 1, 0 };   /* HD textures opt in; apply on next start. */
+static volatile LONG s_hd_textures_at_start;
+int rsx_null_backend_hd_textures_enabled(void)
+{
+    return (int)InterlockedCompareExchange(&s_hd_textures_at_start, 0, 0);
+}
 /* One atomic word: bit0 enabled, upper31 bits change epoch. The movie
  * consumer never reads UI-thread-owned s_set. Display permission alone does
  * not authorize loading unreviewed subtitle tracks. */
@@ -87,8 +96,11 @@ int rsx_null_backend_movie_subtitles_enabled(u32* epoch)
 {
     return rsx_null_backend_subtitles_enabled(epoch);
 }
-static const char* const k_scale_val[4] = { "1", "1.25", "1.5", "2" };
+static const char* const k_scale_val[6] = { "1", "1.25", "1.5", "2", "2.5", "3" };
+static const char* const k_language_val[3] = { "ja-JP", "ko-KR", "en-US" };
 static HWND s_opt_hwnd;
+static int (*s_fps_apply)(int);
+void rsx_null_backend_set_fps_callback(int (*apply)(int)) { s_fps_apply = apply; }
 static HMENU s_menu_bar;
 static RECT s_windowed_rect;
 static int s_is_fullscreen;
@@ -96,6 +108,8 @@ void rsx_live_draw_set_vsync(int on);
 
 static void null_settings_load(void)
 {
+    const char* gate = getenv("MACROSS_FRAME_VBLANKS");
+    if (gate) s_set.fps_unlock = !strcmp(gate, "1");
     FILE* f = fopen("settings.ini", "r");
     if (!f) return;
     char line[128];
@@ -103,28 +117,32 @@ static void null_settings_load(void)
         char key[64]; char val[64];
         if (sscanf(line, " %63[^=]=%63s", key, val) != 2) continue;
         if (!strcmp(key, "render_scale")) {
-            for (int i = 0; i < 4; i++) if (!strcmp(val, k_scale_val[i])) s_set.scale_idx = i;
+            for (int i = 0; i < 6; i++) if (!strcmp(val, k_scale_val[i])) s_set.scale_idx = i;
+        } else if (!strcmp(key, "language")) {
+            for (int i = 0; i < 3; i++) if (!strcmp(val, k_language_val[i])) s_set.language = i;
         } else if (!strcmp(key, "fullscreen")) s_set.fullscreen = atoi(val) != 0;
         else if (!strcmp(key, "vsync")) s_set.vsync = atoi(val) != 0;
         else if (!strcmp(key, "fps_unlock")) s_set.fps_unlock = atoi(val) != 0;
-        else if (!strcmp(key, "bloom")) s_set.bloom = atoi(val) != 0;
         else if (!strcmp(key, "subtitles") && (!strcmp(val, "0") || !strcmp(val, "1"))) s_set.subtitles = val[0] == '1';
+        else if (!strcmp(key, "hd_textures") && (!strcmp(val, "0") || !strcmp(val, "1"))) s_set.hd_textures = val[0] == '1';
     }
     fclose(f);
     null_subtitles_publish(s_set.subtitles);
+    InterlockedExchange(&s_hd_textures_at_start, s_set.hd_textures);
 }
 static void null_settings_save(void)
 {
     FILE* f = fopen("settings.ini", "w");
     if (!f) return;
-    fprintf(f, "render_scale=%s\nfullscreen=%d\nvsync=%d\nfps_unlock=%d\nbloom=%d\nsubtitles=%d\n",
-            k_scale_val[s_set.scale_idx], s_set.fullscreen, s_set.vsync, s_set.fps_unlock, s_set.bloom, s_set.subtitles);
+    fprintf(f, "render_scale=%s\nfullscreen=%d\nvsync=%d\nfps_unlock=%d\nbloom=%d\nsubtitles=%d\nlanguage=%s\nhd_textures=%d\n",
+            k_scale_val[s_set.scale_idx], s_set.fullscreen, s_set.vsync, s_set.fps_unlock, s_set.bloom, s_set.subtitles, k_language_val[s_set.language], s_set.hd_textures);
     fclose(f);
 }
 static void null_apply_bloom(void)
 {
-    if (s_set.bloom) DeleteFileA("pp_nobloom");
-    else { FILE* f = fopen("pp_nobloom", "w"); if (f) fclose(f); }
+    /* Bloom is part of the default image, not a user option. */
+    s_set.bloom = 1;
+    DeleteFileA("pp_nobloom");
 }
 static void null_apply_fullscreen(HWND hwnd, int on)
 {
@@ -163,7 +181,7 @@ static int s_key_capture = -1;
 static unsigned char s_key_down0[256];
 static void null_key_name(int vk, wchar_t* out, int cap)
 {
-    if (!vk) { wcsncpy(out, L"(없음)", cap); return; }
+    if (!vk) { wcsncpy(out, macross_ui_string("input.none"), cap); return; }
     UINT sc = MapVirtualKeyW((UINT)vk, MAPVK_VK_TO_VSC);
     switch (vk) {   /* extended keys need bit 24 for the right name */
     case VK_UP: case VK_DOWN: case VK_LEFT: case VK_RIGHT: case VK_INSERT: case VK_DELETE:
@@ -171,14 +189,14 @@ static void null_key_name(int vk, wchar_t* out, int cap)
     case VK_RMENU: case VK_NUMLOCK:
         sc |= 0x100; break;
     }
-    if (!sc || !GetKeyNameTextW((LONG)(sc << 16), out, cap)) _snwprintf(out, cap, L"키 0x%02X", vk);
+    if (!sc || !GetKeyNameTextW((LONG)(sc << 16), out, cap)) _snwprintf(out, cap, macross_ui_string("input.key_code"), vk);
 }
 static void null_key_refresh(int i)
 {
     HWND b = GetDlgItem(s_key_hwnd, ID_KEY_BASE + i);
     if (!b) return;
     wchar_t name[64];
-    if (i == s_key_capture) wcsncpy(name, L"키를 누르세요 (Esc 취소, Del 해제)", 64);
+    if (i == s_key_capture) wcsncpy(name, macross_ui_string("input.key_prompt"), 64);
     else null_key_name(s_key_vk[i], name, 64);
     SetWindowTextW(b, name);
 }
@@ -254,7 +272,7 @@ static void null_open_keys(HWND owner)
     const int rows = (PAD_KM_COUNT + 1) / 2, rh = 30;
     const int kw = 860, kh = 40 + rows * rh + 110;
     RECT orc; GetWindowRect(owner, &orc);
-    s_key_hwnd = CreateWindowExW(WS_EX_TOPMOST, L"ps3recomp_opt_keys", L"키 설정 (키보드)",
+    s_key_hwnd = CreateWindowExW(WS_EX_TOPMOST, L"ps3recomp_opt_keys", macross_ui_string("input.keyboard.title"),
                                  WS_CAPTION | WS_SYSMENU | WS_VISIBLE,
                                  (orc.left + orc.right - kw) / 2, (orc.top + orc.bottom - kh) / 2, kw, kh,
                                  owner, NULL, hi, NULL);
@@ -273,11 +291,10 @@ static void null_open_keys(HWND owner)
         null_key_refresh(i);
     }
     const int by = 20 + rows * rh;
-    KEY_CTL(L"STATIC", L"컨트롤러와 키보드를 함께 쓸 수 있습니다. 바꾼 키는 바로 적용됩니다.\n"
-                       L"왼쪽 스틱에 키를 지정하지 않으면 방향키가 왼쪽 스틱도 움직입니다.",
+    KEY_CTL(L"STATIC", macross_ui_string("input.keyboard.help"),
             0, 16, by, 820, 44, 0)
-    KEY_CTL(L"BUTTON", L"기본값으로", BS_PUSHBUTTON | WS_TABSTOP, 16, by + 50, 140, 30, ID_KEY_DEFAULTS)
-    KEY_CTL(L"BUTTON", L"닫기", BS_PUSHBUTTON | WS_TABSTOP, kw - 130, by + 50, 100, 30, ID_KEY_CLOSE)
+    KEY_CTL(L"BUTTON", macross_ui_string("common.defaults"), BS_PUSHBUTTON | WS_TABSTOP, 16, by + 50, 140, 30, ID_KEY_DEFAULTS)
+    KEY_CTL(L"BUTTON", macross_ui_string("common.close"), BS_PUSHBUTTON | WS_TABSTOP, kw - 130, by + 50, 100, 30, ID_KEY_CLOSE)
 #undef KEY_CTL
 }
 /* ---------------------------------------------------------------------------
@@ -361,14 +378,14 @@ static void pt_pressed_names(unsigned short b, wchar_t* out, int cap)
 }
 static const wchar_t* pt_type_ko(const char* type)
 {
-    if (!strcmp(type, "DualSense"))        return L"듀얼센스 (PS5)";
-    if (!strcmp(type, "DualShock 4"))      return L"듀얼쇼크4 (PS4)";
-    if (!strcmp(type, "DualShock 3"))      return L"듀얼쇼크3 (PS3)";
-    if (!strcmp(type, "Xbox One/Series"))  return L"엑스박스 One/Series";
-    if (!strcmp(type, "Xbox 360"))         return L"엑스박스 360";
-    if (!strcmp(type, "Switch Pro"))       return L"스위치 프로";
-    if (!strcmp(type, "Xbox (XInput)"))    return L"엑스박스 (XInput)";
-    return L"게임패드";
+    if (!strcmp(type, "DualSense"))        return macross_ui_string("controller.dualsense");
+    if (!strcmp(type, "DualShock 4"))      return macross_ui_string("controller.dualshock4");
+    if (!strcmp(type, "DualShock 3"))      return macross_ui_string("controller.dualshock3");
+    if (!strcmp(type, "Xbox One/Series"))  return macross_ui_string("controller.xbox_series");
+    if (!strcmp(type, "Xbox 360"))         return macross_ui_string("controller.xbox360");
+    if (!strcmp(type, "Switch Pro"))       return macross_ui_string("controller.switch_pro");
+    if (!strcmp(type, "Xbox (XInput)"))    return macross_ui_string("controller.xinput");
+    return macross_ui_string("controller.generic");
 }
 static void pt_paint(HWND hwnd, HDC dc)
 {
@@ -381,28 +398,28 @@ static void pt_paint(HWND hwnd, HDC dc)
 
     /* backend and devices */
     if (in->backend == 2)
-        _snwprintf(t, 256, L"입력 방식: SDL2 %hs  (듀얼센스·듀얼쇼크4·엑스박스·스위치 프로 등, USB/블루투스)", in->sdl_version);
+        _snwprintf(t, 256, macross_ui_string("controller.backend.sdl"), in->sdl_version);
     else if (in->backend == 1)
-        _snwprintf(t, 256, L"입력 방식: XInput  (엑스박스 패드만 — SDL2.dll이 없어 다른 패드는 인식하지 않음)");
+        _snwprintf(t, 256, macross_ui_string("controller.backend.xinput"));
     else
-        _snwprintf(t, 256, L"게임이 아직 패드를 초기화하지 않았습니다.");
+        _snwprintf(t, 256, macross_ui_string("controller.not_initialized"));
     pt_text(dc, t, 16, 10, cr.right - 32, 22, DT_SINGLELINE);
-    _snwprintf(t, 256, L"연결된 컨트롤러: %d개", in->ndev);
+    _snwprintf(t, 256, macross_ui_string("controller.count"), in->ndev);
     pt_text(dc, t, 16, 38, 400, 22, DT_SINGLELINE);
     SelectObject(dc, s_pt_small);
     if (!in->ndev) {
-        pt_text(dc, L"없음 — USB나 블루투스로 연결하면 여기에 바로 나타납니다 (게임 중 연결 가능).",
+        pt_text(dc, macross_ui_string("controller.none"),
                 30, 64, cr.right - 46, 22, DT_SINGLELINE);
     }
     for (int i = 0; i < in->ndev && i < 4; i++) {
         wchar_t name[64], pressed[96];
         MultiByteToWideChar(CP_UTF8, 0, in->dev[i].name, -1, name, 64);
         pt_pressed_names(in->dev[i].st.buttons, pressed, 96);
-        _snwprintf(t, 256, L"%d. %s  —  %s      누름: %s", i + 1, name, pt_type_ko(in->dev[i].type),
-                   pressed[0] ? pressed : L"(없음)");
+        _snwprintf(t, 256, macross_ui_string("controller.device_status"), i + 1, name, pt_type_ko(in->dev[i].type),
+                   pressed[0] ? pressed : macross_ui_string("input.none"));
         pt_text(dc, t, 30, 64 + i * 22, cr.right - 46, 22, DT_SINGLELINE | DT_END_ELLIPSIS);
     }
-    _snwprintf(t, 256, L"키보드: %s", in->keyboard ? L"누르는 중" : L"대기 (키 설정의 키를 누르면 아래에 함께 표시)");
+    _snwprintf(t, 256, macross_ui_string("input.keyboard_status"), in->keyboard ? macross_ui_string("input.pressed") : macross_ui_string("input.waiting"));
     pt_text(dc, t, 30, 156, cr.right - 46, 22, DT_SINGLELINE);
 
     /* what the title reads */
@@ -414,7 +431,7 @@ static void pt_paint(HWND hwnd, HDC dc)
     HGDIOBJ op = SelectObject(dc, line);
     MoveToEx(dc, 16, top, NULL); LineTo(dc, cr.right - 16, top);
     SelectObject(dc, op); DeleteObject(line);
-    pt_text(dc, L"게임이 받는 입력 (패드 + 키보드)", 16, top + 6, 400, 22, DT_SINGLELINE);
+    pt_text(dc, macross_ui_string("input.combined"), 16, top + 6, 400, 22, DT_SINGLELINE);
 
     pt_trigger(dc, 40, top + 40, 150, L"L2", p->l2, (b & CELL_PAD_CTRL_L2) != 0);
     pt_button(dc, 40, top + 70, 150, 28, 0, L"L1", (b & CELL_PAD_CTRL_L1) != 0);
@@ -438,10 +455,10 @@ static void pt_paint(HWND hwnd, HDC dc)
     pt_button(dc, mid + 15, dy - 14, 90, 28, 0, L"START", (b & CELL_PAD_CTRL_START) != 0);
 
     SelectObject(dc, s_pt_small);
-    pt_stick(dc, mid - 120, top + 290, 52, p->lx, p->ly, L"왼쪽 스틱 (L3)", (b & CELL_PAD_CTRL_L3) != 0);
-    pt_stick(dc, mid + 120, top + 290, 52, p->rx, p->ry, L"오른쪽 스틱 (R3)", (b & CELL_PAD_CTRL_R3) != 0);
+    pt_stick(dc, mid - 120, top + 290, 52, p->lx, p->ly, macross_ui_string("controller.left_stick"), (b & CELL_PAD_CTRL_L3) != 0);
+    pt_stick(dc, mid + 120, top + 290, 52, p->rx, p->ry, macross_ui_string("controller.right_stick"), (b & CELL_PAD_CTRL_R3) != 0);
 
-    pt_text(dc, in->blocked ? L"이 창이 열려 있는 동안은 게임에 입력이 가지 않습니다 (닫으면 다시 조작)."
+    pt_text(dc, in->blocked ? macross_ui_string("input.paused")
                             : L"",
             16, top + 380, cr.right - 32, 22, DT_SINGLELINE);
 }
@@ -509,15 +526,15 @@ static void null_open_padtest(HWND owner)
     RECT orc; GetWindowRect(owner, &orc);
     cellPad_test_block(1);
     cellPad_test_info(&s_pt_info);
-    s_pt_hwnd = CreateWindowExW(WS_EX_TOPMOST, L"ps3recomp_padtest", L"컨트롤러 테스트",
+    s_pt_hwnd = CreateWindowExW(WS_EX_TOPMOST, L"ps3recomp_padtest", macross_ui_string("controller.test.title"),
                                 WS_CAPTION | WS_SYSMENU | WS_VISIBLE | WS_CLIPCHILDREN,
                                 (orc.left + orc.right - ww) / 2, (orc.top + orc.bottom - wh) / 2, ww, wh,
                                 owner, NULL, hi, NULL);
     if (!s_pt_hwnd) { cellPad_test_block(0); return; }
-    HWND c = CreateWindowExW(0, L"BUTTON", L"진동 테스트", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
+    HWND c = CreateWindowExW(0, L"BUTTON", macross_ui_string("controller.test.vibration"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
                              16, 596, 140, 32, s_pt_hwnd, (HMENU)(INT_PTR)ID_PT_RUMBLE, hi, NULL);
     SendMessageW(c, WM_SETFONT, (WPARAM)s_pt_font, TRUE);
-    c = CreateWindowExW(0, L"BUTTON", L"닫기", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
+    c = CreateWindowExW(0, L"BUTTON", macross_ui_string("common.close"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
                         760 - 116, 596, 100, 32, s_pt_hwnd, (HMENU)(INT_PTR)ID_PT_CLOSE, hi, NULL);
     SendMessageW(c, WM_SETFONT, (WPARAM)s_pt_font, TRUE);
     SetTimer(s_pt_hwnd, ID_PT_TIMER, 33, NULL);
@@ -610,7 +627,7 @@ static void null_open_padmap(HWND owner)
     AdjustWindowRectEx(&wr, WS_CAPTION | WS_SYSMENU, FALSE, WS_EX_TOPMOST);
     const int ww = wr.right - wr.left, wh = wr.bottom - wr.top;
     RECT orc; GetWindowRect(owner, &orc);
-    s_pm_hwnd = CreateWindowExW(WS_EX_TOPMOST, L"ps3recomp_opt_pad", L"패드 버튼 설정",
+    s_pm_hwnd = CreateWindowExW(WS_EX_TOPMOST, L"ps3recomp_opt_pad", macross_ui_string("controller.bindings.title"),
                                 WS_CAPTION | WS_SYSMENU | WS_VISIBLE,
                                 (orc.left + orc.right - ww) / 2, (orc.top + orc.bottom - wh) / 2, ww, wh,
                                 owner, NULL, hi, NULL);
@@ -622,9 +639,7 @@ static void null_open_padmap(HWND owner)
 #define PM_CTL(cls, text, style, x, y, w, h, id) \
     c = CreateWindowExW(0, cls, text, WS_CHILD | WS_VISIBLE | (style), x, y, w, h, s_pm_hwnd, (HMENU)(INT_PTR)(id), hi, NULL); \
     SendMessageW(c, WM_SETFONT, (WPARAM)font, TRUE);
-    PM_CTL(L"STATIC", L"패드 버튼마다 게임에서 쓸 PS3 버튼을 고르세요. 모든 패드에 같이 바로 적용되고 저장됩니다.\n"
-                      L"패드 버튼을 누르면 그 줄이 주황색으로 켜집니다. 스틱은 바꿀 수 없습니다.\n"
-                      L"이 창이 열려 있는 동안은 게임에 입력이 가지 않습니다.",
+    PM_CTL(L"STATIC", macross_ui_string("controller.bindings.help"),
            0, 16, 8, cw - 32, 68, 0)
     for (int i = 0; i < PAD_SRC_COUNT; i++) {
         const int col = i / rows, row = i % rows;
@@ -635,32 +650,117 @@ static void null_open_padmap(HWND owner)
         SendMessageW(c, CB_SETCURSEL, (WPARAM)s_pm_act[i], 0);
     }
     const int by = top + rows * rh + 14;
-    PM_CTL(L"BUTTON", L"기본값으로", BS_PUSHBUTTON | WS_TABSTOP, 16, by, 140, 32, ID_PM_DEFAULTS)
-    PM_CTL(L"BUTTON", L"✕ / ○ 서로 바꾸기", BS_PUSHBUTTON | WS_TABSTOP, 166, by, 180, 32, ID_PM_SWAP)
-    PM_CTL(L"BUTTON", L"닫기", BS_PUSHBUTTON | WS_TABSTOP, cw - 116, by, 100, 32, ID_PM_CLOSE)
+    PM_CTL(L"BUTTON", macross_ui_string("common.defaults"), BS_PUSHBUTTON | WS_TABSTOP, 16, by, 140, 32, ID_PM_DEFAULTS)
+    PM_CTL(L"BUTTON", macross_ui_string("controller.swap_confirm"), BS_PUSHBUTTON | WS_TABSTOP, 166, by, 180, 32, ID_PM_SWAP)
+    PM_CTL(L"BUTTON", macross_ui_string("common.close"), BS_PUSHBUTTON | WS_TABSTOP, cw - 116, by, 100, 32, ID_PM_CLOSE)
 #undef PM_CTL
     SetTimer(s_pm_hwnd, ID_PM_TIMER, 40, NULL);
 }
-enum { ID_OPT_SCALE = 101, ID_OPT_FULL, ID_OPT_VSYNC, ID_OPT_BLOOM, ID_OPT_UNLOCK, ID_OPT_CLOSE, ID_OPT_KEYS, ID_OPT_PADTEST, ID_OPT_PADMAP, ID_OPT_SUBTITLES };
+static HWND s_music_hwnd;
+enum { ID_MUSIC_PATH=701,ID_MUSIC_CHOOSE,ID_MUSIC_OPEN,ID_MUSIC_REFRESH,ID_MUSIC_STATUS };
+static void null_music_status(int refresh)
+{
+    char path[32768];wchar_t wide[32768],status[256];
+    if(cm_get_folder(path,sizeof path)==0) {
+        MultiByteToWideChar(CP_UTF8,0,path,-1,wide,32768);
+        SetDlgItemTextW(s_music_hwnd,ID_MUSIC_PATH,wide);
+    }
+    int count=0;CmTrack track;
+    if(refresh)count=cm_refresh();else while(cm_track((unsigned)count,&track))count++;
+    if(count<0)SetDlgItemTextW(s_music_hwnd,ID_MUSIC_STATUS,macross_ui_string("music.scan_error"));
+    else {
+        _snwprintf(status,256,macross_ui_string("music.track_count"),count);
+        SetDlgItemTextW(s_music_hwnd,ID_MUSIC_STATUS,status);
+    }
+}
+static int CALLBACK null_music_browse(HWND hwnd,UINT msg,LPARAM lp,LPARAM data)
+{
+    (void)lp;if(msg==BFFM_INITIALIZED)SendMessageW(hwnd,BFFM_SETSELECTIONW,TRUE,data);return 0;
+}
+static LRESULT CALLBACK null_music_wndproc(HWND hwnd,UINT msg,WPARAM wp,LPARAM lp)
+{
+    (void)lp;
+    if(msg==WM_COMMAND) {
+        int id=LOWORD(wp);
+        if(id==ID_MUSIC_REFRESH) {null_music_status(1);return 0;}
+        if(id==ID_MUSIC_OPEN||id==ID_MUSIC_CHOOSE) {
+            char path[32768];wchar_t wide[32768];
+            if(cm_get_folder(path,sizeof path))return 0;
+            MultiByteToWideChar(CP_UTF8,0,path,-1,wide,32768);
+            if(id==ID_MUSIC_OPEN) {ShellExecuteW(hwnd,L"open",wide,NULL,NULL,SW_SHOWNORMAL);return 0;}
+            HRESULT com=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);
+            BROWSEINFOW bi={0};bi.hwndOwner=hwnd;bi.lpszTitle=macross_ui_string("music.choose");
+            bi.ulFlags=BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE;bi.lpfn=null_music_browse;bi.lParam=(LPARAM)wide;
+            LPITEMIDLIST chosen=SHBrowseForFolderW(&bi);
+            if(chosen) {
+                wchar_t selected[MAX_PATH];
+                if(SHGetPathFromIDListW(chosen,selected)) {
+                    WideCharToMultiByte(CP_UTF8,0,selected,-1,path,sizeof path,NULL,NULL);
+                    if(cm_set_folder(path))MessageBoxW(hwnd,macross_ui_string("music.folder_error"),macross_ui_string("music.title"),MB_OK|MB_ICONERROR);
+                    null_music_status(1);
+                }
+                CoTaskMemFree(chosen);
+            }
+            if(SUCCEEDED(com))CoUninitialize();return 0;
+        }
+    }
+    if(msg==WM_CLOSE){DestroyWindow(hwnd);return 0;}
+    if(msg==WM_DESTROY){s_music_hwnd=NULL;return 0;}
+    return DefWindowProcW(hwnd,msg,wp,lp);
+}
+static void null_open_music(HWND owner)
+{
+    if(s_music_hwnd){SetForegroundWindow(s_music_hwnd);return;}
+    static int registered;HINSTANCE hi=GetModuleHandleW(NULL);
+    if(!registered) {
+        WNDCLASSEXW wc={0};wc.cbSize=sizeof wc;wc.lpfnWndProc=null_music_wndproc;wc.hInstance=hi;
+        wc.hCursor=LoadCursor(NULL,IDC_ARROW);wc.hbrBackground=(HBRUSH)(COLOR_BTNFACE+1);
+        wc.lpszClassName=L"macross_custom_music";RegisterClassExW(&wc);registered=1;
+    }
+    RECT r;GetWindowRect(owner,&r);
+    s_music_hwnd=CreateWindowExW(WS_EX_TOPMOST,L"macross_custom_music",macross_ui_string("music.title"),
+        WS_CAPTION|WS_SYSMENU|WS_VISIBLE,(r.left+r.right-660)/2,(r.top+r.bottom-270)/2,660,270,owner,NULL,hi,NULL);
+    if(!s_music_hwnd)return;
+    static HFONT font;if(!font)font=CreateFontW(-16,0,0,0,FW_NORMAL,0,0,0,DEFAULT_CHARSET,0,0,CLEARTYPE_QUALITY,0,L"Malgun Gothic");
+    HWND c;
+#define MUSIC_CTL(cls,text,style,x,y,w,h,id) \
+    c=CreateWindowExW(0,cls,text,WS_CHILD|WS_VISIBLE|(style),x,y,w,h,s_music_hwnd,(HMENU)(INT_PTR)(id),hi,NULL); \
+    SendMessageW(c,WM_SETFONT,(WPARAM)font,TRUE);
+    MUSIC_CTL(L"STATIC",macross_ui_string("music.folder"),0,16,12,610,22,0)
+    MUSIC_CTL(L"EDIT",L"",WS_BORDER|ES_READONLY|ES_AUTOHSCROLL,16,38,610,28,ID_MUSIC_PATH)
+    MUSIC_CTL(L"BUTTON",macross_ui_string("music.choose"),BS_PUSHBUTTON|WS_TABSTOP,16,80,195,32,ID_MUSIC_CHOOSE)
+    MUSIC_CTL(L"BUTTON",macross_ui_string("music.open_folder"),BS_PUSHBUTTON|WS_TABSTOP,224,80,195,32,ID_MUSIC_OPEN)
+    MUSIC_CTL(L"BUTTON",macross_ui_string("music.refresh"),BS_PUSHBUTTON|WS_TABSTOP,432,80,194,32,ID_MUSIC_REFRESH)
+    MUSIC_CTL(L"STATIC",L"",0,16,128,610,24,ID_MUSIC_STATUS)
+    MUSIC_CTL(L"STATIC",macross_ui_string("music.help"),0,16,160,610,60,0)
+#undef MUSIC_CTL
+    null_music_status(1);
+}
+
+enum { ID_OPT_SCALE = 101, ID_OPT_FULL, ID_OPT_VSYNC, ID_OPT_BLOOM, ID_OPT_UNLOCK, ID_OPT_CLOSE, ID_OPT_KEYS, ID_OPT_PADTEST, ID_OPT_PADMAP, ID_OPT_SUBTITLES, ID_OPT_MUSIC, ID_OPT_HD_TEXTURES };
 static LRESULT CALLBACK null_opt_wndproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
     switch (msg) {
     case WM_COMMAND: {
         const int id = LOWORD(wp), code = HIWORD(wp);
-        const int checked = ((id >= ID_OPT_FULL && id <= ID_OPT_UNLOCK) || id == ID_OPT_SUBTITLES) &&
+        const int checked = ((id >= ID_OPT_FULL && id <= ID_OPT_UNLOCK) || id == ID_OPT_SUBTITLES || id == ID_OPT_HD_TEXTURES) &&
                             SendMessageW((HWND)lp, BM_GETCHECK, 0, 0) == BST_CHECKED;
         if (id == ID_OPT_SCALE && code == CBN_SELCHANGE) {
             const LRESULT sel = SendMessageW((HWND)lp, CB_GETCURSEL, 0, 0);
-            if (sel >= 0 && sel < 4) s_set.scale_idx = (int)sel;
+            if (sel >= 0 && sel < 6) s_set.scale_idx = (int)sel;
         } else if (id == ID_OPT_FULL) { s_set.fullscreen = checked; null_apply_fullscreen(s_state.hwnd, checked); }
         else if (id == ID_OPT_VSYNC) { s_set.vsync = checked; rsx_live_draw_set_vsync(checked); }
-        else if (id == ID_OPT_BLOOM) { s_set.bloom = checked; null_apply_bloom(); }
-        else if (id == ID_OPT_UNLOCK) s_set.fps_unlock = checked;
+        else if (id == ID_OPT_UNLOCK && code == BN_CLICKED) {
+            s_set.fps_unlock = s_fps_apply ? s_fps_apply(checked) : checked;
+            SendMessageW((HWND)lp, BM_SETCHECK, s_set.fps_unlock ? BST_CHECKED : BST_UNCHECKED, 0);
+        }
         else if (id == ID_OPT_SUBTITLES && code == BN_CLICKED) { s_set.subtitles = checked; null_subtitles_publish(checked); }
+        else if (id == ID_OPT_HD_TEXTURES && code == BN_CLICKED) { s_set.hd_textures = checked; }
         else if (id == ID_OPT_CLOSE) { DestroyWindow(hwnd); return 0; }
         else if (id == ID_OPT_KEYS) { null_open_keys(hwnd); return 0; }
         else if (id == ID_OPT_PADTEST) { null_open_padtest(hwnd); return 0; }
         else if (id == ID_OPT_PADMAP) { null_open_padmap(hwnd); return 0; }
+        else if (id == ID_OPT_MUSIC) { null_open_music(hwnd); return 0; }
         else return DefWindowProcW(hwnd, msg, wp, lp);
         null_settings_save();
         return 0;
@@ -670,6 +770,7 @@ static LRESULT CALLBACK null_opt_wndproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM 
         if (s_key_hwnd) DestroyWindow(s_key_hwnd);
         if (s_pt_hwnd) DestroyWindow(s_pt_hwnd);
         if (s_pm_hwnd) DestroyWindow(s_pm_hwnd);
+        if (s_music_hwnd) DestroyWindow(s_music_hwnd);
         s_opt_hwnd = NULL; if (s_state.hwnd) SetForegroundWindow(s_state.hwnd); return 0;
     }
     return DefWindowProcW(hwnd, msg, wp, lp);
@@ -689,9 +790,9 @@ static void null_open_options(HWND owner)
     }
     /* Centred on the game window (also over it in fullscreen: topmost). */
     RECT orc; GetWindowRect(owner, &orc);
-    const int ow = 470, oh = 490;
+    const int ow = 470, oh = 554;
     const int ox = (orc.left + orc.right - ow) / 2, oy = (orc.top + orc.bottom - oh) / 2;
-    s_opt_hwnd = CreateWindowExW(WS_EX_TOPMOST, L"ps3recomp_options", L"옵션 (F9)",
+    s_opt_hwnd = CreateWindowExW(WS_EX_TOPMOST, L"ps3recomp_options", macross_ui_string("options.title"),
                                  WS_CAPTION | WS_SYSMENU | WS_VISIBLE, ox, oy, ow, oh,
                                  owner, NULL, hi, NULL);
     if (!s_opt_hwnd) return;
@@ -701,30 +802,40 @@ static void null_open_options(HWND owner)
 #define OPT_CTL(cls, text, style, x, y, w, h, id) \
     c = CreateWindowExW(0, cls, text, WS_CHILD | WS_VISIBLE | (style), x, y, w, h, s_opt_hwnd, (HMENU)(INT_PTR)(id), hi, NULL); \
     SendMessageW(c, WM_SETFONT, (WPARAM)font, TRUE);
-    OPT_CTL(L"STATIC", L"해상도 (내부 렌더)", 0, 20, 16, 400, 22, 0)
+    OPT_CTL(L"STATIC", macross_ui_string("options.resolution"), 0, 20, 16, 400, 22, 0)
     OPT_CTL(L"COMBOBOX", L"", CBS_DROPDOWNLIST | WS_TABSTOP | WS_VSCROLL, 20, 40, 400, 200, ID_OPT_SCALE)
     {
-        static const wchar_t* const labels[4] = { L"1280 x 720 (원본)", L"1600 x 900", L"1920 x 1080", L"2560 x 1440" };
-        for (int i = 0; i < 4; i++) SendMessageW(c, CB_ADDSTRING, 0, (LPARAM)labels[i]);
+        const wchar_t* const labels[6] = { macross_ui_string("options.resolution.original"), L"1600 x 900", L"1920 x 1080", L"2560 x 1440", L"3200 x 1800", L"3840 x 2160 (4K)" };
+        for (int i = 0; i < 6; i++) SendMessageW(c, CB_ADDSTRING, 0, (LPARAM)labels[i]);
         SendMessageW(c, CB_SETCURSEL, (WPARAM)s_set.scale_idx, 0);
     }
-    OPT_CTL(L"BUTTON", L"전체화면 (F11, Alt+Enter)", BS_AUTOCHECKBOX | WS_TABSTOP, 20, 84, 400, 24, ID_OPT_FULL)
+    OPT_CTL(L"BUTTON", macross_ui_string("options.fullscreen"), BS_AUTOCHECKBOX | WS_TABSTOP, 20, 84, 400, 24, ID_OPT_FULL)
     SendMessageW(c, BM_SETCHECK, s_set.fullscreen ? BST_CHECKED : BST_UNCHECKED, 0);
-    OPT_CTL(L"BUTTON", L"수직 동기화 (VSync)", BS_AUTOCHECKBOX | WS_TABSTOP, 20, 114, 400, 24, ID_OPT_VSYNC)
+    OPT_CTL(L"BUTTON", macross_ui_string("options.vsync"), BS_AUTOCHECKBOX | WS_TABSTOP, 20, 114, 400, 24, ID_OPT_VSYNC)
     SendMessageW(c, BM_SETCHECK, s_set.vsync ? BST_CHECKED : BST_UNCHECKED, 0);
-    OPT_CTL(L"BUTTON", L"블룸 (빛 번짐)", BS_AUTOCHECKBOX | WS_TABSTOP, 20, 144, 400, 24, ID_OPT_BLOOM)
-    SendMessageW(c, BM_SETCHECK, s_set.bloom ? BST_CHECKED : BST_UNCHECKED, 0);
-    OPT_CTL(L"BUTTON", L"30 FPS 제한 해제 (실험: 연출 속도 보정, 일부 타이밍 차이 가능)", BS_AUTOCHECKBOX | WS_TABSTOP, 20, 174, 400, 24, ID_OPT_UNLOCK)
+#if defined(MACROSS_RELEASE_FPS_LOCKED) && MACROSS_RELEASE_FPS_LOCKED
+    OPT_CTL(L"BUTTON", macross_ui_string("options.uncap.unavailable"), BS_AUTOCHECKBOX, 20, 174, 400, 24, ID_OPT_UNLOCK)
+    SendMessageW(c, BM_SETCHECK, BST_UNCHECKED, 0);
+    EnableWindow(c, FALSE);
+#else
+    OPT_CTL(L"BUTTON", macross_ui_string("options.uncap"), BS_AUTOCHECKBOX | WS_TABSTOP, 20, 174, 400, 24, ID_OPT_UNLOCK)
     SendMessageW(c, BM_SETCHECK, s_set.fps_unlock ? BST_CHECKED : BST_UNCHECKED, 0);
-    OPT_CTL(L"BUTTON", L"자막 표시 (영상·전투)", BS_AUTOCHECKBOX | WS_TABSTOP, 20, 204, 400, 24, ID_OPT_SUBTITLES)
+#endif
+    OPT_CTL(L"BUTTON", macross_ui_string("options.subtitles"), BS_AUTOCHECKBOX | WS_TABSTOP, 20, 204, 400, 24, ID_OPT_SUBTITLES)
     SendMessageW(c, BM_SETCHECK, s_set.subtitles ? BST_CHECKED : BST_UNCHECKED, 0);
-    OPT_CTL(L"STATIC", L"해상도와 30 FPS 제한 해제는 게임을 다시 실행하면 적용됩니다.\n"
-                       L"제한 해제: FPS는 오르지만 게임 일부가 프레임 단위로 진행해 "
-                       L"게임이 빨라집니다. 일반 플레이에는 끄세요.", 0, 20, 238, 420, 110, 0)
-    OPT_CTL(L"BUTTON", L"키 설정 (키보드)...", BS_PUSHBUTTON | WS_TABSTOP, 20, 360, 200, 30, ID_OPT_KEYS)
-    OPT_CTL(L"BUTTON", L"패드 버튼 설정...", BS_PUSHBUTTON | WS_TABSTOP, 230, 360, 200, 30, ID_OPT_PADMAP)
-    OPT_CTL(L"BUTTON", L"컨트롤러 테스트...", BS_PUSHBUTTON | WS_TABSTOP, 20, 400, 200, 30, ID_OPT_PADTEST)
-    OPT_CTL(L"BUTTON", L"닫기", BS_PUSHBUTTON | WS_TABSTOP, 340, 400, 90, 30, ID_OPT_CLOSE)
+#if defined(MACROSS_RELEASE_FPS_LOCKED) && MACROSS_RELEASE_FPS_LOCKED
+    OPT_CTL(L"STATIC", macross_ui_string("options.restart_help.locked"), 0, 20, 278, 420, 110, 0)
+#else
+    OPT_CTL(L"STATIC", macross_ui_string("options.restart_help"), 0, 20, 278, 420, 110, 0)
+#endif
+    OPT_CTL(L"BUTTON", macross_ui_string("options.hd_textures"), BS_AUTOCHECKBOX | WS_TABSTOP, 20, 234, 420, 24, ID_OPT_HD_TEXTURES)
+    SendMessageW(c, BM_SETCHECK, s_set.hd_textures ? BST_CHECKED : BST_UNCHECKED, 0);
+    OPT_CTL(L"STATIC", macross_ui_string("options.hd_textures.help"), 0, 40, 258, 400, 20, 0)
+    OPT_CTL(L"BUTTON", macross_ui_string("input.keyboard.open"), BS_PUSHBUTTON | WS_TABSTOP, 20, 392, 200, 30, ID_OPT_KEYS)
+    OPT_CTL(L"BUTTON", macross_ui_string("controller.bindings.open"), BS_PUSHBUTTON | WS_TABSTOP, 230, 392, 200, 30, ID_OPT_PADMAP)
+    OPT_CTL(L"BUTTON", macross_ui_string("controller.test.open"), BS_PUSHBUTTON | WS_TABSTOP, 20, 432, 200, 30, ID_OPT_PADTEST)
+    OPT_CTL(L"BUTTON", macross_ui_string("common.close"), BS_PUSHBUTTON | WS_TABSTOP, 340, 432, 90, 30, ID_OPT_CLOSE)
+    OPT_CTL(L"BUTTON", macross_ui_string("music.title"), BS_PUSHBUTTON | WS_TABSTOP, 20, 472, 410, 30, ID_OPT_MUSIC)
 #undef OPT_CTL
 }
 
@@ -755,7 +866,7 @@ static LRESULT CALLBACK null_wndproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         SetBkMode(hdc, TRANSPARENT);
         SetTextColor(hdc, RGB(255, 255, 255));
         char buf[128];
-        snprintf(buf, sizeof(buf), "ps3recomp null backend | %u FPS | frame %llu",
+        snprintf(buf, sizeof(buf), "macross30 null backend | %u FPS | frame %llu",
                  s_state.fps, (unsigned long long)s_state.frame_count);
         TextOutA(hdc, 10, 10, buf, (int)strlen(buf));
 
@@ -954,7 +1065,7 @@ int rsx_null_backend_init(u32 width, u32 height, const char* title)
 
     s_state.hwnd = CreateWindowExA(
         0, "ps3recomp_null",
-        title ? title : "ps3recomp",
+        title && strcmp(title, "ps3recomp") ? title : "macross30",
         WS_OVERLAPPEDWINDOW | WS_VISIBLE,
         CW_USEDEFAULT, CW_USEDEFAULT,
         wr.right - wr.left, wr.bottom - wr.top,
@@ -969,9 +1080,9 @@ int rsx_null_backend_init(u32 width, u32 height, const char* title)
      * reads its present interval (the setter only stores it). */
     {   /* Menu bar: 옵션 > 그래픽 옵션 / 전체화면 (hidden in fullscreen). */
         HMENU bar = CreateMenu(), sub = CreatePopupMenu();
-        AppendMenuW(sub, MF_STRING, 0x1F90u, L"옵션 (그래픽·키 설정)...	F9");
-        AppendMenuW(sub, MF_STRING, 0x1FA0u, L"전체화면	F11");
-        AppendMenuW(bar, MF_POPUP, (UINT_PTR)sub, L"옵션(&O)");
+        AppendMenuW(sub, MF_STRING, 0x1F90u, macross_ui_string("options.open"));
+        AppendMenuW(sub, MF_STRING, 0x1FA0u, macross_ui_string("options.fullscreen.menu"));
+        AppendMenuW(bar, MF_POPUP, (UINT_PTR)sub, macross_ui_string("options.menu"));
         s_menu_bar = bar;
         SetMenu(s_state.hwnd, bar);
         /* Keep the client area at the requested size with the menu added. */
@@ -981,15 +1092,16 @@ int rsx_null_backend_init(u32 width, u32 height, const char* title)
                      SWP_NOMOVE | SWP_NOZORDER | SWP_NOOWNERZORDER);
     }
     { HMENU sm = GetSystemMenu(s_state.hwnd, FALSE);   /* title-bar menu entry */
-      if (sm) { AppendMenuW(sm, MF_SEPARATOR, 0, NULL); AppendMenuW(sm, MF_STRING, 0x1F90u, L"옵션 (그래픽·키 설정) (F9)"); } }
+      if (sm) { AppendMenuW(sm, MF_SEPARATOR, 0, NULL); AppendMenuW(sm, MF_STRING, 0x1F90u, macross_ui_string("options.system_menu")); } }
     null_settings_load();
+    if (s_fps_apply) s_set.fps_unlock = s_fps_apply(s_set.fps_unlock);
     null_apply_bloom();
     rsx_live_draw_set_vsync(s_set.vsync);
     if (s_set.fullscreen) null_apply_fullscreen(s_state.hwnd, 1);
 
     s_state.hdc = GetDC(s_state.hwnd);
     s_state.last_fps_time = GetTickCount64();
-    snprintf(s_state.title, sizeof(s_state.title), "%s", title ? title : "ps3recomp");
+    snprintf(s_state.title, sizeof(s_state.title), "%s", title && strcmp(title, "ps3recomp") ? title : "macross30");
     s_state.title_time = s_state.last_fps_time;
 
     /* Keep the display awake, as any PC game does. With the monitor asleep a
@@ -1039,7 +1151,7 @@ int rsx_null_backend_pump_messages(void)
             fps = (s_state.frame_count - s_state.title_frames) * 1000.0 /
                   (double)(now - s_state.title_time);
         wchar_t tb[256];
-        swprintf(tb, 256, L"%hs | FPS: %.2f | draws: %u | %ux%u | F9: 옵션", s_state.title, fps,
+        swprintf(tb, 256, macross_ui_string("window.title"), s_state.title, fps,
                  rsx_live_draw_get_last_draws(), s_state.width, s_state.height);
         SetWindowTextW(s_state.hwnd, tb);
         s_state.title_frames = s_state.frame_count;
@@ -1438,6 +1550,7 @@ void rsx_null_backend_shutdown(void)
 }
 
 /* Headless has no event queue and no window to close. */
+void rsx_null_backend_set_fps_callback(int (*apply)(int)) { (void)apply; }
 int rsx_null_backend_pump_messages(void) { return 0; }
 
 void rsx_null_backend_present(void) { nullsw_present(NULL, 0); }

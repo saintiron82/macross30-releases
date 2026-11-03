@@ -122,6 +122,10 @@ static volatile long g_ld_ps1_vram_ready = 0;
 #include <dxgi1_4.h>
 #include <d3dcompiler.h>
 #include "rsx_vertex_formats.h"
+#include "rsx_shader_prep_runtime.h"
+static HRESULT ld_builtin_compile(LPCVOID source, SIZE_T bytes, LPCSTR name,
+    const D3D_SHADER_MACRO* defines, ID3DInclude* include, LPCSTR entry,
+    LPCSTR target, UINT flags1, UINT flags2, ID3DBlob** code, ID3DBlob** errors);
 #include <sys/stat.h>
 
 #pragma comment(lib, "d3d12.lib")
@@ -275,12 +279,22 @@ static void ld_rs_config(void)
     if (v > 1.24 && v < 1.26) { g_rs_num = 5; g_rs_den = 4; }
     else if (v > 1.49 && v < 1.51) { g_rs_num = 3; g_rs_den = 2; }
     else if (v > 1.99 && v < 2.01) { g_rs_num = 2; g_rs_den = 1; }
+    else if (v > 2.49 && v < 2.51) { g_rs_num = 5; g_rs_den = 2; }
+    else if (v > 2.99 && v < 3.01) { g_rs_num = 3; g_rs_den = 1; }
     if (g_rs_num != g_rs_den)
         fprintf(stderr, "[render-scale] %u/%u for canvas-size local colour targets\n", g_rs_num, g_rs_den);
 }
 static inline u32 ld_rs_up(u32 v) { return (u32)(((u64)v * g_rs_num) / g_rs_den); }
 static inline u32 ld_sx(const surface_t* s, u32 v) { return s->scaled ? ld_rs_up(v) : v; }
 static inline float ld_sxf(const surface_t* s) { return s->scaled ? (float)g_rs_num / (float)g_rs_den : 1.0f; }
+/* Fractional scale rounds equal guest spans differently at different origins.
+ * CopyTextureRegion cannot resample that phase; use the existing draw path. */
+static int ld_copy_span_matches(const surface_t* src, const surface_t* dst,
+                                u32 sx, u32 sy, u32 dx, u32 dy, u32 w, u32 h)
+{
+    return ld_sx(src, sx + w) - ld_sx(src, sx) == ld_sx(dst, dx + w) - ld_sx(dst, dx) &&
+           ld_sx(src, sy + h) - ld_sx(src, sy) == ld_sx(dst, dy + h) - ld_sx(dst, dy);
+}
 static inline u32 ld_host_w(const surface_t* s) { return s->hw ? s->hw : s->w; }   /* host resource size */
 static inline u32 ld_host_h(const surface_t* s) { return s->hh ? s->hh : s->h; }
 typedef struct {
@@ -293,6 +307,10 @@ typedef struct {
     ID3D12Resource* tex;
     ID3D12Resource* snapshot;
     ID3D12Resource* packed_snapshot;
+    /* Three inactive extents plus the active snapshot: bounded GPU reuse. */
+    ID3D12Resource* snapshot_spare[3];
+    D3D12_RESOURCE_STATES snapshot_spare_state[3];
+    u32 snapshot_spare_w[3], snapshot_spare_h[3], snapshot_spare_next;
     D3D12_RESOURCE_STATES packed_state;
     u32 packed_w, packed_h, depth_format;
     u64 snapshot_generation, packed_generation;
@@ -1888,8 +1906,10 @@ static D3D12_TEXTURE_ADDRESS_MODE gcm_wrap(u32 w)
 
 static int ld_is_depth_tex(const rsx_dsp_texture* t)
 {
-    const u32 f = t->format & 0x9Fu;
-    return f >= 0x10u && f <= 0x13u;
+    /* Preserve the format's 0x80 bit, just as the FP comparison decoder does.
+     * Linear/unnormalized flags are outside TEX_FMT_BASE_MASK. */
+    const u32 f = t->format & TEX_FMT_BASE_MASK;
+    return f >= TEX_FMT_DEPTH24_D8 && f <= 0x93u;
 }
 static int ld_depth_border_black(void)
 {
@@ -2968,8 +2988,10 @@ static int ld_texrgba_dump_offset(const rsx_dsp_texture* t)
     }
     return !filtered || t->offset == offset;
 }
+#include "aircraft_hd_runtime.h"
 static ID3D12Resource* decode_guest_texture(const rsx_dsp_texture* t, u32 remap)
 {
+    { ID3D12Resource* hd=aircraft_hd_texture(t); if(hd)return hd; }
     const u32 base_fmt = t->format & TEX_FMT_BASE_MASK & ~(u32)TEX_FMT_UNNORM;
     const int linear = (t->format & TEX_FMT_LINEAR) != 0;
     const u32 w = t->width, h = t->height;
@@ -4460,11 +4482,11 @@ static int ld_downsample(u32 si, u32 sx, u32 sy, u32 k,
             "    return a / (k * k);\n"
             "}\n";
         ID3DBlob *vsb = NULL, *psb = NULL, *err = NULL;
-        HRESULT hr = D3DCompile(src, sizeof(src) - 1u, "ld_downsample", NULL, NULL,
+        HRESULT hr = ld_builtin_compile(src, sizeof(src) - 1u, "ld_downsample", NULL, NULL,
                                 "vs", "vs_5_0", D3DCOMPILE_OPTIMIZATION_LEVEL3, 0, &vsb, &err);
         if (err) { err->lpVtbl->Release(err); err = NULL; }
         if (SUCCEEDED(hr))
-            hr = D3DCompile(src, sizeof(src) - 1u, "ld_downsample", NULL, NULL,
+            hr = ld_builtin_compile(src, sizeof(src) - 1u, "ld_downsample", NULL, NULL,
                             "ps", "ps_5_0", D3DCOMPILE_OPTIMIZATION_LEVEL3, 0, &psb, &err);
         if (err) { err->lpVtbl->Release(err); err = NULL; }
         if (SUCCEEDED(hr) && !g.downsample_rootsig) {
@@ -4571,14 +4593,15 @@ static int ld_downsample(u32 si, u32 sx, u32 sy, u32 k,
  * rect and sample the source surface with a linear clamp sampler.
  * One root signature, one PSO per destination format (cached). */
 static ID3D12RootSignature* g_sblit_rs;
-static struct { DXGI_FORMAT fmt; ID3D12PipelineState* pso; } g_sblit_pso[4];
+static struct { DXGI_FORMAT fmt; int display; ID3D12PipelineState* pso; } g_sblit_pso[8];
 
-static ID3D12PipelineState* ld_scaled_blit_pso(DXGI_FORMAT fmt)
+static ID3D12PipelineState* ld_scaled_blit_pso_ex(DXGI_FORMAT fmt, int display)
 {
-    for (int i = 0; i < 4; i++)
-        if (g_sblit_pso[i].pso && g_sblit_pso[i].fmt == fmt) return g_sblit_pso[i].pso;
+    for (int i = 0; i < 8; i++)
+        if (g_sblit_pso[i].pso && g_sblit_pso[i].fmt == fmt &&
+            g_sblit_pso[i].display == display) return g_sblit_pso[i].pso;
     static const char src[] =
-        "cbuffer C : register(b0) { float4 r; };\n"
+        "cbuffer C : register(b0) { float4 r; float display_gamma; };\n"
         "Texture2D t0 : register(t0);\n"
         "SamplerState s0 : register(s0);\n"
         "struct V { float4 p : SV_Position; float2 uv : TEXCOORD0; };\n"
@@ -4586,15 +4609,17 @@ static ID3D12PipelineState* ld_scaled_blit_pso(DXGI_FORMAT fmt)
         "    V o; float2 q = float2((id << 1) & 2, id & 2);\n"
         "    o.p = float4(q * float2(2, -2) + float2(-1, 1), 0, 1);\n"
         "    o.uv = r.xy + (r.zw - r.xy) * q; return o; }\n"
-        "float4 ps(V i) : SV_Target { return t0.SampleLevel(s0, i.uv, 0); }\n";
+        "float4 ps(V i) : SV_Target { return t0.SampleLevel(s0, i.uv, 0); }\n"
+        "float4 ps_display(V i) : SV_Target { float4 c = ps(i);\n"
+        "    c.rgb = pow(saturate(c.rgb), display_gamma); return c; }\n";
     if (!g_sblit_rs) {
         D3D12_DESCRIPTOR_RANGE range = {0};
         range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
         range.NumDescriptors = 1;
         D3D12_ROOT_PARAMETER p[2] = {0};
         p[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
-        p[0].Constants.Num32BitValues = 4;
-        p[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+        p[0].Constants.Num32BitValues = 5;
+        p[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
         p[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
         p[1].DescriptorTable.NumDescriptorRanges = 1;
         p[1].DescriptorTable.pDescriptorRanges = &range;
@@ -4618,8 +4643,8 @@ static ID3D12PipelineState* ld_scaled_blit_pso(DXGI_FORMAT fmt)
         if (FAILED(hr)) { g_sblit_rs = NULL; return NULL; }
     }
     ID3DBlob* vs = NULL; ID3DBlob* ps = NULL; ID3DBlob* err = NULL;
-    if (FAILED(D3DCompile(src, sizeof(src) - 1u, "scaled_blit", NULL, NULL, "vs", "vs_5_0", 0, 0, &vs, &err)) ||
-        FAILED(D3DCompile(src, sizeof(src) - 1u, "scaled_blit", NULL, NULL, "ps", "ps_5_0", 0, 0, &ps, &err))) {
+    if (FAILED(ld_builtin_compile(src, sizeof(src) - 1u, "scaled_blit", NULL, NULL, "vs", "vs_5_0", 0, 0, &vs, &err)) ||
+        FAILED(ld_builtin_compile(src, sizeof(src) - 1u, "scaled_blit", NULL, NULL, display ? "ps_display" : "ps", "ps_5_0", 0, 0, &ps, &err))) {
         fprintf(stderr, "[scaled-blit] shader compile failed: %s\n",
                 err ? (const char*)err->lpVtbl->GetBufferPointer(err) : "?");
         if (err) err->lpVtbl->Release(err);
@@ -4643,9 +4668,14 @@ static ID3D12PipelineState* ld_scaled_blit_pso(DXGI_FORMAT fmt)
     HRESULT hr = g.dev->lpVtbl->CreateGraphicsPipelineState(g.dev, &pd, &IID_ID3D12PipelineState, (void**)&pso);
     vs->lpVtbl->Release(vs); ps->lpVtbl->Release(ps);
     if (FAILED(hr)) { fprintf(stderr, "[scaled-blit] PSO failed hr=0x%08lX\n", (unsigned long)hr); return NULL; }
-    for (int i = 0; i < 4; i++)
-        if (!g_sblit_pso[i].pso) { g_sblit_pso[i].fmt = fmt; g_sblit_pso[i].pso = pso; break; }
+    for (int i = 0; i < 8; i++)
+        if (!g_sblit_pso[i].pso) { g_sblit_pso[i].fmt = fmt; g_sblit_pso[i].display = display; g_sblit_pso[i].pso = pso; break; }
     return pso;
+}
+
+static ID3D12PipelineState* ld_scaled_blit_pso(DXGI_FORMAT fmt)
+{
+    return ld_scaled_blit_pso_ex(fmt, 0);
 }
 
 /* Draw source surface rect (sx,sy,sw,sh, guest pixels) scaled into the
@@ -4795,7 +4825,7 @@ static void ld_surface_upload_from_guest(u32 slot)
  * the 640x360 buffer the SPU bloom chain leaves at 1:0x017C0000, and the LUT
  * is the one the SPU itself was about to apply (captured from LS by
  * spu_posttask_native/guard.c). Runs once per frame at the first resolve.
- * no_pp_gpu file in the working directory disables it. */
+ * pp_gpu_off file in the working directory disables it. */
 unsigned char g_pp_lut[768];
 volatile long g_pp_lut_seq;
 volatile unsigned g_pp_scale9, g_pp_scale10;
@@ -4825,11 +4855,12 @@ static int ld_ppg_disabled(void)
     const DWORD now = GetTickCount();
     if (v < 0 || now - last > 1000u) {
         const int was = v; last = now;
-        /* Opt-in (pp_gpu file) until the flicker it causes is understood.
-         * Always on with a render scale: the SPU's own composite is guest-
-         * sized and cannot be shown at the host scale. */
-        v = (GetFileAttributesA("pp_gpu") == INVALID_FILE_ATTRIBUTES && g_rs_num == g_rs_den) ||
-            GetFileAttributesA("pp_gpu_off") != INVALID_FILE_ATTRIBUTES;   /* A/B: no GPU post-process */
+        /* The scene needs the same final exposure/tone stage at every scale.
+         * At native scale the old opt-in also left guest upload disabled
+         * (blit_writeback is opt-in), presenting the pre-SPU scene instead.
+         * The LUT surface copy and applied_wgen guard below address the old
+         * zero-LUT/double-application flicker. Keep explicit diagnostic opt-out. */
+        v = GetFileAttributesA("pp_gpu_off") != INVALID_FILE_ATTRIBUTES;
         if (was >= 0 && was != v) fprintf(stderr, "[pp-gpu] %s\n", v ? "OFF" : "ON");
     }
     return v;
@@ -4898,9 +4929,9 @@ static int ld_ppg_build(u32 w, u32 h)
         "        acc += scene.SampleLevel(lin, uv + gain.xy * k, 0).rgb * wt; ws += wt; }\n"
         "    return float4(acc / ws, 1); }\n";
     ID3DBlob* vs = NULL; ID3DBlob* ps = NULL; ID3DBlob* bps = NULL; ID3DBlob* err = NULL;
-    if (FAILED(D3DCompile(src, sizeof(src) - 1u, "pp_gpu", NULL, NULL, "vs", "vs_5_0", 0, 0, &vs, &err)) ||
-        FAILED(D3DCompile(src, sizeof(src) - 1u, "pp_gpu", NULL, NULL, "ps", "ps_5_0", 0, 0, &ps, &err)) ||
-        FAILED(D3DCompile(src, sizeof(src) - 1u, "pp_gpu", NULL, NULL, "blur", "ps_5_0", 0, 0, &bps, &err))) {
+    if (FAILED(ld_builtin_compile(src, sizeof(src) - 1u, "pp_gpu", NULL, NULL, "vs", "vs_5_0", 0, 0, &vs, &err)) ||
+        FAILED(ld_builtin_compile(src, sizeof(src) - 1u, "pp_gpu", NULL, NULL, "ps", "ps_5_0", 0, 0, &ps, &err)) ||
+        FAILED(ld_builtin_compile(src, sizeof(src) - 1u, "pp_gpu", NULL, NULL, "blur", "ps_5_0", 0, 0, &bps, &err))) {
         fprintf(stderr, "[pp-gpu] compile failed: %s\n", err ? (const char*)err->lpVtbl->GetBufferPointer(err) : "?");
         if (err) err->lpVtbl->Release(err);
         if (vs) vs->lpVtbl->Release(vs);
@@ -5459,7 +5490,8 @@ int rsx_live_draw_resolve_blit(u32 src_loc, u32 src_abs, u32 src_pitch, u32 ds, 
     if (!w || !h) return 0;
     /* Render scale: a copy between surfaces of different host scale is a
      * draw; between equally scaled ones it runs in host pixels. */
-    if (g.surfaces[si].scaled != dst->scaled)
+    if (g.surfaces[si].scaled != dst->scaled ||
+        (k == 1 && !ld_copy_span_matches(&g.surfaces[si], dst, sx, sy, dx, dy, w, h)))
         return ld_scaled_blit((u32)si, (float)sx, (float)sy, (float)(w * k), (float)(h * k), slot, dx, dy, w, h);
     const u32 hsx = ld_sx(dst, sx), hsy = ld_sx(dst, sy), hdx = ld_sx(dst, dx), hdy = ld_sx(dst, dy);
     /* Extent from the scaled destination end point (see ld_scaled_blit),
@@ -5545,7 +5577,8 @@ static int ld_blit_gpu(u32 src_loc, u32 src_abs, u32 src_pitch,
     if (g.surfaces[di].fmt != g.surfaces[si].fmt) return -5;
     /* Render scale: different host scales need a draw; equal ones copy in
      * host pixels. The write-back below takes guest coordinates. */
-    if (g.surfaces[si].scaled != g.surfaces[di].scaled) {
+    if (g.surfaces[si].scaled != g.surfaces[di].scaled ||
+        !ld_copy_span_matches(&g.surfaces[si], &g.surfaces[di], sx, sy, dx, dy, w, h)) {
         if (!ld_scaled_blit((u32)si, (float)sx, (float)sy, (float)w, (float)h, (u32)di, dx, dy, w, h)) return -6;
         ld_wb_record((u32)di, dx, dy, w, h, dst_loc, dst_abs, dst_pitch);
         return 1;
@@ -6025,9 +6058,9 @@ static int ld_zimp_build(void)
         "    uint d = i.mode > 0.5 ? ((b.r << 16) | (b.g << 8) | b.b) : ((b.a << 16) | (b.r << 8) | b.g);\n"
         "    return (float)d / 16777215.0; }\n";
     ID3DBlob* vs = NULL; ID3DBlob* ps = NULL; ID3DBlob* psd = NULL; ID3DBlob* err = NULL;
-    if (FAILED(D3DCompile(src, sizeof(src) - 1u, "zeta_import", NULL, NULL, "vs", "vs_5_0", 0, 0, &vs, &err)) ||
-        FAILED(D3DCompile(src, sizeof(src) - 1u, "zeta_import", NULL, NULL, "ps", "ps_5_0", 0, 0, &ps, &err)) ||
-        FAILED(D3DCompile(src, sizeof(src) - 1u, "zeta_import", NULL, NULL, "ps_depth", "ps_5_0", 0, 0, &psd, &err))) {
+    if (FAILED(ld_builtin_compile(src, sizeof(src) - 1u, "zeta_import", NULL, NULL, "vs", "vs_5_0", 0, 0, &vs, &err)) ||
+        FAILED(ld_builtin_compile(src, sizeof(src) - 1u, "zeta_import", NULL, NULL, "ps", "ps_5_0", 0, 0, &ps, &err)) ||
+        FAILED(ld_builtin_compile(src, sizeof(src) - 1u, "zeta_import", NULL, NULL, "ps_depth", "ps_5_0", 0, 0, &psd, &err))) {
         fprintf(stderr, "[zeta-import] compile failed: %s\n",
                 err ? (const char*)err->lpVtbl->GetBufferPointer(err) : "?");
         if (err) err->lpVtbl->Release(err);
@@ -6204,20 +6237,34 @@ static D3D12_CPU_DESCRIPTOR_HANDLE dsv_handle(u32 slot)
     return h;
 }
 
-/* The R32F snapshot is sized from the clip of the first pass that bound the
- * zeta. A title that first binds its full-screen zeta with a smaller clip
- * (a 512x512 pass into a 1280x720 depth buffer) kept a 512x512 snapshot, and
- * every later full-size read of that depth saw 0 outside the top-left
- * corner. Grow the snapshot to the largest clip bound since, within the
- * depth resource. */
-static void zdepth_grow_snapshot(u32 i, u32 rt_w, u32 rt_h)
+/* Snapshot dimensions describe the latest producer, not the largest DSV
+ * allocation. The same guest address alternates between scaled scene depth
+ * and unscaled square shadow maps. Read-only binds must retain the producer's
+ * dimensions; otherwise normalized shadow UVs sample padded/old pixels. */
+static void ld_depth_snapshot_extent(u32 backing_w, u32 backing_h,
+                                     u32 rt_w, u32 rt_h, u32* w, u32* h)
+{
+    *w = rt_w && rt_w < backing_w ? rt_w : backing_w;
+    *h = rt_h && rt_h < backing_h ? rt_h : backing_h;
+}
+static void zdepth_producer_snapshot(u32 i, u32 rt_w, u32 rt_h, u32 scaled)
 {
     zdepth_t* z = &g.zdepths[i];
     if (!z->snapshot) return;
-    u32 nw = rt_w < z->w ? rt_w : z->w, nh = rt_h < z->h ? rt_h : z->h;
-    if (nw < z->snapshot_w) nw = z->snapshot_w;
-    if (nh < z->snapshot_h) nh = z->snapshot_h;
-    if (nw == z->snapshot_w && nh == z->snapshot_h) return;
+    u32 nw, nh;
+    ld_depth_snapshot_extent(z->w, z->h, rt_w, rt_h, &nw, &nh);
+    if (nw == z->snapshot_w && nh == z->snapshot_h) {
+        z->scaled = scaled;
+        return;
+    }
+    int spare = -1;
+    for (u32 k = 0; k < 3; ++k)
+        if (z->snapshot_spare[k] && z->snapshot_spare_w[k] == nw &&
+            z->snapshot_spare_h[k] == nh) { spare = (int)k; break; }
+    ID3D12Resource* snap = spare >= 0 ? z->snapshot_spare[spare] : NULL;
+    D3D12_RESOURCE_STATES state = spare >= 0 ? z->snapshot_spare_state[spare]
+                                                   : D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
+    if (!snap) {
     D3D12_HEAP_PROPERTIES hp = {0};
     hp.Type = D3D12_HEAP_TYPE_DEFAULT;
     D3D12_RESOURCE_DESC rd = {0};
@@ -6229,23 +6276,33 @@ static void zdepth_grow_snapshot(u32 i, u32 rt_w, u32 rt_h)
     rd.Format = DXGI_FORMAT_R32_FLOAT;
     rd.SampleDesc.Count = 1;
     rd.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
-    ID3D12Resource* snap = NULL;
     if (FAILED(g.dev->lpVtbl->CreateCommittedResource(
             g.dev, &hp, D3D12_HEAP_FLAG_NONE, &rd,
             D3D12_RESOURCE_STATE_UNORDERED_ACCESS, NULL,
             &IID_ID3D12Resource, (void**)&snap))) {
-        fprintf(stderr, "[zetatrack] snapshot grow failed %u:0x%X %ux%u\n",
+        fprintf(stderr, "[zetatrack] snapshot resize failed %u:0x%X %ux%u\n",
                 z->location, z->offset, nw, nh);
         return;
     }
-    fprintf(stderr, "[zetatrack] snapshot %u:0x%X grown %ux%u -> %ux%u\n",
+    }
+    static u32 resize_logs;
+    if (resize_logs++ < 24) fprintf(stderr, "[zetatrack] snapshot %u:0x%X resized %ux%u -> %ux%u\n",
             z->location, z->offset, z->snapshot_w, z->snapshot_h, nw, nh);
-    /* The open command list may still read the old one. */
-    retire_texture(z->snapshot);
+    /* Keep inactive allocations, but never their content-validity. The
+     * current depth resource is authoritative and every swap resolves anew.
+     * Retire evictions only after the open GPU command list has completed. */
+    const u32 keep = spare >= 0 ? (u32)spare : z->snapshot_spare_next++ % 3u;
+    if (spare < 0 && z->snapshot_spare[keep]) retire_texture(z->snapshot_spare[keep]);
+    z->snapshot_spare[keep] = z->snapshot;
+    z->snapshot_spare_state[keep] = z->snapshot_state;
+    z->snapshot_spare_w[keep] = z->snapshot_w;
+    z->snapshot_spare_h[keep] = z->snapshot_h;
     z->snapshot = snap;
     z->snapshot_w = nw;
     z->snapshot_h = nh;
-    z->snapshot_state = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
+    z->scaled = scaled;
+    z->packed_generation = UINT64_MAX;
+    z->snapshot_state = state;
     srv_write_zdepth(SRV_ZDEPTH_BASE + i, z->snapshot);
     uav_write_zdepth(UAV_ZDEPTH_BASE + i, z->snapshot);
     /* The depth resource still holds what the old snapshot held (a clear
@@ -6255,7 +6312,7 @@ static void zdepth_grow_snapshot(u32 i, u32 rt_w, u32 rt_h)
 }
 
 /* Returns DSV slot 1+i. Slot 0 is the legacy shared depth fallback. */
-static u32 zdepth_get(u32 location, u32 offset, u32 rt_w, u32 rt_h)
+static u32 zdepth_get(u32 location, u32 offset, u32 rt_w, u32 rt_h, int producer)
 {
     if (!honor_zeta_track()) return 0;
     /* The DSV must cover the complete live framebuffer/viewport it is bound
@@ -6285,7 +6342,7 @@ static u32 zdepth_get(u32 location, u32 offset, u32 rt_w, u32 rt_h)
                         fprintf(stderr, "[render-scale] zeta %u:0x%X (%ux%u) bound with an unscaled %ux%u target\n",
                                 location, offset, z->w, z->h, rt_w, rt_h);
                 }
-                zdepth_grow_snapshot(i, rt_w, rt_h);
+                if (producer) zdepth_producer_snapshot(i, rt_w, rt_h, (u32)zscaled);
                 return 1 + i;
             }
             slot = i;
@@ -6521,7 +6578,7 @@ static int make_depth_pack_pipeline(void)
         " dst[id.xy]=float4((d>>8)&255u,d&255u,st,(d>>16)&255u)/255.0;\n"
         "}\n";
     ID3DBlob *shader = NULL, *errors = NULL;
-    HRESULT hr = D3DCompile(source, sizeof(source)-1, "depth_color_reinterpret",
+    HRESULT hr = ld_builtin_compile(source, sizeof(source)-1, "depth_color_reinterpret",
         NULL,NULL,"main","cs_5_0",D3DCOMPILE_OPTIMIZATION_LEVEL3,0,&shader,&errors);
     if (FAILED(hr)) {
         fprintf(stderr,"[zpack] shader compile failed: %s\n",errors ?
@@ -6713,23 +6770,18 @@ static int shader_disk_cache_path(
     return length > 0 && length < MAX_PATH;
 }
 
-static ID3DBlob* shader_disk_cache_load(
-    u32 stage, const char* source, u32 source_length, u64 hash)
+static u64 g_ld_shader_seed_hits;
+
+/* Reads one cache-format file; exact generated source, DXBC container and
+ * header fields must all match. *reject_kind says why it did not. */
+static int shader_disk_cache_read(
+    FILE* file, u32 stage, const char* source, u32 source_length, u64 hash,
+    ID3DBlob** out, int* reject_kind)
 {
-    char path[MAX_PATH];
-    const u32 stage_index = shader_disk_cache_stage_index(stage);
-    if (!shader_disk_cache_path(path, stage, hash, source_length))
-        return NULL;
-
-    FILE* file = fopen(path, "rb");
-    if (!file) {
-        const u64 value = ++g_ld_shader_disk_misses[stage_index];
-        shader_disk_cache_progress(value);
-        return NULL;
-    }
-
     shader_disk_cache_header header;
     memset(&header, 0, sizeof(header));
+    *out = NULL;
+    *reject_kind = RSP_REJECT_FORMAT;
     int valid = fread(&header, sizeof(header), 1, file) == 1 &&
         header.magic == SHADER_DISK_CACHE_MAGIC &&
         header.version == SHADER_DISK_CACHE_VERSION &&
@@ -6742,30 +6794,83 @@ static ID3DBlob* shader_disk_cache_load(
     if (valid) {
         stored_source = (char*)malloc(source_length ? source_length : 1u);
         valid = stored_source != NULL &&
-            fread(stored_source, 1, source_length, file) == source_length &&
-            memcmp(stored_source, source, source_length) == 0;
+            fread(stored_source, 1, source_length, file) == source_length;
+        if (valid && memcmp(stored_source, source, source_length) != 0) {
+            valid = 0;
+            *reject_kind = RSP_REJECT_SOURCE;
+        }
     }
     if (valid) {
         valid = SUCCEEDED(D3DCreateBlob(header.blob_length, &blob)) && blob &&
             fread(blob->lpVtbl->GetBufferPointer(blob), 1,
                   header.blob_length, file) == header.blob_length;
     }
+    if (valid && !rsp_dxbc_valid(blob->lpVtbl->GetBufferPointer(blob),
+                                 blob->lpVtbl->GetBufferSize(blob))) {
+        valid = 0;
+        *reject_kind = RSP_REJECT_DXBC;
+    }
     free(stored_source);
-    fclose(file);
-
     if (!valid) {
         if (blob)
             blob->lpVtbl->Release(blob);
+        return 0;
+    }
+    *out = blob;
+    return 1;
+}
+
+/* User cache first (it has precedence), then the shipped seed next to the
+ * executable. A bad user entry is deleted; the seed is never modified.
+ * Driver PSO data is never part of either. */
+static ID3DBlob* shader_disk_cache_load(
+    u32 stage, const char* source, u32 source_length, u64 hash)
+{
+    char path[MAX_PATH];
+    const u32 stage_index = shader_disk_cache_stage_index(stage);
+    if (!shader_disk_cache_path(path, stage, hash, source_length))
+        return NULL;
+
+    ID3DBlob* blob = NULL;
+    int reject_kind = RSP_REJECT_FORMAT;
+    FILE* file = fopen(path, "rb");
+    if (file) {
+        const int ok = shader_disk_cache_read(
+            file, stage, source, source_length, hash, &blob, &reject_kind);
+        fclose(file);
+        if (ok) {
+            const u64 value = ++g_ld_shader_disk_hits[stage_index];
+            shader_disk_cache_progress(value);
+            rsp_rt_note_load(stage, 0, 1, -1);
+            return blob;
+        }
         DeleteFileA(path);
         g_ld_shader_disk_rejects++;
-        const u64 value = ++g_ld_shader_disk_misses[stage_index];
-        shader_disk_cache_progress(value);
-        return NULL;
+        rsp_rt_note_load(stage, 0, 0, reject_kind);
     }
-
-    const u64 value = ++g_ld_shader_disk_hits[stage_index];
+    file = rsp_seed_open(SHADER_DISK_CACHE_VERSION, stage, hash, source_length);
+    if (file) {
+        const int ok = shader_disk_cache_read(
+            file, stage, source, source_length, hash, &blob, &reject_kind);
+        fclose(file);
+        if (ok) {
+            const u64 value = ++g_ld_shader_disk_hits[stage_index];
+            shader_disk_cache_progress(value);
+            rsp_rt_note_load(stage, 1, 1, -1);
+            ++g_ld_shader_seed_hits;
+            if (g_ld_shader_seed_hits <= 4 ||
+                (g_ld_shader_seed_hits & (g_ld_shader_seed_hits - 1)) == 0)
+                fprintf(stderr, "[shader-cache-seed] hit=%llu stage=%c source=%016llX bytes=%u exact_source=1\n",
+                    (unsigned long long)g_ld_shader_seed_hits, (char)stage,
+                    (unsigned long long)hash, source_length);
+            return blob;
+        }
+        g_ld_shader_disk_rejects++;
+        rsp_rt_note_load(stage, 1, 0, reject_kind);
+    }
+    const u64 value = ++g_ld_shader_disk_misses[stage_index];
     shader_disk_cache_progress(value);
-    return blob;
+    return NULL;
 }
 
 static void shader_disk_cache_store(
@@ -6815,6 +6920,45 @@ static void shader_disk_cache_store(
     const u32 stage_index = shader_disk_cache_stage_index(stage);
     const u64 value = ++g_ld_shader_disk_writes[stage_index];
     shader_disk_cache_progress(value);
+}
+
+static const char* ld_shader_cache_dir_or_null(void)
+{
+    return g_ld_shader_disk_ready > 0 ? g_ld_shader_disk_dir : NULL;
+}
+
+/* Fixed renderer shaders (blits, post-process, original bloom kernels): the
+ * same cache/seed path as generated shaders under stage 'B'. The identity
+ * text is name/entry/target/flags followed by the complete source, so any
+ * change to either compiles normally. Defines/includes bypass the cache. */
+static HRESULT ld_builtin_compile(LPCVOID source, SIZE_T bytes, LPCSTR name,
+    const D3D_SHADER_MACRO* defines, ID3DInclude* include, LPCSTR entry,
+    LPCSTR target, UINT flags1, UINT flags2, ID3DBlob** code, ID3DBlob** errors)
+{
+    uint32_t identity_length = 0;
+    char* identity = defines || include ? NULL : rsp_builtin_identity(
+        source, bytes, name, entry, target, flags1, flags2, &identity_length);
+    if (!identity)
+        return D3DCompile(source, bytes, name, defines, include, entry, target,
+                          flags1, flags2, code, errors);
+    const u64 hash = fnv1a(identity, identity_length, 1469598103934665603ull);
+    ID3DBlob* blob = shader_disk_cache_load('B', identity, identity_length, hash);
+    if (blob) {
+        *code = blob;
+        if (errors)
+            *errors = NULL;
+        free(identity);
+        return S_OK;
+    }
+    const double begin = rsp_now_ms();
+    const HRESULT hr = D3DCompile(source, bytes, name, defines, include, entry,
+                                  target, flags1, flags2, code, errors);
+    rsp_rt_note_compile('B', hash, identity_length, rsp_now_ms() - begin,
+                        g_ld_frames, hr, ld_shader_cache_dir_or_null());
+    if (SUCCEEDED(hr) && *code)
+        shader_disk_cache_store('B', identity, identity_length, hash, *code);
+    free(identity);
+    return hr;
 }
 
 static u64 ld_hash_structural_render_state(
@@ -7318,9 +7462,13 @@ static ID3D12PipelineState* build_pso(
             g_ld_profile.total.vs_compile_calls++;
             const LONGLONG compile_begin = ld_profile_qpc();
 #endif
+            const double vs_compile_begin = rsp_now_ms();
             vs_hr = D3DCompile(
                 vs_hlsl, vs_length, "xvs", NULL, NULL, "main",
                 "vs_5_0", 0, 0, &vs, &err);
+            rsp_rt_note_compile('V', vs_hash, vs_length,
+                rsp_now_ms() - vs_compile_begin, g_ld_frames, vs_hr,
+                ld_shader_cache_dir_or_null());
 #if defined(YZ_PERF_PROFILE)
             g_ld_profile.total.vs_compile_qpc +=
                 (u64)(ld_profile_qpc() - compile_begin);
@@ -7380,9 +7528,13 @@ static ID3D12PipelineState* build_pso(
             g_ld_profile.total.ps_compile_calls++;
             const LONGLONG compile_begin = ld_profile_qpc();
 #endif
+            const double ps_compile_begin = rsp_now_ms();
             ps_hr = D3DCompile(
                 ps_hlsl, ps_length, "xps", NULL, NULL, "main",
                 "ps_5_0", 0, 0, &ps, &err);
+            rsp_rt_note_compile('P', ps_hash, ps_length,
+                rsp_now_ms() - ps_compile_begin, g_ld_frames, ps_hr,
+                ld_shader_cache_dir_or_null());
 #if defined(YZ_PERF_PROFILE)
             g_ld_profile.total.ps_compile_qpc +=
                 (u64)(ld_profile_qpc() - compile_begin);
@@ -7457,13 +7609,23 @@ static ID3D12PipelineState* build_pso(
     for (u32 r = 0; r < pd.NumRenderTargets; r++)
         pd.RTVFormats[r] = ld_surface_format(rs->rt_color_format);
     pd.SampleDesc.Count = 1;
-    ID3D12PipelineState* pso = NULL;
+    /* Local pipeline library (built on this PC for this adapter/driver)
+     * first; a miss creates the PSO exactly as before and records the
+     * descriptor for the next preparation run. */
+    rsp_rt_query pso_query;
+    ID3D12PipelineState* pso = rsp_rt_pso_lookup(
+        &pso_query, g.dev, ld_shader_cache_dir_or_null(), &pd,
+        vs_hash, vs_length, ps_hash, ps_length);
+    HRESULT hr = S_OK;
 #if defined(YZ_PERF_PROFILE)
     g_ld_profile.total.create_pso_calls++;
     const LONGLONG create_begin = ld_profile_qpc();
 #endif
-    HRESULT hr = g.dev->lpVtbl->CreateGraphicsPipelineState(
-        g.dev, &pd, &IID_ID3D12PipelineState, (void**)&pso);
+    if (!pso) {
+        hr = g.dev->lpVtbl->CreateGraphicsPipelineState(
+            g.dev, &pd, &IID_ID3D12PipelineState, (void**)&pso);
+        rsp_rt_pso_created(&pso_query, hr, g_ld_frames);
+    }
 #if defined(YZ_PERF_PROFILE)
     g_ld_profile.total.create_pso_qpc +=
         (u64)(ld_profile_qpc() - create_begin);
@@ -11748,7 +11910,9 @@ static void sink_end_impl(void* user, const rsx_dispatch* r)
     rsx_dsp_get_surface(&g.rsx, &sf);
     rsx_dsp_get_viewport(&g.rsx, &vp);
     const u32 current_zslot = g.depth
-        ? zdepth_get(sf.zeta_location, sf.zeta_offset, sf.clip_w, sf.clip_h)
+        ? zdepth_get(sf.zeta_location, sf.zeta_offset, sf.clip_w, sf.clip_h,
+                     (rsx_dsp_reg(&g.rsx, M_DEPTH_TEST_ENABLE) & 1u) &&
+                     (rsx_dsp_reg(&g.rsx, M_DEPTH_WRITE) & 1u))
         : 0;
     ld_cpu_draw_phase_switch(LD_CPU_PHASE_TEXTURE);
     u32 slots[SRV_TABLE_SIZE], smp_slots[SMP_TABLE_SIZE];
@@ -12690,7 +12854,7 @@ static void sink_clear(void* user, const rsx_dispatch* r, u32 mask)
         rsx_dsp_surface sf;
         rsx_dsp_get_surface(&g.rsx, &sf);
         const u32 zslot = zdepth_get(sf.zeta_location, sf.zeta_offset,
-                                     sf.clip_w, sf.clip_h);
+                                     sf.clip_w, sf.clip_h, (mask & RSX_CLEAR_DEPTH) != 0);
         if (zslot && (mask & RSX_CLEAR_STENCIL))
             g.zdepths[zslot - 1].packed_generation = UINT64_MAX;
         D3D12_CPU_DESCRIPTOR_HANDLE dsv = dsv_handle(zslot);
@@ -12807,6 +12971,9 @@ static int make_root_signature(void)
     HRESULT hr = g.dev->lpVtbl->CreateRootSignature(g.dev, 0, sig->lpVtbl->GetBufferPointer(sig),
                                                     sig->lpVtbl->GetBufferSize(sig),
                                                     &IID_ID3D12RootSignature, (void**)&g.rootsig_x);
+    if (SUCCEEDED(hr))
+        rsp_rt_register_root(sig->lpVtbl->GetBufferPointer(sig),
+                             sig->lpVtbl->GetBufferSize(sig), g.rootsig_x);
     sig->lpVtbl->Release(sig);
     return SUCCEEDED(hr) ? 0 : -1;
 }
@@ -12826,7 +12993,7 @@ static int make_depth_snapshot_pipeline(void)
         "}\n";
     ID3DBlob* shader = NULL;
     ID3DBlob* errors = NULL;
-    HRESULT hr = D3DCompile(
+    HRESULT hr = ld_builtin_compile(
         source, sizeof(source) - 1u, "depth_snapshot_compute", NULL, NULL,
         "main", "cs_5_0", D3DCOMPILE_OPTIMIZATION_LEVEL3, 0,
         &shader, &errors);
@@ -13603,6 +13770,12 @@ void rsx_live_draw_present_rgba(const uint8_t* rgba, u32 w, u32 h)
         return;
     }
 
+    extern float cellAvconfExt_display_gamma(void);
+    const float movie_gamma = cellAvconfExt_display_gamma();
+    u8 gamma_lut[256];
+    if (movie_gamma != 1.0f)
+        for (u32 i = 0; i < 256; i++)
+            gamma_lut[i] = (u8)(powf((float)i / 255.0f, movie_gamma) * 255.0f + 0.5f);
     u8* host_upload = composite ? g.movie_upload_mapped : g.upload_mapped;
     for (u32 y = 0; y < h; y++) {
         u8* dstrow = host_upload + (size_t)y * pitch;
@@ -13634,6 +13807,12 @@ void rsx_live_draw_present_rgba(const uint8_t* rgba, u32 w, u32 h)
                 out[3] = 255;
             }
         }
+        /* Calibrate the composed movie once, leaving alpha and source assets
+         * untouched. Scene/game UI calibration happens only at final present. */
+        if (movie_gamma != 1.0f)
+            for (u32 x = 0; x < w; x++)
+                for (u32 c = 0; c < 3; c++)
+                    dstrow[x * 4 + c] = gamma_lut[dstrow[x * 4 + c]];
     }
 
     const u32 bbi = g.swap->lpVtbl->GetCurrentBackBufferIndex(g.swap);
@@ -14402,9 +14581,12 @@ void rsx_live_draw_present(u32 buffer_id)
     /* The swap chain is the scaled canvas (LD_RENDER_SCALE). A presented
      * surface of any other host size is stretched in with a draw;
      * CopyResource needs identical sizes. */
-    const int stretch = presented_surface->hw != ld_rs_up(g.width) ||
+    extern float cellAvconfExt_display_gamma(void);
+    const float display_gamma = cellAvconfExt_display_gamma();
+    const int stretch = display_gamma != 1.0f ||
+                        presented_surface->hw != ld_rs_up(g.width) ||
                         presented_surface->hh != ld_rs_up(g.height);
-    ID3D12PipelineState* stretch_pso = stretch ? ld_scaled_blit_pso(DXGI_FORMAT_R8G8B8A8_UNORM) : NULL;
+    ID3D12PipelineState* stretch_pso = stretch ? ld_scaled_blit_pso_ex(DXGI_FORMAT_R8G8B8A8_UNORM, display_gamma != 1.0f) : NULL;
     if (stretch && stretch_pso) {
         u32 sslots[SRV_TABLE_SIZE];
         for (u32 i = 0; i < SRV_TABLE_SIZE; i++) sslots[i] = SRV_WHITE;
@@ -14423,6 +14605,7 @@ void rsx_live_draw_present(u32 buffer_id)
         g.list->lpVtbl->SetGraphicsRootSignature(g.list, g_sblit_rs);
         const float full[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
         g.list->lpVtbl->SetGraphicsRoot32BitConstants(g.list, 0, 4, full, 0);
+        g.list->lpVtbl->SetGraphicsRoot32BitConstants(g.list, 0, 1, &display_gamma, 4);
         g.list->lpVtbl->SetGraphicsRootDescriptorTable(g.list, 1, stable);
         D3D12_VIEWPORT svp = { 0.0f, 0.0f, (float)ld_rs_up(g.width), (float)ld_rs_up(g.height), 0.0f, 1.0f };
         D3D12_RECT ssc = { 0, 0, (LONG)ld_rs_up(g.width), (LONG)ld_rs_up(g.height) };
@@ -15559,6 +15742,9 @@ void rsx_live_draw_shutdown(void)
         if (g.zdepths[i].snapshot)
             g.zdepths[i].snapshot->lpVtbl->Release(
                 g.zdepths[i].snapshot);
+        for (u32 spare = 0; spare < 3; ++spare)
+            if (g.zdepths[i].snapshot_spare[spare])
+                g.zdepths[i].snapshot_spare[spare]->lpVtbl->Release(g.zdepths[i].snapshot_spare[spare]);
         if (g.zdepths[i].packed_snapshot)
             g.zdepths[i].packed_snapshot->lpVtbl->Release(g.zdepths[i].packed_snapshot);
     }

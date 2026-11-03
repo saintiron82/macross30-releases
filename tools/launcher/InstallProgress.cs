@@ -10,10 +10,12 @@ namespace MacrossLauncher {
 public sealed class ReadableButton : Button {
     public ReadableButton() { SetStyle(ControlStyles.UserPaint|ControlStyles.OptimizedDoubleBuffer|ControlStyles.AllPaintingInWmPaint,true); }
     protected override void OnPaint(PaintEventArgs e) {
-        Color background=Enabled ? BackColor : Color.FromArgb(40,52,68);
+        Color background=Enabled ? BackColor : Color.FromArgb(BackColor.R*3/4,BackColor.G*3/4,BackColor.B*3/4);
         Color foreground=Enabled ? ForeColor : Color.FromArgb(220,228,238);
         using(var brush=new SolidBrush(background)) e.Graphics.FillRectangle(brush,ClientRectangle);
-        using(var pen=new Pen(Enabled ? Color.FromArgb(160,190,220) : Color.FromArgb(110,132,155))) e.Graphics.DrawRectangle(pen,0,0,Width-1,Height-1);
+        int border=Enabled ? Math.Max(1,FlatAppearance.BorderSize) : 1;
+        Color edge=Enabled && !FlatAppearance.BorderColor.IsEmpty ? FlatAppearance.BorderColor : Color.FromArgb(160,190,220);
+        using(var pen=new Pen(edge,border)) e.Graphics.DrawRectangle(pen,border/2,border/2,Width-border,Height-border);
         TextRenderer.DrawText(e.Graphics,Text,Font,ClientRectangle,foreground,TextFormatFlags.HorizontalCenter|TextFormatFlags.VerticalCenter|TextFormatFlags.EndEllipsis);
         if(Focused && ShowFocusCues && Enabled) ControlPaint.DrawFocusRectangle(e.Graphics,Rectangle.Inflate(ClientRectangle,-4,-4),foreground,background);
     }
@@ -22,6 +24,7 @@ public sealed class ReadableButton : Button {
 public sealed class InstallProgress : Form {
     readonly Label stage=new Label(), elapsed=new Label(), steps=new Label(), detailText=new Label(), progressText=new Label(), worklist=new Label();
     readonly string sourceRoot;
+    readonly bool bootMode,languageMode;
     readonly DateTime generationStarted=DateTime.UtcNow;
     readonly string[] jobs={"notify","graphics","geom1","geom3","geom2","anim","jobcrt14","jobcrt14_b","jobcrt14_c","jobcrt14_d","geom6","geom7","geom4","geom5"};
     bool ppuDone; double phaseFraction,ppuLiftFraction,ppuEmitFraction; int overall;
@@ -35,9 +38,11 @@ public sealed class InstallProgress : Form {
     int phase=1;
     string detail="",currentWork="";
     readonly string[] names={"도구 준비","ISO 원본 준비","PPU·SPU 코드 생성","수정 사항 적용","실행 파일 컴파일","게임 데이터·한글 설치","최종 검증"};
-    public InstallProgress(string path,string source=null) {
-        sourceRoot=source;
-        logPath=path;Text=UiText.T("게임 설치 진행");ClientSize=new Size(880,680);MinimumSize=new Size(800,650);
+    public InstallProgress(string path,string source=null,bool prebuilt=false,bool languageOnly=false) {
+        sourceRoot=source;bootMode=prebuilt;languageMode=languageOnly;
+        if(prebuilt)names=new[]{"도구 준비","ISO 원본 준비","실행 데이터 준비","공통 실행 파일 설치","원본 게임 데이터 준비","실행 환경 구성","게임 준비 검증"};
+        if(languageOnly)names=new[]{"게임 준비 확인","원본 확인","언어 패치 준비","언어팩 설치","자막 설치","무결성 검증","완료"};
+        logPath=path;Text=UiText.T(languageOnly?"언어팩 설치":"게임 설치 진행");ClientSize=new Size(880,680);MinimumSize=new Size(800,650);
         StartPosition=FormStartPosition.CenterParent;Font=new Font("맑은 고딕",10);BackColor=Color.FromArgb(22,29,42);ForeColor=Color.WhiteSmoke;
         MinimizeBox=false;MaximizeBox=false;
         var layout=new TableLayoutPanel {Dock=DockStyle.Fill,Padding=new Padding(20),ColumnCount=1,RowCount=8};
@@ -63,17 +68,19 @@ public sealed class InstallProgress : Form {
     void RefreshStatus() {
         elapsed.Text=UiText.F("경과 시간: {0}분 {1}초 · 설치가 끝나면 게임 실행 버튼이 활성화됩니다.",(int)watch.Elapsed.TotalMinutes,watch.Elapsed.Seconds);
         if(finished)return;
-        if(phase==3)PollGeneration();
+        if(phase==3 && !bootMode)PollGeneration();
         stage.Text=UiText.F("{0}/7 · {1}",phase,UiText.T(names[phase-1]));detailText.Text=detail;
         overall=Math.Max(overall,Math.Min(99,(int)(100.0*(phase-1+phaseFraction)/7)));bar.Value=overall;
         progressText.Text=UiText.F("전체 진행률 {0}%",overall);
-        if(phase!=3)worklist.Text=(currentWork.Length==0 ? "" : UiText.F("현재 작업: {0}",currentWork)+Environment.NewLine+Environment.NewLine)+UiText.T("진행 상황은 위에 표시됩니다. 기술 기록은 상세 로그에서 확인할 수 있습니다.");
+        if(phase!=3 || bootMode)worklist.Text=(currentWork.Length==0 ? "" : UiText.F("현재 작업: {0}",currentWork)+Environment.NewLine+Environment.NewLine)+UiText.T("진행 상황은 위에 표시됩니다. 기술 기록은 상세 로그에서 확인할 수 있습니다.");
         string summary="";for(int i=0;i<names.Length;i++)summary+=(i+1)+"/7  "+(i+1==phase ? "▶ " : i+1<phase ? "✓ " : "· ")+UiText.T(names[i])+Environment.NewLine;steps.Text=summary;
     }
     public void Receive(string line) {
         if(IsDisposed || Disposing)return;
         if(InvokeRequired){BeginInvoke(new Action<string>(Receive),line);return;}
         int previousPhase=phase;
+        var boot=Regex.Match(line,@"^BOOT_STAGE ([1-7])/7\s*(.*)$");
+        if(boot.Success){phase=Int32.Parse(boot.Groups[1].Value);phaseFraction=0;detail=UiText.T(names[phase-1]);}
         if(line.StartsWith("LOCAL_SETUP")){phase=1;detail=UiText.T("설치에 필요한 도구를 확인하고 준비합니다.");}
         else if(line.StartsWith("LOCAL_ORIGINAL")){phase=2;detail=UiText.T("선택한 ISO의 원본을 확인합니다.");}
         else if(line.StartsWith("LOCAL_GENERATE") || line.StartsWith("LOCAL GENERATE:")) {
@@ -86,11 +93,11 @@ public sealed class InstallProgress : Form {
         if(count.Success) {
             int done,total;if(Int32.TryParse(count.Groups[1].Value,out done) && Int32.TryParse(count.Groups[2].Value,out total) && total>0) {
                 if(line.Contains("Building") || line.Contains("Linking"))phase=5;
-                else if(line.Contains("data/"))phase=6;
-                if(phase==5 || phase==6) {
+                else if(line.Contains("data/"))phase=languageMode?4:bootMode?5:6;
+                if(phase==5 || phase==6 || languageMode&&phase==4) {
                     phaseFraction=Math.Min(1.0,(double)done/total);
                     detail=UiText.F("현재 단계 · {0}/{1}개 완료 ({2}%)",done,total,(int)(phaseFraction*100));
-                    if(phase==5)currentWork=UiText.T(line.Contains("Linking") ? "최종 실행 파일 만들기" : line.Contains("ppu_recomp") ? "게임의 PPU 처리 코드" : line.Contains("spu_") ? "게임의 SPU 처리 코드" : line.Contains("rsx_") || line.Contains("video") ? "그래픽 처리 구성 요소" : "실행에 필요한 구성 요소");
+                    if(phase==5 && !bootMode)currentWork=UiText.T(line.Contains("Linking") ? "최종 실행 파일 만들기" : line.Contains("ppu_recomp") ? "게임의 PPU 처리 코드" : line.Contains("spu_") ? "게임의 SPU 처리 코드" : line.Contains("rsx_") || line.Contains("video") ? "그래픽 처리 구성 요소" : "실행에 필요한 구성 요소");
                     else currentWork=UiText.T(line.Contains("delta") ? "언어 패치 적용" : "ISO 데이터 설치");
                 }
             }

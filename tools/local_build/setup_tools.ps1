@@ -1,9 +1,11 @@
-param([Parameter(Mandatory=$true)][string]$Root)
+param([Parameter(Mandatory=$true)][string]$Root,[switch]$SkipCompiler,[switch]$SkipOriginalTool)
 $ErrorActionPreference='Stop'
 [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12
 $Root=[IO.Path]::GetFullPath($Root)
 New-Item -ItemType Directory -Force -Path $Root | Out-Null
 $sourceRoot=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
+$cachedPython=Join-Path $Root 'python\python.exe'
+if(Test-Path -LiteralPath $cachedPython){$env:PATH=(Split-Path $cachedPython -Parent)+';'+$env:PATH}
 $python=Get-Command python -ErrorAction SilentlyContinue
 $usablePython=$false
 if($python -and $python.Source -notlike '*WindowsApps*') { & $python.Source -c 'import sys; assert sys.version_info >= (3,11)' 2>$null; $usablePython=($LASTEXITCODE -eq 0) }
@@ -18,6 +20,13 @@ if(-not $usablePython) {
  [IO.File]::WriteAllLines($pathFile,@('python314.zip','.',(Join-Path $sourceRoot 'vendor\ps3recomp-master\tools'),(Join-Path $sourceRoot 'tools\local_build'),(Join-Path $sourceRoot 'tools\play')),(New-Object Text.UTF8Encoding($false)))
  $env:PATH=$pythonHome+';'+$env:PATH
 }
+# Cached embedded Python must follow the currently verified installer workspace,
+# not the path of a previous program ZIP.
+if(Test-Path -LiteralPath $cachedPython) {
+ $cachedPathFile=Join-Path (Split-Path $cachedPython -Parent) 'python314._pth'
+ [IO.File]::WriteAllLines($cachedPathFile,@('python314.zip','.',(Join-Path $sourceRoot 'vendor\ps3recomp-master\tools'),(Join-Path $sourceRoot 'tools\local_build'),(Join-Path $sourceRoot 'tools\play')),(New-Object Text.UTF8Encoding($false)))
+}
+if(-not $SkipCompiler) {
 $vswhere=Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
 $vsRoot=$null
 if(Test-Path -LiteralPath $vswhere){$vsRoot=& $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath}
@@ -32,8 +41,9 @@ if(-not $compilerReady) {
  $child.WaitForExit()
  if($child.ExitCode -ne 0 -and $child.ExitCode -ne 3010){throw ('Build tools installation failed: '+$child.ExitCode)}
 }
+}
 $rpcs3Home=Join-Path $Root 'rpcs3'
-if(-not (Test-Path -LiteralPath (Join-Path $rpcs3Home 'rpcs3.exe'))) {
+if(-not $SkipOriginalTool -and -not (Test-Path -LiteralPath (Join-Path $rpcs3Home 'rpcs3.exe'))) {
  Write-Output 'LOCAL_SETUP: official RPCS3 binary preparation utility (no game data or firmware)'
  $release=Invoke-RestMethod 'https://api.github.com/repos/RPCS3/rpcs3-binaries-win/releases/latest' -Headers @{'User-Agent'='Macross30-LocalBuild'}
  $asset=$release.assets | Where-Object {$_.name -match '_win64.*\.7z$'} | Select-Object -First 1
