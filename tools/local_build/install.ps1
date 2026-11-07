@@ -14,16 +14,10 @@ if(-not $OriginalElf) {
 }
 if((Get-FileHash -LiteralPath $OriginalElf -Algorithm SHA256).Hash.ToLowerInvariant() -ne $recipe.original_elf_sha256){throw 'USER_ORIGINAL_ELF_REQUIRED: Original ELF hash mismatch.'}
 # Compilation runs entirely in the isolated, verified source workspace.
-$reuseMarker=Join-Path $buildRoot 'local-generation.ready'
-$reuse=(Test-Path -LiteralPath $reuseMarker) -and (Test-Path -LiteralPath (Join-Path $buildRoot 'native\build\Macross30Recompiled.exe'))
-if($reuse){$reuse=([IO.File]::ReadAllText($reuseMarker) -eq $recipe.original_elf_sha256)}
-& (Join-Path $PSScriptRoot 'build.ps1') -OriginalElf $OriginalElf -Payload $Payload -SkipGenerate:($SkipGenerate -or $reuse)
+& (Join-Path $PSScriptRoot 'build.ps1') -OriginalElf $OriginalElf -Payload $Payload -SkipGenerate:$SkipGenerate
 if($LASTEXITCODE -ne 0){throw 'Local compilation failed'}
-Add-Type -TypeDefinition ([IO.File]::ReadAllText((Join-Path $Payload 'DistInstaller.cs'))) -Language CSharp
-$languageInfo=$recipe.languages.$Language
-$plan=Join-Path $Payload ($languageInfo.plan -replace '/', '\')
-$problems=[MacrossDist.Installer]::Run($Payload,$Root,$plan,$Iso,'install',$false,'',$languageInfo.data_id)
-if($problems -ne 0){throw 'User ISO installation failed'}
+& python -X utf8 (Join-Path $PSScriptRoot 'language_views.py') --root $Root --payload $Payload --iso $Iso
+if($LASTEXITCODE -ne 0){throw 'Language view preparation failed'}
 $vswhere=Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
 $vsRoot=& $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
 $crt=Get-ChildItem -LiteralPath (Join-Path $vsRoot 'VC\Redist\MSVC') -Directory | Where-Object {$_.Name -match '^\d+\.\d+\.\d+$'} | Sort-Object {[version]$_.Name} -Descending | ForEach-Object { Get-ChildItem -Path (Join-Path $_.FullName 'x64\Microsoft.VC14*.CRT') -Directory } | Select-Object -First 1

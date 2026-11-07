@@ -97,7 +97,14 @@ int rsx_null_backend_movie_subtitles_enabled(u32* epoch)
     return rsx_null_backend_subtitles_enabled(epoch);
 }
 static const char* const k_scale_val[6] = { "1", "1.25", "1.5", "2", "2.5", "3" };
-static const char* const k_language_val[3] = { "ja-JP", "ko-KR", "en-US" };
+/* Language choices belong to the installed-pack registry, not this binary. */
+static char s_language[64] = "ko-KR";
+static void null_language_store(const char* value) {
+    if(!value || !*value || strlen(value)>=sizeof s_language)return;
+    for(const char* p=value;*p;p++)
+        if(!((*p>='a'&&*p<='z')||(*p>='A'&&*p<='Z')||(*p>='0'&&*p<='9')||*p=='-'))return;
+    strcpy(s_language,value);
+}
 static HWND s_opt_hwnd;
 static int (*s_fps_apply)(int);
 void rsx_null_backend_set_fps_callback(int (*apply)(int)) { s_fps_apply = apply; }
@@ -111,7 +118,7 @@ static void null_settings_load(void)
     const char* gate = getenv("MACROSS_FRAME_VBLANKS");
     if (gate) s_set.fps_unlock = !strcmp(gate, "1");
     FILE* f = fopen("settings.ini", "r");
-    if (!f) return;
+    if (!f) { null_language_store(getenv("MACROSS_GAME_LANGUAGE")); return; }
     char line[128];
     while (fgets(line, sizeof line, f)) {
         char key[64]; char val[64];
@@ -119,7 +126,7 @@ static void null_settings_load(void)
         if (!strcmp(key, "render_scale")) {
             for (int i = 0; i < 6; i++) if (!strcmp(val, k_scale_val[i])) s_set.scale_idx = i;
         } else if (!strcmp(key, "language")) {
-            for (int i = 0; i < 3; i++) if (!strcmp(val, k_language_val[i])) s_set.language = i;
+            null_language_store(val);
         } else if (!strcmp(key, "fullscreen")) s_set.fullscreen = atoi(val) != 0;
         else if (!strcmp(key, "vsync")) s_set.vsync = atoi(val) != 0;
         else if (!strcmp(key, "fps_unlock")) s_set.fps_unlock = atoi(val) != 0;
@@ -127,6 +134,7 @@ static void null_settings_load(void)
         else if (!strcmp(key, "hd_textures") && (!strcmp(val, "0") || !strcmp(val, "1"))) s_set.hd_textures = val[0] == '1';
     }
     fclose(f);
+    null_language_store(getenv("MACROSS_GAME_LANGUAGE"));
     null_subtitles_publish(s_set.subtitles);
     InterlockedExchange(&s_hd_textures_at_start, s_set.hd_textures);
 }
@@ -135,7 +143,7 @@ static void null_settings_save(void)
     FILE* f = fopen("settings.ini", "w");
     if (!f) return;
     fprintf(f, "render_scale=%s\nfullscreen=%d\nvsync=%d\nfps_unlock=%d\nbloom=%d\nsubtitles=%d\nlanguage=%s\nhd_textures=%d\n",
-            k_scale_val[s_set.scale_idx], s_set.fullscreen, s_set.vsync, s_set.fps_unlock, s_set.bloom, s_set.subtitles, k_language_val[s_set.language], s_set.hd_textures);
+            k_scale_val[s_set.scale_idx], s_set.fullscreen, s_set.vsync, s_set.fps_unlock, s_set.bloom, s_set.subtitles, s_language, s_set.hd_textures);
     fclose(f);
 }
 static void null_apply_bloom(void)

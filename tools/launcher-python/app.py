@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import queue
 import re
+import subprocess
 import sys
 import tempfile
 import threading
@@ -15,13 +16,30 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 import webbrowser
 from PIL import Image, ImageOps, ImageTk, ImageGrab, ImageDraw
-from backend import Backend, VERSION, LOCALES, localized, update_plan, version_from, sha
+from backend import Backend, VERSION, LOCALES, localized, update_plan, version_from, sha, detect_workspace_root
 from i18n import TEXT
 from bundle_runtime import recover_bundle, load_hero
-from launch_options import SCALES
+from launch_options import RESOLUTIONS
 
 BG, SURFACE, BORDER, INK, DIM, GOLD = '#10141c', '#1c2430', '#2a3340', '#eef2f7', '#96a5b8', '#edc47f'
 DATA = Path(getattr(sys, '_MEIPASS', Path(__file__).parent))
+
+
+def launcher_control_locks(workspace, worker_active, readonly_worker, busy, running, verified=True):
+    """Read-only local verification blocks Play/import, not harmless settings."""
+    exclusive = busy or running or (worker_active and not (workspace and readonly_worker))
+    return dict(settings=bool(exclusive),
+                play=bool(worker_active or busy or running or (workspace and not verified)),
+                import_pack=bool(worker_active or busy or running))
+
+
+def has_keyboard_focus(widget):
+    """Compare Tcl paths without resolving Tk-owned combobox popdown widgets."""
+    try:
+        return str(widget.tk.call('focus', '-displayof', widget._w)) == widget._w
+    except tk.TclError:
+        # A focus/destroy notification can arrive while a window is closing.
+        return False
 
 
 class RoundedButton(tk.Canvas):
@@ -49,7 +67,7 @@ class RoundedButton(tk.Canvas):
         self.create_image(0, 0, image=self.background, anchor='nw')
         self.create_text(113, 27, text=self.text, font=('Segoe UI', -25, 'bold'),
                          fill='#171a21' if self.enabled else DIM)
-        if self.focus_get() == self:
+        if has_keyboard_focus(self):
             self.create_rectangle(7, 7, 219, 48, outline='#ffffff')
         self.configure(cursor='hand2' if self.enabled else 'arrow')
 
@@ -60,6 +78,7 @@ class Launcher(tk.Tk):
         self.args, self.events = args, queue.Queue()
         self.preview = args.preview
         self.worker_active = self.checking = self.handoff = False
+        self.readonly_worker = False
         self.message_key, self.stage, self.error, self.tab, self.filter_id = 'ready', 0, '', 'announcements', 'all'
         self.last_transfer = None
         self.last_install_line = ''
@@ -78,11 +97,13 @@ class Launcher(tk.Tk):
             ctypes.windll.dwmapi.DwmSetWindowAttribute(self.winfo_id(), 20, ctypes.byref(value), 4)
         except (AttributeError, OSError):
             pass
-        config = Path(os.environ.get('LOCALAPPDATA', tempfile.gettempdir())) / 'Macross30Launcher/python-settings.json'
+        workspace = None if self.preview else detect_workspace_root()
+        config = workspace/'native/local-launcher/python-settings.json' if workspace else Path(os.environ.get('LOCALAPPDATA', tempfile.gettempdir())) / 'Macross30Launcher/python-settings.json'
         if args.config:
             config = Path(args.config)
         self.backend = Backend(DATA / 'bridge.exe', config, emit=self.events.put,
-                               confirm=lambda data: self.on_ui(self.confirm, data), choose_iso=lambda: self.on_ui(self.pick_iso_path))
+                               confirm=lambda data: self.on_ui(self.confirm, data), choose_iso=lambda: self.on_ui(self.pick_iso_path),
+                               workspace_root=workspace, channel_dir=getattr(args, 'channel_dir', None))
         if self.preview:
             self.backend.manifest = json.loads((DATA / 'assets/preview-manifest.json').read_text(encoding='utf-8-sig'))
             self.backend.status = json.loads((DATA / 'assets/preview-status.json').read_text(encoding='utf-8-sig'))
@@ -102,7 +123,7 @@ class Launcher(tk.Tk):
         self.after(30, self.drain)
         self.after(300000, self.periodic)
         if not self.preview:
-            self.after(150, lambda: self.run(self.startup))
+            self.after(150, lambda: self.run(self.startup, readonly=bool(self.backend.workspace_root)))
         if args.smoke:
             self.after(600, self.smoke)
         elif args.capture:
@@ -135,6 +156,9 @@ class Launcher(tk.Tk):
         return future.result()
 
     def startup(self):
+        if self.backend.workspace_root:
+            self.backend.check()
+            return
         if self.args.skip_launcher_update:
             raise RuntimeError(self.words()['launcherCheckFailed'])
         self.message_key = 'ready'
@@ -201,6 +225,12 @@ class Launcher(tk.Tk):
         self.play.grid(row=0, column=1, rowspan=3, sticky='e', pady=(0, 12))
         self.options_button = self.link(controls, self.options_clicked, font=('Segoe UI', -13))
         self.options_button.grid(row=3, column=1, sticky='e')
+        self.local_partial = tk.BooleanVar(value=False)
+        self.local_partial_check = ttk.Checkbutton(controls, text='부분 테스트 팩 허용 · 미번역 내용은 대체 언어 사용',
+            variable=self.local_partial, command=lambda: self.backend.allow_local_preview(self.local_partial.get()))
+        self.local_pack_button = self.link(controls, self.local_pack_clicked, text='로컬 언어팩 가져오기…', font=('Segoe UI', -13))
+        self.local_partial_check.grid(row=3, column=0, sticky='w')
+        self.local_pack_button.grid(row=4, column=0, sticky='w', pady=(6,0))
         tk.Frame(self.body, bg=BORDER, height=1).pack(fill='x', pady=(22, 14))
         status = tk.Frame(self.body, bg=BG)
         status.pack(fill='x')
@@ -330,23 +360,52 @@ class Launcher(tk.Tk):
     def render(self):
         w, config, installed = self.words(), self.state['config'], self.state['installed']
         locked = self.worker_active or self.state['busy'] or self.state['running']
+        locks = launcher_control_locks(bool(self.backend.workspace_root), self.worker_active, self.readonly_worker, self.state['busy'], self.state['running'], self.state.get('local_verified',False))
+        settings_locked = locks['settings']
         self.ui_language.current(('ko', 'en', 'ja').index(config['ui_language']))
-        self.locale.current(LOCALES.index(config['game_language']))
+        rows = self.state.get('local_packs') if self.backend.workspace_root else None
+        if rows:
+            self.locale_ids = [row['locale'] for row in rows]
+            self.locale.configure(values=[str(row.get('label') or row['locale'])+' ['+row['locale']+']'+(' · 부분 테스트' if row.get('status')=='partial_test' else ' · 검증 대기' if row.get('verification')=='pending' else ' · 사용 불가' if not row.get('ready') else '') for row in rows])
+        else:
+            extras = [row for row in self.state.get('local_packs', []) if row.get('locale') not in LOCALES]
+            self.locale_ids = list(LOCALES) + [row['locale'] for row in extras]
+            self.locale.configure(values=['한국어', 'English', '日本語'] +
+                                  [str(row.get('label') or row['locale']) for row in extras])
+        if config['game_language'] in self.locale_ids:
+            self.locale.current(self.locale_ids.index(config['game_language']))
+        else:
+            self.locale.set(config['game_language']+' · 설치되지 않음')
+        self.local_partial.set(self.state.get('local_allow_partial',False))
+        if not self.backend.workspace_root:
+            self.local_partial_check.configure(text=w['packPartial'])
+            self.local_pack_button.configure(text=w['packImport'])
+            selected_pack = next((row for row in self.state.get('local_packs', []) if row.get('locale') == config['game_language']), {})
+            if selected_pack.get('status') == 'partial_test':
+                self.local_partial_check.grid()
+            else:
+                self.local_partial_check.grid_remove()
+        self.local_partial_check.configure(state='disabled' if settings_locked else 'normal')
+        self.local_pack_button.configure(state='disabled' if locks['import_pack'] else 'normal')
         self.ui_caption.configure(text='Language')
         self.locale_caption.configure(text=w['locale'])
-        self.ui_language.configure(state='disabled' if locked else 'readonly')
-        self.locale.configure(state='disabled' if locked else 'readonly')
-        self.play.enabled = not locked
+        self.ui_language.configure(state='disabled' if settings_locked else 'readonly')
+        self.locale.configure(state='disabled' if settings_locked else 'readonly')
+        self.play.enabled = not locks['play']
         self.play.text = w['running'] if self.state['running'] else w['working'] if self.state['busy'] else w['unknown'] if self.checking else w['update']+'  ↓' if self.needs_update() else w['play']+'  ▶'
         self.play.draw()
         locale = config['game_language']
-        if locale == 'ja-JP':
+        if self.backend.workspace_root:
+            row=next((row for row in (rows or []) if row.get('locale')==locale),{})
+            version_text=str(row.get('error') or ('언어팩 검증 중 · 언어와 그래픽 옵션은 변경할 수 있습니다.' if row.get('verification')=='pending' else '로컬 부분 테스트 팩 · 미번역 내용은 대체 언어 사용' if row.get('status')=='partial_test' else '로컬 작업 공간 · 설치된 언어팩'))
+        elif locale == 'ja-JP':
             version_text = w['japanese']
         else:
             version = installed.get('language_version', '')
             if not re.fullmatch(r'\d+\.\d+\.\d+', version):
                 version = '—' if installed.get('language_ready') else w['missing']
-            latest = version_from(((self.state['manifest'] or {}).get('language_packs') or {}).get(locale, {})) or w['unknown']
+            channel = self.state['manifest'] or {}
+            latest = version_from((channel.get('locale_packs') or {}).get(locale) or (channel.get('language_packs') or {}).get(locale, {})) or w['unknown']
             version_text = w['pack']+' '+version+' · '+w['latest']+' '+latest
         self.language_version.configure(text=version_text)
         status = w['unknown'] if self.checking else w['needsUpdate'] if self.message_key == 'ready' and self.needs_update() else w.get(self.message_key, self.message_key)
@@ -386,8 +445,11 @@ class Launcher(tk.Tk):
         last_session = self.state.get('last_session') or {}
         if last_session.get('exit_code'):
             self.logs_button.configure(text={'ko':'로그 보내기','en':'Send logs','ja':'ログを送信'}[self.state['config']['ui_language']],fg=GOLD)
-        for button in (self.options_button, self.iso_button, self.folder_button, self.self_button):
+        for button in (self.iso_button, self.folder_button, self.self_button):
             button.configure(state='disabled' if locked else 'normal')
+        self.options_button.configure(
+            text='그래픽 옵션' if self.backend.workspace_root else w['runtimeOptions'] if self.state['running'] else w['launchOptions'],
+            state=('disabled' if settings_locked else 'normal') if self.backend.workspace_root else 'normal' if self.state['running'] else ('disabled' if locked else 'normal'))
         self.launcher_version.configure(text=w['launcher']+' '+VERSION+(' · '+w['latest'] if self.self_current else ''))
         self.render_content()
         self.draw_hero()
@@ -424,10 +486,12 @@ class Launcher(tk.Tk):
             self.content.insert('end', w['empty'], 'body')
         self.content.configure(state='disabled')
 
-    def run(self, callback):
+    def run(self, callback, readonly=False):
         if self.worker_active:
             return
         self.worker_active = True
+        self.readonly_worker = bool(readonly and self.backend.workspace_root)
+        if self.readonly_worker:self.checking=True
         self.error = ''
         self.last_transfer = None
         self.render()
@@ -437,10 +501,22 @@ class Launcher(tk.Tk):
             except Exception as error:
                 self.events.put({'type': 'failure', 'detail': str(error)})
             finally:
-                self.events.put({'type': 'worker-done', 'state': self.backend.snapshot()})
+                # Completion must survive a failing snapshot as well.
+                self.events.put({'type': 'worker-done'})
         threading.Thread(target=worker, daemon=True).start()
 
     def drain(self):
+        # A drawing/Tcl error must never permanently stop completion delivery.
+        try:
+            self.drain_events()
+        except Exception as error:
+            self.error = str(error)
+            self.report_callback_exception(type(error), error, error.__traceback__)
+        finally:
+            if self.winfo_exists():
+                self.after(40, self.drain)
+
+    def drain_events(self):
         redraw = False
         try:
             while True:
@@ -452,11 +528,12 @@ class Launcher(tk.Tk):
                     except Exception as error:
                         event['future'].set_exception(error)
                 elif kind == 'state':
-                    self.state, redraw = event['state'], True
+                    self.state, redraw = (self.backend.snapshot() if self.backend.workspace_root else event['state']), True
                 elif kind == 'worker-done':
                     self.progress.stop()
                     self.worker_active = False
-                    self.state, redraw = event['state'], True
+                    self.readonly_worker = False
+                    self.state, redraw = self.backend.snapshot(), True
                     if getattr(self,'report_window',None) and self.report_window.winfo_exists():
                         self.report_send.configure(state='normal')
                 elif kind == 'report-prepared':
@@ -506,6 +583,10 @@ class Launcher(tk.Tk):
                         self.progress['value'] = int(done)*100/max(1, int(total))
                 elif kind == 'failure':
                     self.error, self.message_key, redraw = event['detail'], 'failed', True
+                elif kind == 'runtime-options-opened':
+                    self.message_key, redraw = 'runtimeOptionsOpened', True
+                elif kind == 'runtime-options-finished':
+                    self.runtime_options_pending = False
                 elif kind == 'handoff':
                     self.handoff = True
                     self.destroy()
@@ -520,17 +601,25 @@ class Launcher(tk.Tk):
             pass
         if redraw:
             self.render()
-        self.after(40, self.drain)
 
     def configure_language(self, ui):
+        if not ui and self.locale.current()<0:return
         if self.preview:
-            self.backend.config['ui_language' if ui else 'game_language'] = ('ko','en','ja')[self.ui_language.current()] if ui else LOCALES[self.locale.current()]
+            self.backend.config['ui_language' if ui else 'game_language'] = ('ko','en','ja')[self.ui_language.current()] if ui else self.locale_ids[self.locale.current()]
             self.state = self.backend.snapshot()
             self.render()
             return
         key = 'ui_language' if ui else 'game_language'
-        value = ('ko', 'en', 'ja')[self.ui_language.current()] if ui else LOCALES[self.locale.current()]
-        self.run(lambda: self.backend.settings(**{key: value}))
+        value = ('ko', 'en', 'ja')[self.ui_language.current()] if ui else self.locale_ids[self.locale.current()]
+        if self.backend.workspace_root and (not self.worker_active or self.readonly_worker):
+            try:
+                self.backend.settings(**{key:value})
+                self.state=self.backend.snapshot()
+                self.render()
+            except (OSError,ValueError,RuntimeError) as error:
+                self.events.put({'type':'failure','detail':str(error)})
+        else:
+            self.run(lambda: self.backend.settings(**{key: value}))
 
     def switch_tab(self, tab):
         self.tab = tab
@@ -544,9 +633,16 @@ class Launcher(tk.Tk):
         if not self.preview and not self.worker_active:
             self.message_key = 'ready'
             self.args.skip_launcher_update = False
-            self.run(self.startup)
+            self.run(self.startup, readonly=bool(self.backend.workspace_root))
+
+    def local_pack_clicked(self):
+        if self.worker_active or self.state['running']:return
+        source=filedialog.askopenfilename(parent=self,title='로컬 언어팩 가져오기',
+            filetypes=[('Language pack ZIP / manifest','*.zip *.json'),('ZIP','*.zip'),('Manifest','*.json')])
+        if source:self.run(lambda:self.backend.import_local_pack(source))
 
     def play_clicked(self):
+        if self.backend.workspace_root and (self.worker_active or not self.state.get('local_verified',False)):return
         if not self.preview:
             self.run(lambda: self.after_launcher(self.backend.play))
 
@@ -554,7 +650,22 @@ class Launcher(tk.Tk):
         return filedialog.askopenfilename(parent=self, filetypes=[('PS3 ISO', '*.iso')])
 
     def options_clicked(self):
-        if self.worker_active or self.state['busy'] or self.state['running']:
+        if self.backend.workspace_root and self.state['running']:return
+        if self.state['running']:
+            if self.preview or getattr(self, 'runtime_options_pending', False):
+                return
+            self.runtime_options_pending = True
+            def request_options():
+                try:
+                    self.backend.open_game_options()
+                    self.events.put({'type': 'runtime-options-opened'})
+                except (OSError, ValueError, RuntimeError) as error:
+                    self.events.put({'type': 'failure', 'detail': str(error)})
+                finally:
+                    self.events.put({'type': 'runtime-options-finished'})
+            threading.Thread(target=request_options, daemon=True).start()
+            return
+        if (self.worker_active and not (self.backend.workspace_root and self.readonly_worker)) or self.state['busy'] or self.state['running']:
             return
         if getattr(self, 'options_window', None) and self.options_window.winfo_exists():
             self.options_window.lift()
@@ -566,25 +677,30 @@ class Launcher(tk.Tk):
             messagebox.showerror(words['launchOptions'], words['optionsReadFailed']+'\n'+str(error), parent=self)
             return
         window = self.options_window = tk.Toplevel(self)
-        window.title(words['launchOptions'])
+        window.title('그래픽 옵션' if self.backend.workspace_root else words['launchOptions'])
         window.transient(self)
         window.resizable(False, False)
         body = ttk.Frame(window, padding=20)
         body.pack(fill='both', expand=True)
-        ttk.Label(body, text=document['path'], wraplength=540).pack(anchor='w')
-        ttk.Label(body, text=words['optionsRestart'], wraplength=540).pack(anchor='w', pady=(10, 14))
+        ttk.Label(body, text='저장한 그래픽 옵션은 다음 게임 실행부터 적용됩니다.' if self.backend.workspace_root else words['optionsRestart'], wraplength=540).pack(anchor='w', pady=(10, 14))
         variables = {key: tk.StringVar(window, value=value) for key, value in document['values'].items()}
         variables['bloom'].set('1')
+        resolution = tk.StringVar(window, value=RESOLUTIONS[variables['render_scale'].get()])
         row = ttk.Frame(body)
         row.pack(fill='x', pady=5)
         ttk.Label(row, text=words['optionScale']).pack(side='left', padx=(0, 20))
-        ttk.Combobox(row, textvariable=variables['render_scale'], values=SCALES, state='readonly', width=10).pack(side='right')
-        ttk.Label(body, text=words['optionsScaleHelp'], wraplength=540).pack(anchor='w', pady=5)
+        ttk.Combobox(row, textvariable=resolution, values=list(RESOLUTIONS.values()), state='readonly', width=25).pack(side='right')
         for key, label in (('fullscreen', 'optionFullscreen'), ('vsync', 'optionVsync'),
                            ('subtitles', 'optionSubtitles')):
             ttk.Checkbutton(body, text=words[label], variable=variables[key], onvalue='1', offvalue='0').pack(anchor='w', pady=5)
-        ttk.Checkbutton(body, text=words['optionsFpsUnavailable'], state='disabled').pack(anchor='w', pady=5)
-        if document.get('hd_available'):
+        if not self.backend.workspace_root:
+            ttk.Label(body, text=words['optionsFpsUnavailable'], foreground='#777777').pack(anchor='w', pady=5)
+        if self.backend.workspace_root:
+            ttk.Checkbutton(body, text=words['optionHd'], variable=variables['hd_textures'], onvalue='1', offvalue='0', state='normal' if document.get('hd_available') else 'disabled').pack(anchor='w', pady=5)
+            ttk.Label(body, text='미리보기용 텍스처를 전투에 사용; 기체별 색상 차이 가능', wraplength=540).pack(anchor='w', pady=(0,5))
+            if not document.get('hd_available'):
+                ttk.Label(body,text='로컬 HD 텍스처 팩이 준비되지 않았습니다.',wraplength=540).pack(anchor='w')
+        elif document.get('hd_available'):
             ttk.Checkbutton(body, text=words['optionHd'], variable=variables['hd_textures'], onvalue='1', offvalue='0').pack(anchor='w', pady=5)
         else:
             ttk.Label(body, text=words['optionsHdUnavailable'], wraplength=540).pack(anchor='w', pady=5)
@@ -594,8 +710,9 @@ class Launcher(tk.Tk):
         buttons.pack(fill='x', pady=(8, 0))
         def save_options():
             try:
-                if self.worker_active:
+                if self.worker_active and not (self.backend.workspace_root and self.readonly_worker):
                     raise RuntimeError(words['optionsWait'])
+                variables['render_scale'].set(next(scale for scale, label in RESOLUTIONS.items() if label == resolution.get()))
                 self.backend.save_launch_options(document, {key: value.get() for key, value in variables.items()})
             except (OSError, ValueError, RuntimeError) as error:
                 status.set(words['optionsSaveFailed']+'\n'+str(error))
@@ -670,9 +787,14 @@ class Launcher(tk.Tk):
             rows.append(w['steps'][0]+' '+manifest['version'])
             count += manifest['files']['program']['bytes']
         if plan['language']:
-            row = manifest['language_packs'][data['locale']]
-            rows.append(('한국어' if data['locale'] == 'ko-KR' else 'English')+' '+w['pack']+' '+version_from(row))
-            count += row['bytes']
+            row = data.get('text_pack') or manifest['language_packs'].get(data['locale'])
+            if row:
+                rows.append(str(row.get('label') or ('한국어' if data['locale'] == 'ko-KR' else 'English'))+' '+w['pack']+' '+version_from(row))
+                count += row['bytes']
+            if data.get('base_language'):
+                base = manifest['language_packs']['en-US']
+                rows.append(w['packEnglishBase']+' '+version_from(base))
+                count += base['bytes']
         yes = messagebox.askyesno(w['confirm'], w['confirmBody']+'\n\n'+'\n'.join(rows)+f"\n\n{w['bytes']}: {count/1048576:.1f} MB", parent=self, default='no')
         if not yes:
             self.message_key = 'cancelled'
@@ -786,13 +908,13 @@ class Launcher(tk.Tk):
 
     def periodic(self):
         if not self.preview and not self.worker_active:
-            self.run(self.backend.check)
+            self.run(self.backend.check, readonly=bool(self.backend.workspace_root))
         self.after(300000, self.periodic)
 
     def close(self):
         if self.backend.cancel_graphics_prep():
             return
-        if not self.handoff and (self.worker_active or self.state['running']):
+        if not self.handoff and (self.state['running'] or self.state['busy'] or (self.worker_active and not self.readonly_worker)):
             messagebox.showinfo(self.title(), self.words()['closeBusy'], parent=self)
             return
         self.destroy()
@@ -850,6 +972,9 @@ def main():
     parser.add_argument('--capture')
     parser.add_argument('--smoke', action='store_true')
     parser.add_argument('--report')
+    parser.add_argument('--network-check', action='store_true', help=argparse.SUPPRESS)
+    parser.add_argument('--channel-dir', help=argparse.SUPPRESS)
+    parser.add_argument('--text-pack-check', help=argparse.SUPPRESS)
     parser.add_argument('--config')
     parser.add_argument('--update-health')
     parser.add_argument('--skip-launcher-update', action='store_true', help=argparse.SUPPRESS)
@@ -861,6 +986,40 @@ def main():
     parser.add_argument('--iso-capture',help=argparse.SUPPRESS)
     parser.add_argument('--report-acceptance', action='store_true', help=argparse.SUPPRESS)
     args = parser.parse_args()
+    if args.text_pack_check:
+        if not args.config or not args.report or not args.channel_dir:
+            parser.error('Text-pack check requires --config, --report and --channel-dir')
+        from portable_locale import install, activate, metadata
+        from backend import external_run
+        backend = Backend(DATA/'bridge.exe', Path(args.config), channel_dir=args.channel_dir)
+        try:
+            manifest = backend.json('BOOT-INSTALL.json')
+            row = metadata(manifest)[args.text_pack_check]
+            root = Path(backend.config['folder'])
+            result = install(root, backend.download(row), expected=row)
+            profile = activate(root, args.text_pack_check)
+            check_report = Path(args.report).with_suffix('.launch-profile.json')
+            process = external_run([
+                str(Path(os.environ.get('SystemRoot', 'C:/Windows'))/'System32/WindowsPowerShell/v1.0/powershell.exe'),
+                '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', str(root/'tools/play/launch-locale.ps1'),
+                '-Root', str(root), '-BaseElf', str(root/'bin/EBOOT.en-US.elf'),
+                '-BaseVfs', str(root/'data/languages/en-US/data/disc'), '-Inspect', '-Report', str(check_report)],
+                timeout=30, stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=0x08000000)
+            if process.returncode:
+                raise RuntimeError('Locale launch profile inspection failed')
+            inspected = json.loads(check_report.read_text(encoding='utf-8-sig'))
+            result.update(ok=True, profile=profile, inspection=inspected, game_started=False)
+        except Exception as error:
+            result = dict(ok=False, error_type=type(error).__name__, error=str(error), game_started=False)
+        Path(args.report).write_text(json.dumps(result, ensure_ascii=True, indent=2), encoding='utf-8')
+        raise SystemExit(0 if result['ok'] else 1)
+    if args.network_check:
+        if not args.report:
+            parser.error('Network check requires --report')
+        from network_check import run
+        result = run()
+        Path(args.report).write_text(json.dumps(result, indent=2), encoding='utf-8')
+        raise SystemExit(0 if result['ok'] else 1)
     if args.iso_check or args.iso_prepare:
         if not args.config or not args.report:parser.error('ISO acceptance requires config and report paths')
         backend=Backend(DATA/'bridge.exe',Path(args.config))
@@ -889,7 +1048,7 @@ def main():
     except (AttributeError, OSError):
         pass
     # A single instance avoids competing installers or a self-update replacing an open launcher.
-    mutex = ctypes.windll.kernel32.CreateMutexW(None, False, 'Local\\Macross30PythonLauncher') if os.name == 'nt' and not args.preview else None
+    mutex = ctypes.windll.kernel32.CreateMutexW(None, False, 'Local\\Macross30PythonLauncherLocal' if detect_workspace_root() else 'Local\\Macross30PythonLauncher') if os.name == 'nt' and not args.preview else None
     if mutex and ctypes.windll.kernel32.GetLastError() == 183:
         return
     try:

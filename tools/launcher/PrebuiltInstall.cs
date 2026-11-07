@@ -181,7 +181,7 @@ public static class PrebuiltInstall {
             try {
                 foreach(var row in rows) {
                     string name=Packages.Text(row,"path"),source=Packages.Child(program,name);Packages.VerifyArchive(source,row);
-                    if(!name.StartsWith("bin/",StringComparison.Ordinal) && name!="THIRD-PARTY-NOTICES.txt")continue;
+                    if(!name.StartsWith("bin/",StringComparison.Ordinal) && name!="THIRD-PARTY-NOTICES.txt" && name!="tools/play/launch-locale.ps1")continue;
                     string target=Packages.Child(root,name);Packages.NoLinks(root,name);Directory.CreateDirectory(Path.GetDirectoryName(target));
                     if(File.Exists(target) && Packages.Hash(target)==Packages.Text(row,"sha256"))continue;
                     string pending=Path.Combine(work,staged.Count+".new");File.Copy(source,pending);Packages.VerifyArchive(pending,row);
@@ -215,7 +215,7 @@ public static class PrebuiltInstall {
         if(path=="bin/Macross30Recompiled.exe")return true;
         // Shader-prep assets (tools/shader_cache/stage_program_assets.py): preparation tool,
         // seed manifest, portable PSO inventory and exact-source DXBC seed entries only.
-        if(path=="bin/MacrossShaderPrep.exe" || path=="bin/assets/shader-seed-manifest-v3.json" || path=="bin/assets/rsx_pso_inventory_v1.bin" || path=="bin/assets/aircraft-hd-recipe.json")return true;
+        if(path=="bin/MacrossShaderPrep.exe" || path=="bin/assets/shader-seed-manifest-v3.json" || path=="bin/assets/rsx_pso_inventory_v1.bin" || path=="bin/assets/aircraft-hd-recipe.json" || path=="bin/assets/locale-base.json")return true;
         if(Regex.IsMatch(path,@"^bin/assets/rsx_shader_cache_v2/[VPB]_[0-9A-F]{16}_[0-9A-F]{8}\.bin$"))return true;
         if(path.StartsWith("base-game/",StringComparison.Ordinal))return new[]{"CollectLogs.cmd","DistInstaller.cs","Macross30.cmd","launch-tools/collect-logs.ps1","launch-tools/launch-helper.ps1","plans/ja-JP.tsv","recipe.json"}.Contains(path.Substring(10));
         if(extension==".dll")return path.StartsWith("bin/",StringComparison.Ordinal) && new[]{"sdl2.dll","avutil-61.dll","avcodec-63.dll","avformat-63.dll","swresample-7.dll","msvcp140.dll","vcruntime140.dll","vcruntime140_1.dll","msvcp140_1.dll","msvcp140_2.dll","msvcp140_atomic_wait.dll","msvcp140_codecvt_ids.dll","vcruntime140_threads.dll","concrt140.dll"}.Contains(name);

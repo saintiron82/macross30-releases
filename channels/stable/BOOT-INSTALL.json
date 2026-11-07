@@ -1,7 +1,7 @@
 {
-  "version": "0.3.8",
+  "version": "0.3.9",
   "mode": "user-original-eboot",
-  "min_launcher_version": "0.3.8",
+  "min_launcher_version": "0.3.9",
   "source_only": false,
   "original_elf_sha256": "44d7112cbb5527314eb6192e59d861dacfcd4099f301a6e82ffc1681b0782b5b",
   "languages": [
@@ -15,10 +15,10 @@
   },
   "files": {
     "program": {
-      "file": "Macross30-program-0.3.8.zip",
-      "bytes": 76132380,
-      "sha256": "409098ab3525583af0ebbb3bcd8f1947237992c658e62033270fd75eb9f7fa02",
-      "exe_sha256": "0b7ab1d7571caa77a8c3aadf66427bce965800a41577bfdc3531ca1493449ba2"
+      "file": "Macross30-program-0.3.9.zip",
+      "bytes": 76154530,
+      "sha256": "21a8eae9bca4bb672e413318064877b64bf3d7224b2cfc763a2b6b90deb0b5d7",
+      "exe_sha256": "8688e4bb3f5d5be6744ef8b21c8f13633ee87192f533683a8934f209b5d0843a"
     }
   },
   "language_packs": {
@@ -92,6 +92,37 @@
     "bloom": {
       "default_on": true,
       "user_toggle": false
+    },
+    "locale_packs": {
+      "schema": 1,
+      "base_locale": "en-US",
+      "runtime_version": "0.3.9"
+    }
+  },
+  "locale_packs": {
+    "ru-RU": {
+      "file": "Macross30-text-ru-RU-0.3.9.zip",
+      "bytes": 2368034,
+      "sha256": "4e1b1e2b642a0adb593596fefc05e76012a2a7b5e9a469822ca923b68e58f26c",
+      "manifest_sha256": "ba8250a0984c3b20efca116e978d656a76f7b96b5c68590860a3f2b45fdb8581",
+      "label": "Русский",
+      "text_revision": "v5"
+    },
+    "es-ES": {
+      "file": "Macross30-text-es-ES-0.3.9.zip",
+      "bytes": 2274418,
+      "sha256": "9af3ea9d1a2f8c681e0ba229a195f79819a2ee3485cb6d262e2a44233320d49e",
+      "manifest_sha256": "f9142d52055bf4050954287f3ea40b01606d57cedc41920bb2c06eb5afbbee48",
+      "label": "Español",
+      "text_revision": "v3"
+    },
+    "en-US": {
+      "file": "Macross30-text-en-US-0.3.9.zip",
+      "bytes": 2079947,
+      "sha256": "a17b6870f71a0669da7c49b095638dde84151b1c81934edba6b6c77c5a6559b3",
+      "manifest_sha256": "478ba4b92ad70107b39c8ac1e88f7bb3cabe2f6cbf84ffb427e3954abc702a68",
+      "label": "English",
+      "text_revision": "corrections-1980"
     }
   }
 }

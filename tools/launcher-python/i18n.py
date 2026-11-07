@@ -82,3 +82,31 @@ TEXT['ja']['optionsScaleHelp'] = '倍率と解像度：1 = 720p・1.5 = 1080p・
 TEXT['ko'].update(optionHd='HD 텍스처 (다음 실행부터 적용)', hdPrepare='원본 데이터로 HD 텍스처를 준비합니다.')
 TEXT['en'].update(optionHd='HD textures (next launch)', hdPrepare='Preparing HD textures from your original game data.')
 TEXT['ja'].update(optionHd='HDテクスチャ（次回起動から）', hdPrepare='原本データからHDテクスチャを準備しています。')
+
+TEXT['ko'].update(
+    optionScale='렌더 해상도', runtimeOptions='게임 옵션 열기',
+    runtimeOptionsOpened='게임 옵션 창에서 조절하세요. 해상도·HD 변경은 재실행 후 적용됩니다.',
+    runtimeOptionsNoGame='선택한 설치 폴더의 게임이 실행 중이 아닙니다.',
+    runtimeOptionsUnavailable='게임 옵션 창을 열지 못했습니다. 게임이 응답하는지 확인한 뒤 다시 눌러 주세요. 게임 안에서 F9로 열 수도 있습니다.',
+    optionsRestart='저장한 옵션은 다음 게임 실행부터 적용됩니다. 게임 실행 중에는 런처의 게임 옵션 열기를 사용하세요.')
+TEXT['en'].update(
+    optionScale='Render resolution', runtimeOptions='Open game options',
+    runtimeOptionsOpened='Adjust settings in the game options window. Resolution and HD changes require a restart.',
+    runtimeOptionsNoGame='The game in the selected installation folder is not running.',
+    runtimeOptionsUnavailable='Could not open game options. Check that the game is responding and try again, or press F9 in the game.',
+    optionsRestart='Saved settings apply on the next game launch. While playing, use Open game options in the launcher.')
+TEXT['ja'].update(
+    optionScale='描画解像度', runtimeOptions='ゲーム設定を開く',
+    runtimeOptionsOpened='ゲーム設定画面で調整してください。解像度とHDの変更は再起動後に反映されます。',
+    runtimeOptionsNoGame='選択した導入フォルダーのゲームが起動していません。',
+    runtimeOptionsUnavailable='ゲーム設定を開けませんでした。ゲームの応答を確認して再試行するか、ゲーム内でF9を押してください。',
+    optionsRestart='保存した設定は次回起動から反映されます。プレイ中はランチャーの「ゲーム設定を開く」を使ってください。')
+
+# HTTPS certificate-chain failures remain blocking; offer a clear recovery path.
+TEXT['ko']['tlsCertificateFailed'] = '업데이트 서버의 보안 인증서를 확인하지 못했습니다. PC 날짜·시간과 Windows 업데이트를 확인해 주세요. 브라우저에서도 GitHub 다운로드가 되는지 확인한 뒤, 계속 실패하면 런처 버전과 이 메시지를 알려 주세요.'
+TEXT['en']['tlsCertificateFailed'] = 'Could not verify the update server certificate. Check your PC date/time and Windows updates, then try the GitHub download in your browser. If it still fails, report your launcher version and this message.'
+TEXT['ja']['tlsCertificateFailed'] = '更新サーバーの証明書を確認できませんでした。PCの日時とWindows Updateを確認し、ブラウザーでGitHubからダウンロードできるかお試しください。解決しない場合はランチャーのバージョンとこのメッセージをお知らせください。'
+
+TEXT['ko'].update(packImport='언어팩 가져오기…', packPartial='미완성 테스트 팩 허용 · 대체 언어 사용', packEnglishBase='영어 이미지 기반 데이터')
+TEXT['en'].update(packImport='Import language pack…', packPartial='Allow unfinished test pack with fallback', packEnglishBase='English image base')
+TEXT['ja'].update(packImport='言語パックを読み込む…', packPartial='未完成のテストパックと代替言語を許可', packEnglishBase='英語画像の基盤データ')

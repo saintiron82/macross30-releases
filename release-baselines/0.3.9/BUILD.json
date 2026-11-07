@@ -1,0 +1,100 @@
+{
+  "version": "0.3.9",
+  "versions": {
+    "game": "0.3.9",
+    "launcher": "0.3.9",
+    "korean_base": "0.3.8",
+    "english_base": "0.3.8",
+    "english_corrections": "0.3.9",
+    "russian": "v5",
+    "spanish": "v3"
+  },
+  "program": {
+    "file": "Macross30-program-0.3.9.zip",
+    "bytes": 76154530,
+    "sha256": "21a8eae9bca4bb672e413318064877b64bf3d7224b2cfc763a2b6b90deb0b5d7",
+    "exe_sha256": "8688e4bb3f5d5be6744ef8b21c8f13633ee87192f533683a8934f209b5d0843a"
+  },
+  "launcher": {
+    "version": "0.3.9",
+    "file": "Macross30Launcher-0.3.9.exe",
+    "bytes": 16706709,
+    "sha256": "12c83880df2b7bd15b8c2a7e797b662c4559f588d7de8d6c55ce8225bfa7c9ba"
+  },
+  "text_packs": {
+    "ru-RU": {
+      "file": "Macross30-text-ru-RU-0.3.9.zip",
+      "bytes": 2368034,
+      "sha256": "4e1b1e2b642a0adb593596fefc05e76012a2a7b5e9a469822ca923b68e58f26c",
+      "manifest_sha256": "ba8250a0984c3b20efca116e978d656a76f7b96b5c68590860a3f2b45fdb8581",
+      "label": "Русский",
+      "text_revision": "v5"
+    },
+    "es-ES": {
+      "file": "Macross30-text-es-ES-0.3.9.zip",
+      "bytes": 2274418,
+      "sha256": "9af3ea9d1a2f8c681e0ba229a195f79819a2ee3485cb6d262e2a44233320d49e",
+      "manifest_sha256": "f9142d52055bf4050954287f3ea40b01606d57cedc41920bb2c06eb5afbbee48",
+      "label": "Español",
+      "text_revision": "v3"
+    },
+    "en-US": {
+      "file": "Macross30-text-en-US-0.3.9.zip",
+      "bytes": 2079947,
+      "sha256": "a17b6870f71a0669da7c49b095638dde84151b1c81934edba6b6c77c5a6559b3",
+      "manifest_sha256": "478ba4b92ad70107b39c8ac1e88f7bb3cabe2f6cbf84ffb427e3954abc702a68",
+      "label": "English",
+      "text_revision": "corrections-1980"
+    }
+  },
+  "tests": {
+    "total": 151,
+    "passed": 149,
+    "skipped": 2,
+    "failures": 0,
+    "errors": 0,
+    "suites": [
+      {
+        "directory": "tools/launcher-python",
+        "pattern": "test_*.py",
+        "total": 88,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      {
+        "directory": "tools/tests",
+        "pattern": "test_pack_*.py",
+        "total": 43,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      {
+        "directory": "tools/tests",
+        "pattern": "test_runtime_elf_text.py",
+        "total": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "directory": "tools/release",
+        "pattern": "test_pipeline.py",
+        "total": 16,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "package_audit": true,
+  "portable_installation_checked": true,
+  "private_source_snapshot_sha256": "e4e1bae7d731608708259894205d0b51f45759042988952f70d661130ca50059",
+  "gameplay_validation": "User confirmed candidate and requested publication; no full-playthrough claim.",
+  "excluded": [
+    "FPS unlock",
+    "experimental bloom/reflection renderer",
+    "rumble fix"
+  ]
+}

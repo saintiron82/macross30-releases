@@ -32,6 +32,10 @@
  * table. It comes first: everything below is written against that struct. */
 #include "ppu_recomp.h"
 #include "l10n_bridge.h"
+#define MACROSS_TEXT_LIFTED_CONTEXT 1
+#include "runtime_elf_text_adapter.h"
+
+#include "diagnostic_log.h"
 
 /* The Win32 names -- Sleep, GetTickCount64, CreateThread, InterlockedIncrement,
  * VirtualAlloc, the scalar typedefs -- from one place. On Windows this is a
@@ -210,6 +214,8 @@ extern "C" int rsx_null_backend_init(uint32_t, uint32_t, const char*);
 extern "C" int rsx_null_backend_pump_messages(void);
 extern "C" void* rsx_null_backend_get_hwnd(void);
 extern "C" void rsx_null_backend_suppress_present(int);
+extern "C" void rsx_null_backend_set_fps_callback(int (*apply)(int));
+extern "C" int macross_runtime_set_fps_unlocked(int);
 extern "C" uint32_t cellGcmResolveLocated(uint32_t, uint32_t);
 extern "C" uint32_t cellGcmResolveIO(uint32_t);
 extern "C" uint32_t cellGcmGetCurrentDisplayBufferId(void);
@@ -220,7 +226,6 @@ static const uint8_t* live_guest_ptr(void*, uint32_t location,
 {
     uint32_t ea = location == 0 ? cellGcmResolveLocated(1, offset)
                                 : cellGcmResolveIO(offset);
-    if (!ea && location != 0) ea = cellGcmResolveLocated(0, offset);
     if (!vm_base || !ea || ea == UINT32_MAX ||
         uint64_t(ea) + bytes > 0x100000000ull) return nullptr;
     return reinterpret_cast<const uint8_t*>(vm_base) + ea;
@@ -543,6 +548,7 @@ struct MacrossFrameTiming {
 
 static DWORD WINAPI frame_clock(LPVOID)
 {
+    rsx_null_backend_set_fps_callback(macross_runtime_set_fps_unlocked);
     fprintf(stderr, "[host-thread-role] role=render thread_id=%lu\n", (unsigned long)GetCurrentThreadId());
     const char* title = getenv("PS3_TITLE");
     if (!title || !*title) title = "ps3recomp";
@@ -556,7 +562,7 @@ static DWORD WINAPI frame_clock(LPVOID)
         unsigned win_w = WINDOW_WIDTH, win_h = WINDOW_HEIGHT;
         if (const char* rs = getenv("LD_RENDER_SCALE")) {
             const double v = atof(rs);
-            if (v > 1.24 && v < 2.01) { win_w = (unsigned)(WINDOW_WIDTH * v + 0.5); win_h = (unsigned)(WINDOW_HEIGHT * v + 0.5); }
+            if (v > 1.24 && v < 3.01) { win_w = (unsigned)(WINDOW_WIDTH * v + 0.5); win_h = (unsigned)(WINDOW_HEIGHT * v + 0.5); }
         }
         rsx_ok = rsx_null_backend_init(win_w, win_h, title) == 0;
         if (rsx_ok) {
@@ -812,6 +818,7 @@ static DWORD WINAPI macross_bringup_watchdog(LPVOID arg)
 
 int main(int argc, char** argv)
 {
+    macross_diag_init();
 #ifdef MACROSS_GAMEPLAY_AVX2
     if (!IsProcessorFeaturePresent(40 /* PF_AVX2_INSTRUCTIONS_AVAILABLE */)) {
         fprintf(stderr, "Gameplay SIMD build requires AVX2; rebuild with MACROSS_GAMEPLAY_AVX2=OFF.\n");
@@ -867,12 +874,14 @@ int main(int argc, char** argv)
     }
 
     if (!alloc_guest_vm()) {
+        macross_diag("boot.failure", "guest address space allocation");
         fprintf(stderr, "ERROR: could not allocate the guest address space\n");
         return 1;
     }
 
     uint32_t entry = ppu_load_elf(argv[1]);
     if (!entry) {
+        macross_diag("boot.failure", "ELF load");
         fprintf(stderr, "ERROR: could not load %s\n", argv[1]);
         return 1;
     }
@@ -880,6 +889,7 @@ int main(int argc, char** argv)
     if (argc >= 3) ppu_vfs_root = argv[2];
     else derive_vfs_root(argv[1]);
     printf("[boot] VFS root: %s\n", ppu_vfs_root);
+    macross_diag("boot.elf_loaded", "entry=0x%08X", entry);
 
     ppu_recomp_register();   /* lifted function table -> address map */
     macross_notify_register();
@@ -894,6 +904,7 @@ int main(int argc, char** argv)
     macross_register_bridges();
     macross_l10n_install();
     macross_sail_install();
+    if (!macross_text::install(getenv("MACROSS_ELF_TEXT_PACK_FILE"), argv[1])) return 1;
     const char* video_mode = getenv("MACROSS_VIDEO_MODE");
     if (video_mode && (!strcmp(video_mode, "480") || !strcmp(video_mode, "480p"))) {
         g_video_resolution_id = 4;
@@ -916,6 +927,7 @@ int main(int argc, char** argv)
     macross_geom_c5b0_capture_install();
     fprintf(stderr, "[host-thread-role] role=main thread_id=%lu\n", (unsigned long)GetCurrentThreadId());
     int rc = ppu_run(entry, STACK_TOP);
+    macross_diag("boot.return", "rc=%d guest_exit=%d status=%d", rc, g_sys_process_exit_called, g_sys_process_exit_code);
     printf("\n[boot] ppu_run returned %d (entry function unwound)\n", rc);
 
     /* A title that called sys_process_exit never reaches this line: that path

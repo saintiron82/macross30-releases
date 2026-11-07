@@ -20,6 +20,7 @@ public class BridgeProgram {
         }
         if(op=="validate")return new {valid=true};
         if(op=="stopped"){Packages.EnsureStopped(root);return new {stopped=true};}
+        if(op=="game-options"){GameOptions.Open(root);return new {requested=true};}
         if(op=="extract")return new {path=PrebuiltInstall.Extract(root,Packages.Text(r,"archive"),Packages.Object(r["artifact"]))};
         if(op=="extract-language") {
             string work=Packages.Child(root,".local-build/language-packages");Packages.NoLinks(root,".local-build");Directory.CreateDirectory(work);

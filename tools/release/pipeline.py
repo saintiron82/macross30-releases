@@ -78,6 +78,7 @@ def plan(config):
     if read(base/'LAUNCHER.json') != launcher or read(base/'LANGUAGE-PACKS.json') != boot['language_packs']:
         raise ValueError('Baseline metadata aliases disagree')
     old = rows(boot, launcher)
+    old_text = copy.deepcopy(boot.get('locale_packs', {}))
     if 'game' in changed:
         next_boot = read(assets_dir(config,'input_assets','game')/'BOOT-INSTALL.json')
         boot = copy.deepcopy(next_boot)
@@ -109,9 +110,45 @@ def plan(config):
                                      url='https://github.com/saintiron82/macross30-releases/releases/download/v'+new_version+'/'+row['file'])
     if boot['version'] != components['game']['version']:
         raise ValueError('Game manifest version differs from program artifact')
+    text_packs = {}
+    for locale, row in boot.get('locale_packs', {}).items():
+        if not re.fullmatch(r'[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*', locale):
+            raise ValueError('Invalid extra language locale')
+        match = re.fullmatch(r'Macross30-text-' + re.escape(locale) + r'-(\d+\.\d+\.\d+)\.zip', row.get('file', ''))
+        if not match or not re.fullmatch('[a-f0-9]{64}', row.get('manifest_sha256', '')):
+            raise ValueError('Invalid text-pack identity')
+        changed_text = old_text.get(locale) != row
+        if changed_text and match[1] != config['release']:
+            raise ValueError('Changed text-pack version must match release tag')
+        directory = Path(config['locale_assets']).resolve(strict=True) if config.get('locale_assets') else assets_dir(config, 'baseline_assets', 'game')
+        path = directory / row['file']
+        if not path.is_file() or path.stat().st_size != row['bytes'] or sha(path) != row['sha256']:
+            raise ValueError('Text-pack missing or changed: ' + str(path))
+        text_packs[locale] = dict(artifact=row, path=str(path), changed=changed_text, version=match[1])
     return dict(schema_version=1, release=config['release'], changed=changed,
                 components=components, boot=boot, launcher=launcher,
+                text_packs=text_packs,
                 baseline_metadata=str(base), baseline_hashes={n:sha(base/n) for n in META})
+
+
+def verify_text_packs(result):
+    """Validate the data-only schema, every proof, base guard and archive paths."""
+    if not result.get('text_packs'):
+        return
+    sys.path.insert(0, str(ROOT / 'tools/play'))
+    from pack_registry import import_pack, digest
+    with zipfile.ZipFile(result['components']['game']['path']) as program:
+        base = program.read('program/bin/assets/locale-base.json')
+    with tempfile.TemporaryDirectory(prefix='macross-text-audit-') as temporary:
+        root = Path(temporary)
+        guard = root / 'bin/assets/locale-base.json'
+        guard.parent.mkdir(parents=True)
+        guard.write_bytes(base)
+        for locale, item in result['text_packs'].items():
+            row = import_pack(root, item['path'])
+            expected = 'en-US-fix' if locale == 'en-US' else locale
+            if row['locale'] != expected or digest(Path(row['manifest'])) != item['artifact']['manifest_sha256']:
+                raise ValueError('Text-pack locale or manifest mismatch')
 
 
 def verify_launcher(executable, archive):
@@ -147,6 +184,7 @@ def prepare(config, output):
             try: os.link(source, target)
             except OSError: shutil.copyfile(source, target)
         result['package_audit'] = audit(audit_dir)
+    verify_text_packs(result)
     launch = result['components']['launcher']
     launch_dir = Path(launch['path']).parent
     launch_zip = launch_dir/('Macross30-launcher-'+launch['version']+'.zip')
@@ -155,12 +193,18 @@ def prepare(config, output):
         row = result['components'][component]
         shutil.copyfile(row['path'], assets/row['artifact']['file'])
     if launch['changed']: shutil.copyfile(launch_zip, assets/launch_zip.name)
+    for row in result.get('text_packs', {}).values():
+        if row['changed']:
+            shutil.copyfile(row['path'], assets/row['artifact']['file'])
     base = Path(result['baseline_metadata'])
     status = read(base/'STATUS.json')
     status['latest']['game']['version'] = result['components']['game']['version']
     status['latest']['launcher']['version'] = launch['version']
     for component, locale in (('korean','ko-KR'), ('english','en-US')):
         status['latest']['language_packs'][locale]['version'] = result['components'][component]['version']
+    if result.get('text_packs'):
+        status['latest']['text_packs'] = {locale: dict(version=row['version'], text_revision=row['artifact'].get('text_revision'))
+                                          for locale, row in result['text_packs'].items()}
     status['patch_notes'] = config.get('patch_notes', []) + status.get('patch_notes', [])
     status['updated_at'] = __import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat()
     for name, value in (('BOOT-INSTALL.json',result['boot']), ('LANGUAGE-PACKS.json',result['boot']['language_packs']),
@@ -209,6 +253,13 @@ def verify(output):
         raise ValueError('Staged metadata disagrees with component plan')
     if read(output/'assets/LAUNCHER.json') != launcher or read(output/'assets/LANGUAGE-PACKS.json') != boot['language_packs']:
         raise ValueError('Metadata aliases disagree')
+    if boot.get('locale_packs', {}) != {locale: row['artifact'] for locale, row in result.get('text_packs', {}).items()}:
+        raise ValueError('Staged text-pack catalog disagrees')
+    for locale, row in result.get('text_packs', {}).items():
+        if row['changed']:
+            item = identity(output/'assets'/row['artifact']['file'])
+            if any(item[key] != row['artifact'][key] for key in ('file','bytes','sha256')):
+                raise ValueError('Staged text-pack identity changed: ' + locale)
     status = read(output/'assets/STATUS.json')['latest']
     versions = dict(game=status['game']['version'],launcher=status['launcher']['version'],
                     korean=status['language_packs']['ko-KR']['version'],english=status['language_packs']['en-US']['version'])

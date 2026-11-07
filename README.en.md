@@ -1,16 +1,16 @@
 # Macross 30 — English setup guide
 
-**0.3.8 adds optional HD textures, pre-launch shader preparation and menu/HUD translation updates. Game, Korean, English and launcher packages are all 0.3.8.**
+**0.3.9 adds Russian v5, Spanish v3, 1,980 English corrections, launcher options and Windows HTTPS certificate handling. Game/launcher: 0.3.9; Korean/English base packs: 0.3.8.**
 
 **720p through 4K supported. FPS unlocking is under repair and unavailable; the 30 FPS cap remains enabled.**
 
-**[Download the Windows launcher](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.8/Macross30-launcher-0.3.8.zip)**
+**[Download the Windows launcher](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.9/Macross30-launcher-0.3.9.zip)**
 
-Game **0.3.8** · Launcher **0.3.8** · Windows x64 test release.
+Game **0.3.9** · Launcher **0.3.9** · Windows x64 test release.
 
 ## Install and play
 
-1. Download `Macross30-launcher-0.3.8.zip` and extract it to a folder.
+1. Download `Macross30-launcher-0.3.9.zip` and extract it to a folder.
 2. Run `Macross30Launcher.exe`.
 3. Choose **English** as your play language. The launcher display language and game language are separate settings.
 4. Press **Play/Update** and approve the required downloads. The launcher installs the common program and the selected language pack.
@@ -22,7 +22,8 @@ The common program package contains a precompiled Windows game executable. Requi
 
 ## Languages and features
 
-- **English:** available as a separate language pack. Translation or display problems may occur; reports are welcome.
+- **English:** the 0.3.8 base pack plus 1,980 corrections in a separate 0.3.9 text layer.
+- **Russian v5 / Spanish v3:** text packs using the English image base. Translation/display review is ongoing; please report issues, including text clipping.
 - **Korean:** available as a separate language pack.
 - **Japanese:** uses the original game data; no Japanese language pack is required.
 - Keyboard/gamepad input, remappable controls and FHD/QHD resolution options are supported. Performance depends on hardware, settings and scene.
@@ -59,7 +60,7 @@ This is an unofficial, non-commercial fan project, not affiliated with or endors
 Keep your installed game folder and save files. If original data needs repair, select the same supported ISO dumped from your own copy; you do not need to obtain another ISO.
 
 
-From launcher 0.3.2, startup automatically downloads, replaces and restarts newer launchers. The launcher stays open while the game runs and shows Game running. Existing 0.3.0/0.3.1 users must click Launcher update once to migrate. Game/language packages are 0.3.8.
+From launcher 0.3.2, startup automatically downloads, replaces and restarts newer launchers. The launcher stays open while the game runs and shows Game running. Existing 0.3.0/0.3.1 users must click Launcher update once to migrate. Game/launcher are 0.3.9; Korean/English base packs remain 0.3.8, with additional text packs at 0.3.9.
 
 
 After the game exits, choose **Logs → Send last play logs**, review the files and send. No user login is needed; reports go to a private Discord support channel. Saves are optional and the ZIP remains in local bug-reports.
@@ -67,3 +68,7 @@ After the game exits, choose **Logs → Send last play logs**, review the files 
 ## If the ISO is reported as encrypted
 
 In launcher 0.3.7, open **ISO settings**, check the SHA-1 identity hash, and select a matching `.dkey` or `.key` file you have prepared. Missing keys, invalid formats and mismatching keys have distinct messages. A matching key prepares a separate verified ISO while preserving the original, so additional space equal to the ISO size is needed. An already-decrypted ISO does not need a separate disc key.
+
+## Updating to 0.3.9
+
+If `CERTIFICATE_VERIFY_FAILED` prevents an older launcher from updating, manually download and replace it with the new launcher ZIP above. Keep your installation folder and saves. Saved launch options apply on the next game launch; while playing, use **Open game options**. HD uses existing preview textures in battles, so aircraft colors can vary.

@@ -1,4 +1,4 @@
-Macross 30 Launcher 0.3.7
+Macross 30 Launcher 0.3.9
 
 Macross30Launcher.exe를 실행하세요. Python, Node.js, 브라우저 엔진을 따로 설치할 필요가 없습니다.
 플레이 언어를 고르고 플레이 또는 업데이트를 누르세요.
@@ -12,6 +12,13 @@ Macross30Launcher.exe를 실행하세요. Python, Node.js, 브라우저 엔진�
 Run Macross30Launcher.exe. No separate Python, Node.js or browser runtime is required.
 Select a play language and press Play/Update. Approve available updates once; the game and selected language pack are applied, then the game starts.
 Your own ISO is required for first setup. Notices follow the launcher UI language.
+
+0.3.9: 실행 전 옵션에서 해상도·HD·전체화면·VSync·자막을 설정합니다. 실행 중에는 게임 옵션 열기로 지원 항목을 조절합니다.
+러시아어 v5·스페인어 v3·영어 보정팩은 영어 기반팩을 함께 사용합니다. 한글/영어 기반팩 버전이 게임 버전과 달라도 정상입니다.
+인증서 오류로 구버전의 자동 업데이트가 실패하면 새 런처 EXE를 직접 받아 한 번 교체하세요.
+0.3.9: Launch options configure resolution, HD textures, fullscreen, VSync and subtitles before play. Open game options while running to adjust supported settings.
+Russian v5, Spanish v3 and English corrections also use the English base pack. Base language packs may have a different version from the game.
+If a certificate error prevents an older launcher from updating, replace it once with the new launcher EXE.
 
 Macross30Launcher.exeを起動してください。Pythonやブラウザーの別途導入は不要です。
 プレイ言語を選んでプレイ／更新を押してください。承認後に必要な更新を適用し、ゲームを起動します。
@@ -36,21 +43,17 @@ The ZIP remains in bug-reports for retry. A receipt is shown only after Discord 
 ゲーム終了後：ログ → 前回プレイのログを送信 → 内容・バージョン確認 → 送信。
 ログイン不要。自動送信なし。セーブは明示的に選択した場合のみ添付します。ZIPはbug-reportsに残り、受付確認後に番号を表示します。
 
-[Launch options / 실행 옵션 / 起動設定]
-The Launch options button below Play edits <configured installation folder>/play/settings.ini.
-Close the game before saving; settings take effect on the next game launch.
-The launcher checks for an externally started game before writing and does not
-send F9 or any input to a running game. An existing play directory is required.
-Resolution scales: 1 / 1.25 / 1.5 / 2 / 2.5 / 3 (all supported by game 0.3.4).
-Resolution by scale: 1 = 720p, 1.5 = 1080p, 2 = 1440p, 3 = 4K.
-FPS unlock is unavailable while under repair. Game 0.3.8 exposes optional HD
-textures through an explicit game capability; original 0.3.4 does not support it.
-HD resources are prepared locally from the user's original game data.
-Existing bloom is enabled as part of the game's default image and has no toggle.
-Only changed resolution, fullscreen, VSync, subtitles and supported HD settings
-are saved. Language, FPS and unknown settings are preserved.
-Whitespace before '=' belongs to the key, and values end at whitespace.
-Saving refuses a stale file or changed install folder. Write/replace failures
-preserve the old file. Cancel performs no write. The game F9 save routine may
-later rewrite its own file and remove comments; launcher preservation only
-covers saves through Launch options. No save, ISO, or launcher config is edited.
+[Options / 옵션 / 設定 — launcher 0.3.9]
+Before play, Launch options saves resolution, fullscreen, VSync, subtitles and
+supported HD texture settings for the next launch, including before first setup.
+Resolution is displayed as 1280 x 720, 1600 x 900, 1920 x 1080, 2560 x 1440,
+3200 x 1800 or 3840 x 2160 (4K).
+While a game started by this launcher is running, the button becomes Open game
+options. It opens the game's existing options window for that installation only.
+Fullscreen, VSync and subtitles can be adjusted there immediately. Resolution and
+HD texture changes take effect after restarting the game. F9 remains available.
+Existing bloom remains part of the default image and has no launcher toggle.
+FPS unlocking remains unavailable. Game/language packs stay at 0.3.8.
+The launcher never writes settings while a game is running; the game owns its
+runtime settings. Before-launch saves preserve comments and unknown settings and
+refuse concurrent changes. Opening settings alone does not create files.

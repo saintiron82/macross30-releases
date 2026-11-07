@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-03T15:33:26.110154+00:00",
+  "updated_at": "2026-11-07T10:24:45.158150+00:00",
   "closed": false,
   "default_language": "ko",
   "message": {
@@ -10,10 +10,10 @@
   },
   "latest": {
     "game": {
-      "version": "0.3.8"
+      "version": "0.3.9"
     },
     "launcher": {
-      "version": "0.3.8"
+      "version": "0.3.9"
     },
     "language_packs": {
       "ko-KR": {
@@ -21,6 +21,20 @@
       },
       "en-US": {
         "version": "0.3.8"
+      }
+    },
+    "text_packs": {
+      "ru-RU": {
+        "version": "0.3.9",
+        "text_revision": "v5"
+      },
+      "es-ES": {
+        "version": "0.3.9",
+        "text_revision": "v3"
+      },
+      "en-US": {
+        "version": "0.3.9",
+        "text_revision": "corrections-1980"
       }
     }
   },
@@ -41,6 +55,19 @@
     }
   ],
   "patch_notes": [
+    {
+      "id": "release-0.3.9",
+      "component": "game",
+      "version": "0.3.9",
+      "title": {
+        "ko": "0.3.9 언어팩·런처",
+        "en": "0.3.9 languages and launcher"
+      },
+      "body": {
+        "ko": "러시아어 v5·스페인어 v3·영어 1,980건 보정 및 런처 옵션·Windows TLS 개선.",
+        "en": "Russian v5, Spanish v3, 1,980 English corrections, launcher options and Windows TLS improvements."
+      }
+    },
     {
       "id": "combined-0.3.8",
       "component": "game",

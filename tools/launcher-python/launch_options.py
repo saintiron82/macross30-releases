@@ -11,6 +11,8 @@ import re
 import tempfile
 
 SCALES = ('1', '1.25', '1.5', '2', '2.5', '3')
+RESOLUTIONS = dict(zip(SCALES, ('1280 × 720', '1600 × 900', '1920 × 1080',
+                              '2560 × 1440', '3200 × 1800', '3840 × 2160 (4K)')))
 DEFAULTS = dict(render_scale='1.5', fullscreen='0', vsync='1', bloom='1', subtitles='1', hd_textures='0')
 
 

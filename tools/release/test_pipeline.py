@@ -182,6 +182,43 @@ class PipelineTests(unittest.TestCase):
         self.assertFalse(any(a==['git','push','origin','HEAD:main'] for a in calls))
         self.assertEqual(read(root/'stage/publication.json')['stage'],'draft_uploaded')
 
+    def test_release_document_replacements_require_matching_baseline(self):
+        root,checkout,calls,fake=self.publication_fixture()
+        record=read(root/'stage/release-plan.json')
+        record['config']['readme_replacements']={'README.md':[dict(old='old release summary',new='new release summary')]}
+        write(root/'stage/release-plan.json',record)
+        path=checkout/'README.md';path.write_text('old release summary\n',encoding='utf-8')
+        with patch('publish.command',fake),patch('publish.verify_public',return_value={'verified':True}):
+            publish(root/'stage',checkout)
+        self.assertEqual(path.read_text(encoding='utf-8'),'new release summary\n')
+        root,checkout,calls,fake=self.publication_fixture()
+        record=read(root/'stage/release-plan.json')
+        record['config']['readme_replacements']={'README.md':[dict(old='old release summary',new='new release summary')]}
+        write(root/'stage/release-plan.json',record)
+        (checkout/'README.md').write_text('changed remotely\n',encoding='utf-8')
+        with patch('publish.command',fake):
+            with self.assertRaisesRegex(ValueError,'documentation baseline changed'):publish(root/'stage',checkout)
+        self.assertFalse(any(a[:2]==['git','push'] for a in calls))
+
+    def test_release_source_files_are_hash_guarded_and_added_to_tag_commit(self):
+        root,checkout,calls,fake=self.publication_fixture()
+        source=root/'loader.py';source.write_bytes(b'# exact frozen source\n')
+        record=read(root/'stage/release-plan.json')
+        record['config']['source_files']=[dict(source=str(source),target='tools/play/loader.py',sha256=identity(source)['sha256'])]
+        write(root/'stage/release-plan.json',record)
+        with patch('publish.command',fake),patch('publish.verify_public',return_value={'verified':True}):
+            publish(root/'stage',checkout)
+        self.assertEqual((checkout/'tools/play/loader.py').read_bytes(),source.read_bytes())
+        self.assertIn(['git','add','--','tools/play/loader.py'],calls)
+        root,checkout,calls,fake=self.publication_fixture()
+        source=root/'loader.py';source.write_bytes(b'changed')
+        record=read(root/'stage/release-plan.json')
+        record['config']['source_files']=[dict(source=str(source),target='tools/play/loader.py',sha256='0'*64)]
+        write(root/'stage/release-plan.json',record)
+        with patch('publish.command',fake):
+            with self.assertRaisesRegex(ValueError,'Release source changed'):publish(root/'stage',checkout)
+        self.assertFalse(any(a[:2]==['git','switch'] for a in calls))
+
     def test_component_specific_asset_folders_and_baseline_aliases(self):
         root,baseline,inputs,config=self.fixture()
         config['baseline_assets']={name:str(baseline) for name in ('game','korean','english','launcher')}

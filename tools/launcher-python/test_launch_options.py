@@ -126,8 +126,7 @@ class LaunchOptionsTests(unittest.TestCase):
         backend.config['folder'] = str(self.root/'elsewhere')
         with self.assertRaises(ValueError):
             backend.save_launch_options(doc, {'vsync':'0'})
-        with self.assertRaises(FileNotFoundError):
-            backend.load_launch_options()
+        self.assertIsNone(backend.load_launch_options()['original'])
         self.assertFalse((self.root/'elsewhere').exists())
         self.assertEqual(self.path.read_bytes(), b'vsync=1\n')
 
@@ -145,6 +144,22 @@ class LaunchOptionsTests(unittest.TestCase):
         doc = backend.load_launch_options()
         backend.save_launch_options(doc, {'hd_textures': '1'})
         self.assertEqual(options.parse(self.path.read_bytes())['hd_textures'], '1')
+
+    def test_settings_before_first_install_create_only_on_save(self):
+        backend = self.backend()
+        backend.config['folder'] = str(self.root / 'new-install')
+        doc = backend.load_launch_options()
+        self.assertFalse((self.root / 'new-install').exists())
+        backend.save_launch_options(doc, {'render_scale': '3', 'vsync': '0'})
+        saved = self.root / 'new-install/play/settings.ini'
+        self.assertEqual(options.parse(saved.read_bytes())['render_scale'], '3')
+        self.assertEqual(options.parse(saved.read_bytes())['vsync'], '0')
+
+    def test_resolution_labels_round_trip_to_native_values(self):
+        self.assertEqual(set(options.RESOLUTIONS), set(options.SCALES))
+        self.assertEqual(len(set(options.RESOLUTIONS.values())), 6)
+        self.assertEqual(options.RESOLUTIONS['3'], '3840 × 2160 (4K)')
+        self.assertEqual(options.RESOLUTIONS['1.5'], '1920 × 1080')
 
 
 if __name__ == '__main__':

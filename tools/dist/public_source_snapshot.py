@@ -18,7 +18,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
 PUBLIC_BASE = '7da9b9469ac42d719e416bd7b1764a03ba8446bd'
-LAUNCHER = ('Launcher.cs', 'SelfUpdate.cs', 'UiText.cs', 'LocalBuild.cs', 'GameLanguage.cs',
+LAUNCHER = ('Launcher.cs', 'SelfUpdate.cs', 'UiText.cs', 'LocalBuild.cs', 'GameLanguage.cs', 'GameOptions.cs',
             'InstallProgress.cs', 'PrebuiltInstall.cs', 'build_launcher.ps1', 'README.txt')
 LOCAL_BUILD = ('apply_hooks.py', 'build.ps1', 'finalize.py', 'install.ps1', 'prepare.py',
                'setup_tools.ps1', 'compile_cache.py', 'incremental.py', 'install_prebuilt.ps1',

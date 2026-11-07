@@ -1,5 +1,6 @@
 """Native launcher operations; the Tk thread only receives data/events."""
 import copy
+from contextlib import contextmanager
 import ctypes
 import hashlib
 import json
@@ -17,13 +18,15 @@ import urllib.request
 import uuid
 import graphics_prep
 import launch_options
+import network_tls
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'local_build'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'play'))
 import aircraft_hd
 
 BASE = 'https://github.com/saintiron82/macross30-releases/releases/latest/download/'
 METADATA_BASE = 'https://raw.githubusercontent.com/saintiron82/macross30-releases/main/channels/stable/'
 LOCALES = ('ko-KR', 'en-US', 'ja-JP')
-VERSION = '0.3.8'
+VERSION = '0.3.9'
 REPORT_ENDPOINT = 'https://macross30-log-relay.saintiron82.workers.dev'
 NO_WINDOW = getattr(subprocess, 'CREATE_NO_WINDOW', 0)
 EXTERNAL_PROCESS_LOCK = threading.Lock()
@@ -97,13 +100,30 @@ def update_plan(installed, locale):
             'language': locale != 'ja-JP' and installed.get('language_status') != 2}
 
 
+def detect_workspace_root():
+    if getattr(sys, 'frozen', False):return None
+    root=Path(__file__).resolve().parents[2]
+    return root if (root/'tools/play/play_native.py').is_file() and (root/'native').is_dir() else None
+
+
 class Backend:
     def __init__(self, bridge, config_path, emit=lambda event: None, confirm=lambda data: False,
-                 choose_iso=lambda: None, opener=None):
+                 choose_iso=lambda: None, opener=None, workspace_root=None, channel_dir=None):
+        self.channel_dir = Path(channel_dir).resolve() if channel_dir else None
+        self.workspace_root = Path(workspace_root).resolve() if workspace_root else None
+        self.local_state_lock = threading.RLock()
+        self.local_checking = False
+        self.local_verified = False
+        self.local_packs = []
+        self.local_allow_partial = False
+        if self.workspace_root:
+            if not (self.workspace_root/'tools/play/play_native.py').is_file() or not (self.workspace_root/'native').is_dir():
+                raise ValueError('Invalid local workspace')
+            sys.path.insert(0,str(self.workspace_root/'tools/play'))
         self.bridge_path = Path(bridge)
         self.config_path = Path(config_path)
         self.emit, self.confirm, self.choose_iso = emit, confirm, choose_iso
-        self.opener = opener or urllib.request.urlopen
+        self.opener = opener or network_tls.urlopen
         self.busy = self.running = False
         self.manifest = None
         self.installed = {}
@@ -125,14 +145,19 @@ class Backend:
                 break
             except (OSError, ValueError):
                 pass
-        if self.config['game_language'] not in LOCALES:
+        if not re.fullmatch(r'[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*', self.config['game_language']):
             self.config['game_language'] = 'ja-JP'
+        if self.workspace_root:self.config['folder']=str(self.workspace_root/'native')
         if self.config['ui_language'] not in ('ko', 'en', 'ja'):
             self.config['ui_language'] = 'ko'
         try:
             self.status = self.validate_status(json.loads(self.config_path.with_name('status-cache.json').read_text(encoding='utf-8-sig')))
         except (OSError, ValueError):
             pass
+
+        if self.workspace_root:
+            self.refresh_local_packs(verify=False, reset_consent=True)
+            self.inspect()
 
     def event(self, kind, **data):
         self.emit(copy.deepcopy({'type': kind, **data}))
@@ -149,24 +174,59 @@ class Backend:
         os.replace(pending, self.config_path)
 
     def load_launch_options(self):
-        path = child(self.config['folder'], 'play/settings.ini')
-        if not path.parent.is_dir():
-            raise FileNotFoundError(str(path.parent))
+        folder=self.workspace_root/'native' if self.workspace_root else self.config['folder']
+        path = child(folder, 'play/settings.ini')
         raw = launch_options.read(path)
-        available = bool((self.manifest or {}).get('features', {}).get('hd_textures', {}).get('available'))
-        return {'path': str(path), 'original': raw, 'values': launch_options.parse(raw or b''), 'hd_available': available}
+        available = (self.workspace_root/'native/assets/aircraft-hd.pack').is_file() if self.workspace_root else bool((self.manifest or {}).get('features', {}).get('hd_textures', {}).get('available'))
+        return {'path': str(path), 'original': raw, 'values': launch_options.parse(raw or b''), 'hd_available': available, 'source_local': bool(self.workspace_root)}
+
+    def open_game_options(self):
+        if self.busy and not self.running:
+            raise RuntimeError('Wait for the current operation')
+        try:
+            result = self.bridge('game-options')
+        except RuntimeError as error:
+            from i18n import TEXT
+            words = TEXT[self.config['ui_language']]
+            key = 'runtimeOptionsNoGame' if 'game_options_no_game' in str(error) else 'runtimeOptionsUnavailable'
+            raise RuntimeError(words[key]) from error
+        if result.get('requested') is not True:
+            raise RuntimeError('The game did not acknowledge the options request')
+        return result
+
+    @contextmanager
+    def local_settings_guard(self):
+        # The interactive launcher holds the same lease throughout game execution.
+        import msvcrt
+        path=child(self.workspace_root,'native/runner.lock')
+        path.parent.mkdir(parents=True,exist_ok=True)
+        with path.open('a+b') as lease:
+            lease.seek(0)
+            try:msvcrt.locking(lease.fileno(),msvcrt.LK_NBLCK,1)
+            except OSError as error:raise RuntimeError('Stop the running game before saving graphics options.') from error
+            try:yield
+            finally:
+                lease.seek(0);msvcrt.locking(lease.fileno(),msvcrt.LK_UNLCK,1)
 
     def save_launch_options(self, document, changes):
         if self.busy or self.running:
             raise RuntimeError('Stop the game and wait for launcher operations before saving.')
-        path = child(self.config['folder'], 'play/settings.ini')
+        folder=self.workspace_root/'native' if self.workspace_root else self.config['folder']
+        path = child(folder, 'play/settings.ini')
         if str(path) != document['path']:
             raise ValueError('Installation folder changed; reopen Launch options.')
-        # Also detects games started outside this launcher; never terminates them.
-        self.bridge('stopped')
         if 'hd_textures' in changes and not document.get('hd_available'):
             changes = {key: value for key, value in changes.items() if key != 'hd_textures'}
-        launch_options.save(path, document['original'], changes)
+        def save():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            child(folder, 'play/settings.ini')
+            launch_options.save(path, document['original'], changes)
+        if self.workspace_root:
+            with self.local_settings_guard():save()
+        else:
+            # Also detects games started outside this launcher; never terminates them.
+            self.bridge('stopped')
+            save()
 
     def export_game_logs(self, save_directory=None):
         root = Path(self.config['folder'])
@@ -244,7 +304,10 @@ class Backend:
         return result
 
     def bridge(self, operation, **extra):
-        request = {'op': operation, 'root': self.config['folder'], 'locale': self.config['game_language'], **extra}
+        locale = self.config['game_language']
+        if not self.workspace_root and (locale not in LOCALES or self.portable_target(locale)):
+            locale = 'en-US'
+        request = {'op': operation, 'root': self.config['folder'], 'locale': locale, **extra}
         with tempfile.TemporaryDirectory(prefix='macross-request-') as work:
             path = Path(work) / 'request.json'
             path.write_text(json.dumps(request), encoding='utf-8')
@@ -262,6 +325,10 @@ class Backend:
             return value['result']
 
     def get(self, name):
+        if self.channel_dir:
+            if Path(name).name != name or not re.fullmatch(r'[A-Za-z0-9_.-]+', name):
+                raise ValueError('Invalid test-channel asset name')
+            return child(self.channel_dir, name).open('rb')
         if name in ('BOOT-INSTALL.json', 'STATUS.json', 'PYTHON-LAUNCHER.json', 'LAUNCHER.json'):
             url = METADATA_BASE + name
         else:
@@ -271,7 +338,13 @@ class Backend:
             url = 'https://github.com/saintiron82/macross30-releases/releases/download/v'+version[1]+'/'+name
         request = urllib.request.Request(url + '?check=' + str(time.time_ns()),
                                          headers={'User-Agent': 'Macross30Launcher/' + VERSION, 'Cache-Control': 'no-cache'})
-        return self.opener(request, timeout=25)
+        try:
+            return self.opener(request, timeout=25)
+        except (urllib.error.URLError, OSError) as error:
+            if network_tls.is_certificate_error(error):
+                from i18n import TEXT
+                raise OSError(TEXT[self.config['ui_language']]['tlsCertificateFailed']) from error
+            raise
 
     def json(self, name):
         with self.get(name) as response:
@@ -309,21 +382,72 @@ class Backend:
             self.stale = True
 
     def inspect(self):
+        if self.workspace_root:
+            pack=next((p for p in self.local_packs if p.get('locale')==self.config['game_language']),{})
+            self.installed=dict(core_ready=True,language_ready=bool(pack.get('ready') or pack.get('selectable_preview')),
+                                runtime_status=2,language_status=2,installed_version='local',language_version='local')
+            return self.installed
         self.installed = self.bridge('inspect', manifest=self.manifest)
+        if not self.workspace_root:
+            import portable_locale
+            self.local_packs = list(portable_locale.available(self.config['folder'], self.manifest).values())
+            locale = self.config['game_language']
+            if self.portable_target(locale):
+                pack = portable_locale.installed(self.config['folder'], locale, self.manifest)
+                base_ready = self.installed['language_ready']
+                allowed = pack.get('doc', {}).get('status') == 'complete' or self.portable_consent(pack)
+                self.installed.update(language_ready=bool(base_ready and pack['ready'] and allowed),
+                                      language_status=2 if base_ready and pack['ready'] and pack['current'] and allowed else 0,
+                                      language_version=pack.get('version', ''), text_pack_error=pack.get('error'))
+                self.local_allow_partial = self.portable_consent(pack)
         return self.installed
 
+    def portable_target(self, locale=None):
+        if self.workspace_root:
+            return False
+        import portable_locale
+        locale = locale or self.config['game_language']
+        return locale not in LOCALES or portable_locale.selected(self.config['folder'], locale, self.manifest)
+
+    def portable_consent(self, pack):
+        consent = self.config.get('pack_consent', {})
+        return (consent.get('locale') == self.config['game_language'] and
+                consent.get('manifest_sha256') == pack.get('manifest_sha256') and bool(pack.get('manifest_sha256')))
+
     def snapshot(self):
-        return copy.deepcopy({'config': self.config, 'manifest': self.manifest, 'installed': self.installed,
+        with self.local_state_lock:
+            return copy.deepcopy({'config': self.config, 'manifest': self.manifest, 'installed': self.installed,
                               'status': self.status, 'stale': self.stale, 'busy': self.busy,
                               'running': self.running, 'checked_at': self.checked_at, 'version': VERSION,
-                              'last_session': self.last_session()})
+                              'last_session': self.last_session(), 'workspace_root': str(self.workspace_root) if self.workspace_root else None,
+                              'local_packs': self.local_packs, 'local_allow_partial': self.local_allow_partial,
+                              'local_checking': self.local_checking, 'local_verified': self.local_verified})
 
     def check(self):
+        if self.workspace_root:
+            with self.local_state_lock:
+                if self.local_checking:return self.snapshot()
+                self.local_checking=True
+            self.event('checking',value=True)
+            self.event('state',state=self.snapshot())
+            try:
+                self.refresh_local_packs(verify=True)
+                with self.local_state_lock:
+                    self.inspect()
+                    self.local_verified=True
+                    self.checked_at=time.time()
+            finally:
+                with self.local_state_lock:self.local_checking=False
+                self.event('checking',value=False)
+                self.event('state',state=self.snapshot())
+            return self.snapshot()
         self.event('checking', value=True)
         try:
             self.check_status()
             manifest = self.json('BOOT-INSTALL.json')
             self.bridge('validate', manifest=manifest)
+            import portable_locale
+            portable_locale.metadata(manifest)
             self.manifest = manifest
             self.checked_at = time.time()
             if not self.running:
@@ -334,17 +458,21 @@ class Backend:
         return self.snapshot()
 
     def settings(self, **changes):
-        if self.busy or self.running:
-            raise RuntimeError('Wait for the current operation')
-        for key, value in changes.items():
-            if key not in ('folder', 'iso', 'disc_key', 'game_language', 'ui_language') or not isinstance(value, str) or '\0' in value:
-                raise ValueError('Invalid setting')
-            if key == 'game_language' and value not in LOCALES or key == 'ui_language' and value not in ('ko', 'en', 'ja'):
-                raise ValueError('Unsupported language')
-        self.config.update(changes)
-        self.save()
-        self.inspect()
-        self.event('state', state=self.snapshot())
+        with self.local_state_lock:
+            if self.busy or self.running:
+                raise RuntimeError('Wait for the current operation')
+            for key, value in changes.items():
+                if key not in ('folder', 'iso', 'disc_key', 'game_language', 'ui_language') or not isinstance(value, str) or '\0' in value:
+                    raise ValueError('Invalid setting')
+                supported = tuple(p['locale'] for p in self.local_packs if p.get('locale'))
+                if key == 'game_language' and value not in (supported if self.workspace_root else LOCALES + supported) or key == 'ui_language' and value not in ('ko', 'en', 'ja'):
+                    raise ValueError('Unsupported language')
+            if changes.get('game_language') != self.config['game_language'] and 'game_language' in changes:
+                self.local_allow_partial=False
+            self.config.update(changes)
+            self.save()
+            self.inspect()
+            self.event('state', state=self.snapshot())
 
     def iso_tools(self):
         return self.bridge_path.parent/'iso-tools' if getattr(sys,'frozen',False) else Path(__file__).resolve().parents[2]/'.tools/iso-tools'
@@ -418,7 +546,8 @@ class Backend:
         return str(target)
 
     def download(self, row, launcher=False):
-        pattern = r'Macross30Launcher-\d+\.\d+\.\d+\.exe' if launcher else r'Macross30-(?:program|language-(?:ko-KR|en-US))-\d+\.\d+\.\d+\.zip'
+        pattern = (r'Macross30Launcher-\d+\.\d+\.\d+\.exe' if launcher else
+                   r'Macross30-(?:program|language-(?:ko-KR|en-US)|text-[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*)-\d+\.\d+\.\d+\.zip')
         if not re.fullmatch(pattern, row.get('file', '')) or not re.fullmatch(r'[a-f0-9]{64}', row.get('sha256', '')) or type(row.get('bytes')) is not int or not 0 < row['bytes'] <= 1024 ** 3:
             raise ValueError('Invalid artifact identity')
         root = self.config_path.parent if launcher else Path(self.config['folder'])
@@ -448,13 +577,14 @@ class Backend:
             pending.unlink(missing_ok=True)
         return target
 
-    def installer(self, program, payload, language_only=False):
+    def installer(self, program, payload, language_only=False, locale=None):
+        locale = locale or self.config['game_language']
         root = Path(self.config['folder'])
         prepared_iso=self.prepare_disc(program) if self.config['iso'] and Path(self.config['iso']).is_file() else self.config['iso']
         entry = Path(program) / 'tools/local_build' / ('install_language.ps1' if language_only else 'install_prebuilt.ps1')
         args = [str(Path(os.environ.get('SystemRoot', 'C:/Windows')) / 'System32/WindowsPowerShell/v1.0/powershell.exe'),
                 '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', str(entry),
-                '-Root', str(root), '-Payload', str(payload), '-Language', self.config['game_language'] if language_only else 'ja-JP']
+                '-Root', str(root), '-Payload', str(payload), '-Language', locale if language_only else 'ja-JP']
         if prepared_iso:
             args += ['-Iso', prepared_iso]
         if not language_only:
@@ -476,7 +606,90 @@ class Backend:
             if process.wait():
                 raise RuntimeError(tail)
 
+    def open_local_options(self):
+        if not self.workspace_root:raise RuntimeError('Local workspace required')
+        return external_popen([sys.executable,str(self.workspace_root/'tools/play/options_panel.py')],
+                              cwd=str(self.workspace_root),creationflags=NO_WINDOW)
+
+    def refresh_local_packs(self, verify=True, reset_consent=False):
+        if not self.workspace_root:raise RuntimeError('Local packs require a source workspace')
+        from language_packs import discover_language_packs
+        from pack_selection import read_selection
+        packs=discover_language_packs(self.workspace_root,verify=verify)
+        with self.local_state_lock:
+            self.local_packs=packs
+            # Only seed stored consent once. A slow read-only verification must
+            # never erase a checkbox decision made while it was running.
+            if reset_consent:
+                saved,allow=read_selection(self.workspace_root/'native/play/settings.ini')
+                self.local_allow_partial=bool(allow and saved==self.config['game_language'])
+        return packs
+
+    def import_local_pack(self, source):
+        if not self.workspace_root:
+            if self.busy or self.running:
+                raise RuntimeError('Wait for the current operation')
+            import portable_locale
+            self.bridge('stopped')
+            descriptor = portable_locale.install(self.config['folder'], source)
+            self.inspect()
+            self.settings(game_language=descriptor['locale'])
+            return descriptor
+        if not self.workspace_root or self.busy or self.running or self.local_checking:raise RuntimeError('Local pack import is unavailable')
+        from language_packs import import_language_pack
+        descriptor=import_language_pack(self.workspace_root,source)
+        self.refresh_local_packs()
+        self.settings(game_language=descriptor['locale'])
+        self.local_allow_partial=False
+        self.event('state',state=self.snapshot())
+        return descriptor
+
+    def allow_local_preview(self, allow):
+        if not self.workspace_root:
+            if self.busy or self.running:
+                raise RuntimeError('Wait for the current operation')
+            import portable_locale
+            pack = portable_locale.installed(self.config['folder'], self.config['game_language'], self.manifest)
+            self.config['pack_consent'] = dict(locale=self.config['game_language'], manifest_sha256=pack.get('manifest_sha256')) if allow and pack.get('ready') else {}
+            self.local_allow_partial = bool(allow and pack.get('ready'))
+            self.save()
+            self.inspect()
+            self.event('state', state=self.snapshot())
+            return
+        if not self.workspace_root or self.busy or self.running:raise RuntimeError('Wait for the current operation')
+        with self.local_state_lock:
+            self.local_allow_partial=bool(allow)
+            self.event('state',state=self.snapshot())
+
+    def play_local(self):
+        from pack_selection import PackSelection
+        if self.busy or self.running:return
+        if self.local_checking or not self.local_verified:
+            raise RuntimeError('Wait for language pack verification before playing.')
+        self.busy=True
+        try:
+            locale=self.config['game_language']
+            PackSelection(self.workspace_root).save(locale,self.local_allow_partial)
+            args=[sys.executable,'-X','utf8',str(self.workspace_root/'tools/play/play_native.py'),'--language',locale]
+            if self.local_allow_partial:args.append('--allow-partial-language')
+            self.running,self.busy=True,False
+            self.event('state',state=self.snapshot())
+            self.message('launch',stage=3)
+            child_env=dict(os.environ,PYTHONIOENCODING='utf-8',PYTHONUTF8='1')
+            result=external_run(args,cwd=str(self.workspace_root),env=child_env,stdin=subprocess.DEVNULL,
+                                stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,encoding='utf-8',
+                                errors='replace',creationflags=NO_WINDOW)
+            self.last_log=self.workspace_root/'native/play/launcher-local.log'
+            self.last_log.write_text(result.stdout or '',encoding='utf-8')
+            if result.returncode:raise RuntimeError('Local launch failed:\n'+(result.stdout or '')[-6000:])
+            self.message('gameExited')
+        finally:
+            self.busy=self.running=False
+            self.event('state',state=self.snapshot())
+
     def play(self):
+        if self.workspace_root:return self.play_local()
+        if self.portable_target():return self.play_portable()
         if self.busy or self.running:
             return
         self.busy = True
@@ -536,6 +749,8 @@ class Backend:
             if not self.installed['language_ready']:
                 raise RuntimeError('The selected language is not installed')
             self.bridge('select', ui=self.config['ui_language'])
+            import portable_locale
+            portable_locale.deactivate(self.config['folder'])
             self.prepare_graphics()
             if self.launch_aborted:
                 self.message('graphicsPrepareCancelled')
@@ -543,6 +758,7 @@ class Backend:
             self.message('launch', stage=3)
             self.running, self.busy = True, False
             self.event('state', state=self.snapshot())
+
             result = self.bridge('launch', ui=self.config['ui_language'])
             self.preserve_session(result['exit_code'])
             self.message('gameExited')
@@ -551,6 +767,88 @@ class Backend:
             self.inspect()
             self.event('state', state=self.snapshot())
 
+    def play_portable(self):
+        if self.busy or self.running:
+            return
+        import portable_locale
+        self.busy = True
+        locale = self.config['game_language']
+        root = Path(self.config['folder'])
+        self.event('state', state=self.snapshot())
+        try:
+            self.bridge('stopped', locale='en-US')
+            if not self.manifest:
+                self.check()
+            base = self.bridge('inspect', locale='en-US', manifest=self.manifest)
+            pack = portable_locale.installed(root, locale, self.manifest)
+            row = portable_locale.metadata(self.manifest).get(locale)
+            plan = dict(core=base.get('runtime_status') != 2,
+                        language=base.get('language_status') != 2)
+            need_pack = not pack['ready'] or not pack['current']
+            if need_pack and not row:
+                raise RuntimeError('Import the selected language pack before playing')
+            if any(plan.values()) or need_pack:
+                self.check_status()
+                if self.stale or self.status['closed']:
+                    raise RuntimeError('Downloads are currently unavailable')
+                approval = dict(kind='patch', plan=dict(core=plan['core'], language=True), manifest=self.manifest,
+                                locale=locale, text_pack=row if need_pack else None,
+                                base_language=plan['language'])
+                if not self.confirm(approval):
+                    return
+                self.check_status()
+                if self.stale or self.status['closed']:
+                    raise RuntimeError('Downloads are currently unavailable')
+            program = base.get('program')
+            core = self.manifest['files']['program']
+            if plan['core']:
+                self.message('coreUpdate', stage=1)
+                archive = self.download(core)
+                program = self.bridge('extract', locale='en-US', archive=str(archive), artifact=core)['path']
+                self.bridge('stage', locale='en-US', program=program, version=self.manifest['version'], artifact=core)
+            base = self.bridge('inspect', locale='en-US', manifest=self.manifest)
+            if not base['core_ready']:
+                if not self.config['iso'] or not Path(self.config['iso']).is_file():
+                    chosen = self.choose_iso()
+                    if not chosen:
+                        return
+                    self.config['iso'] = chosen
+                    self.save()
+                self.require_disc(self.inspect_iso())
+                self.installer(program, Path(program) / 'base-game')
+                self.bridge('record', locale='en-US', program=program, artifact=core)
+            base = self.bridge('inspect', locale='en-US', manifest=self.manifest)
+            if base.get('language_status') != 2:
+                language = self.manifest['language_packs']['en-US']
+                archive = self.download(language)
+                payload = self.bridge('extract-language', locale='en-US', archive=str(archive), artifact=language)['path']
+                self.installer(program, payload, language_only=True, locale='en-US')
+                self.bridge('record-language', locale='en-US', version=version_from(language))
+            # Verify the compatible runtime and actual English image bytes before
+            # replacing a pack. A failed cache build leaves the old pack installed.
+            portable_locale.base_profile(root)
+            if need_pack:
+                self.message('languageUpdate', stage=2)
+                portable_locale.install(root, self.download(row), expected=row)
+                self.config['pack_consent'] = {}
+            pack = portable_locale.installed(root, locale, self.manifest)
+            allow = self.portable_consent(pack)
+            if not pack['ready'] or (pack['doc']['status'] != 'complete' and not allow):
+                raise RuntimeError('Verify the selected pack and explicitly allow an unfinished test pack')
+            self.bridge('select', locale='en-US', ui=self.config['ui_language'])
+            portable_locale.activate(root, locale, allow_partial=allow)
+            self.prepare_graphics()
+            if self.launch_aborted:
+                return
+            self.running, self.busy = True, False
+            self.event('state', state=self.snapshot())
+            result = self.bridge('launch', locale='en-US', ui=self.config['ui_language'])
+            self.preserve_session(result['exit_code'])
+            self.message('gameExited')
+        finally:
+            self.busy = self.running = False
+            self.inspect()
+            self.event('state', state=self.snapshot())
     def prepare_graphics(self):
         """First run / after update: build this PC's GPU pipeline library. Never blocks launch."""
         self.launch_aborted = False

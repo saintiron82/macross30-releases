@@ -10,6 +10,8 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+from incremental import write_changed
+from code_signatures import capture_header
 
 ROOT = Path(__file__).resolve().parents[2]
 ORIGINAL_SHA256 = '44d7112cbb5527314eb6192e59d861dacfcd4099f301a6e82ffc1681b0782b5b'
@@ -26,7 +28,7 @@ def prepare(original, payload=None):
     destination = ROOT / 'analysis/extracted/PS3_GAME/USRDIR/EBOOT.elf'
     destination.parent.mkdir(parents=True, exist_ok=True)
     if destination.resolve() != original:
-        shutil.copyfile(original, destination)
+        write_changed(destination, original.read_bytes())
     raw = original.read_bytes()
     recipe = json.loads((ROOT / 'tools/local_build/raw_jobs.json').read_text(encoding='utf8'))
     target = ROOT / 'native/macross30/raw_jobs'
@@ -35,20 +37,16 @@ def prepare(original, payload=None):
         data = raw[row['offset']:row['offset'] + row['size']]
         if len(data) != row['size'] or hashlib.sha256(data).hexdigest() != row['sha256']:
             raise ValueError('Original SPU slice mismatch: ' + row['file'])
-        (target / row['file']).write_bytes(data)
+        write_changed(target / row['file'], data)
     guards = json.loads((ROOT / 'tools/local_build/code_guards.json').read_text(encoding='utf8'))
-    header = '/* Generated exactoriginalcode; no modifiedguestbytes. */\n'
     for row in guards['arrays']:
         code = raw[row['offset']:row['offset'] + row['size']]
         if hashlib.sha256(code).hexdigest() != row['sha256']:
             raise ValueError('User original code guard mismatch: ' + row['name'])
-        header += 'static const unsigned char ' + row['name'] + '[' + str(len(code)) + ']={\n'
-        for start in range(0, len(code), 32):
-            header += ','.join('0x%02x' % value for value in code[start:start+32]) + ',\n'
-        header += '};\n'
+    header = capture_header(guards['arrays'])
     if hashlib.sha256(header.encode()).hexdigest() != guards['sha256']:
         raise ValueError('Generated original code guard header mismatch')
-    (ROOT / 'native/macross30' / guards['file']).write_text(header, encoding='utf8', newline='\n')
+    write_changed(ROOT / 'native/macross30' / guards['file'], header.encode('utf8'))
     # This first source-only build has no bundled voice/dialogue table.
     # A synthetic empty key keeps the independent lookup implementation valid.
     catalog = '{"local_empty/000000", ""},\n'
@@ -57,7 +55,7 @@ def prepare(original, payload=None):
         if not rows or len(rows) > 50000:
             raise ValueError('Invalid caption data')
         catalog = ''.join('{' + json.dumps(key, ensure_ascii=False) + ', ' + json.dumps(text, ensure_ascii=False) + '},\n' for key, text in rows)
-    (ROOT / 'native/macross30/battle_voice_catalog.inc').write_text(catalog, encoding='utf8')
+    write_changed(ROOT / 'native/macross30/battle_voice_catalog.inc', catalog.encode('utf8'))
     (ROOT / 'native/analysis').mkdir(parents=True, exist_ok=True)
     print('Validated user ELF; raw jobs generated locally; no downloaded game-code fallback', flush=True)
 
@@ -71,17 +69,8 @@ def main():
     prepare(args.original_elf, args.payload)
     if args.prepare_only:
         return
-    commands = [
-        ['vendor/ps3recomp-master/tools/ppu_loader.py', 'analysis/extracted/PS3_GAME/USRDIR/EBOOT.elf', '-o', 'native/analysis'],
-        ['vendor/ps3recomp-master/tools/ppu_lifter.py', 'analysis/extracted/PS3_GAME/USRDIR/EBOOT.elf', '--functions', 'native/analysis/EBOOT.functions.json', '--hle-stubs', 'native/analysis/EBOOT.imports.json', '--code-end', '0x8ddf4c', '--chunks', '96', '--jobs', '4', '--output', 'native/macross30/recompiled'],
-        ['tools/build/lift_native_job.py'], ['tools/build/lift_graphics_job.py'], ['tools/build/lift_gameplay_jobs.py', '--merge-chunks'],
-        *(['tools/build/lift_gameplay_jobs.py', '--only', label] for label in ('jobcrt14', 'jobcrt14_b', 'jobcrt14_d')),
-        ['tools/build/patch_geom2_local_dispatch.py', '--apply'],
-        ['tools/local_build/apply_hooks.py'], ['tools/local_build/posttask.py'],
-    ]
-    for command in commands:
-        print('LOCAL GENERATE: ' + command[0], flush=True)
-        subprocess.run([sys.executable, '-X', 'utf8', *command], cwd=ROOT, check=True)
+    from incremental import generate
+    generate(ROOT)
     print('All PPU/SPU sources generated locally', flush=True)
 
 

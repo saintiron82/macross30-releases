@@ -1,7 +1,7 @@
 """Publish a verified stage, preserving existing tags and unrelated stable components."""
 import hashlib
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import shutil
 import subprocess
 import urllib.request
@@ -71,6 +71,19 @@ def publish(output, checkout):
     # The baseline may be this checkout: capture versions before replacing its files.
     old_launcher = read(Path(plan['baseline_metadata'])/'PYTHON-LAUNCHER.json')['version']
     old_game = read(Path(plan['baseline_metadata'])/'BOOT-INSTALL.json')['version']
+    preserved=[]
+    for item in plan['config'].get('source_files',[]):
+        name=item['target'];parts=PurePosixPath(name).parts
+        if (not parts or '..' in parts or '\\' in name or ':' in name or name.startswith('/') or
+            parts[0] not in ('native','vendor','tools','release-baselines') or
+            PurePosixPath(name).suffix not in ('.py','.ps1','.cs','.c','.cpp','.h','.def','.txt','.md','.json')):
+            raise ValueError('Unexpected release source target: '+name)
+        source=Path(item['source']).resolve(strict=True)
+        data=source.read_bytes()
+        if hashlib.sha256(data).hexdigest()!=item['sha256']:
+            raise ValueError('Release source changed: '+name)
+        if any(row[0]==name for row in preserved):raise ValueError('Duplicate release source target')
+        preserved.append((name,data))
     branch = 'release/'+proof['release']
     git('switch','-c',branch,'origin/main')
     for name in META:
@@ -98,12 +111,28 @@ def publish(output, checkout):
                 text = path.read_text(encoding='utf-8-sig')
                 text = text.replace('Game **'+old+'**','Game **'+new+'**')
                 path.write_text(text,encoding='utf-8')
+    for name,replacements in plan['config'].get('readme_replacements',{}).items():
+        if name not in ('README.md','README.en.md'):raise ValueError('Unexpected public documentation target')
+        path=checkout/name
+        text=path.read_text(encoding='utf-8-sig')
+        for replacement in replacements:
+            old,new=replacement['old'],replacement['new']
+            if not old or text.count(old)!=1:
+                raise ValueError('Public documentation baseline changed: '+name)
+            text=text.replace(old,new,1)
+        path.write_text(text,encoding='utf-8')
     for name,text in plan['config'].get('readme_addendum',{}).items():
         if name not in ('README.md','README.en.md'):raise ValueError('Unexpected public documentation target')
         path=checkout/name
         existing=path.read_text(encoding='utf-8-sig')
         if text not in existing:path.write_text(existing.rstrip()+'\n\n'+text.strip()+'\n',encoding='utf-8')
+    for name,data in preserved:
+        path=checkout/name
+        if any(parent.is_symlink() or getattr(parent,'is_junction',lambda:False)() for parent in (path,*path.parents)):
+            raise ValueError('Release source target contains a link')
+        path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(data)
     git('add','--',*[str(Path('channels/stable')/name) for name in META],'README.md','README.en.md')
+    for index in range(0,len(preserved),40):git('add','--',*[row[0] for row in preserved[index:index+40]])
     git('commit','-m','Release '+proof['release']+': '+', '.join(plan['changed']))
     commit = git('rev-parse','HEAD')
     receipt = dict(stage='metadata_committed',tag=tag,branch=branch,commit=commit,baseline=head,repo=REPO)

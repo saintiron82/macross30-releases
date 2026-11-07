@@ -12,7 +12,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools/play'))
 from inspect_iso import inventory, read_file
-ORIGINAL_SHA256 = '44d7112cbb5527314eb6192e59d861dacfcd4099f301a6e82ffc1681b0782b5b'
+from prepare import ORIGINAL_SHA256
 
 
 def extract(iso, destination, rpcs3):

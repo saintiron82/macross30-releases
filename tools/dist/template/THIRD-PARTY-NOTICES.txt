@@ -1,0 +1,29 @@
+Third-party components in this distribution
+===========================================
+
+bin\ffmpeg\avutil-61.dll, avcodec-63.dll, avformat-63.dll, swresample-7.dll
+  FFmpeg 9.0.1 shared libraries (build reports "LGPL version 2.1 or later"),
+  taken unmodified from the RPCS3 Windows build. Loaded dynamically for movie
+  playback. Source code: https://ffmpeg.org/download.html
+  License: GNU Lesser General Public License 2.1 or later.
+
+bin\SDL2.dll
+  SDL 2.32.10 (https://github.com/libsdl-org/SDL), the official release
+  binary, unmodified. Game controller input (DualSense, DualShock 4, Xbox,
+  Switch Pro and others).
+  License: zlib license, Copyright (C) 1997-2025 Sam Lantinga
+  <slouken@libsdl.org>. This software is provided 'as-is', without any
+  express or implied warranty. In no event will the authors be held liable
+  for any damages arising from the use of this software.
+
+bin\msvcp140.dll, vcruntime140.dll, vcruntime140_1.dll
+  Microsoft Visual C++ runtime, redistributed app-locally as permitted by the
+  Visual Studio redistributable license.
+
+bin\Macross30Recompiled.exe
+  Built with the ps3recomp runtime (MIT License, Copyright (c) 2026 Ned Heller /
+  sp00nznet) and statically recompiled game code.
+
+Not included
+  No original disc data and no PlayStation 3 firmware (dev_flash) files are
+  distributed. Game data is extracted from the user's own disc image.

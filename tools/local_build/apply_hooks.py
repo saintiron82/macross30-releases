@@ -10,10 +10,12 @@ def digest(text):
     return hashlib.sha256(text.encode('utf8')).hexdigest()
 
 
-def apply(root=ROOT):
+def apply(root=ROOT, directories=None):
     recipe = json.loads((root / 'tools/local_build/ppu_hooks.json').read_text(encoding='utf8'))
     pending = []
     for row in recipe['files']:
+        if directories is not None and row.get('directory', 'recompiled') not in directories:
+            continue
         path = root / 'native/macross30' / row.get('directory', 'recompiled') / row['file']
         original = path.read_text(encoding='utf8')
         if digest(original) == row['output_sha256']:

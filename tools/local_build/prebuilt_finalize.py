@@ -31,7 +31,7 @@ def sha(path):
 
 
 def allowed(path):
-    if path in {'bin/MacrossShaderPrep.exe', 'bin/assets/shader-seed-manifest-v3.json', 'bin/assets/rsx_pso_inventory_v1.bin', 'bin/assets/aircraft-hd-recipe.json'}:
+    if path in {'bin/MacrossShaderPrep.exe', 'bin/assets/shader-seed-manifest-v3.json', 'bin/assets/rsx_pso_inventory_v1.bin', 'bin/assets/aircraft-hd-recipe.json', 'bin/assets/locale-base.json', 'tools/play/launch-locale.ps1'}:
         return True
     if re.fullmatch(r'bin/assets/rsx_shader_cache_v2/[VPB]_[0-9A-F]{16}_[0-9A-F]{8}\.bin', path):
         return True

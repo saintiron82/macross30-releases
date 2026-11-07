@@ -5,6 +5,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+from code_signatures import from_bytes
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -42,7 +43,7 @@ def main():
             raise ValueError('Posttask final source mismatch')
         (target / f'family{family}.c').write_text(source, encoding='utf8', newline='\n')
         (target / f'family{family}.h').write_text(header, encoding='utf8', newline='\n')
-        guard = guard.replace(f'LOCAL_EXPECTED_{family}\n', f'static const unsigned char expected{family}[]={{' + ','.join(map(str, code)) + '};\n')
+        guard = guard.replace(f'LOCAL_EXPECTED_{family}\n', from_bytes(f'expected{family}', code))
     if 'LOCAL_EXPECTED_' in guard:
         raise ValueError('Incomplete local guard generation')
     (target / 'guard.c').write_text(guard, encoding='utf8', newline='\n')

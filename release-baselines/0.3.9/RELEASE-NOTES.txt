@@ -1,0 +1,25 @@
+Macross 30 0.3.9
+
+한국어
+- 게임·런처 0.3.9. 한글팩·영어 이미지/기반팩은 검증된 0.3.8을 재사용합니다.
+- 러시아어 전체 텍스트 v5, 스페인어 전체 텍스트 v3, 영어 보정 1,980건(GOP 1,911 + ELF 표시 문구 69)을 추가합니다.
+- 새 텍스트팩을 설치·선택할 수 있는 공통 언어 로더와 런처 지원을 통합했습니다. RU/ES는 영어 이미지 기반을 함께 사용합니다.
+- 런처에서 실행 전 해상도·HD 텍스처·전체화면·VSync·자막을 설정하고, 실행 중에는 게임 옵션 창을 열 수 있습니다. 해상도·HD 변경은 다음 실행부터 적용됩니다.
+- Windows 인증서 저장소를 이용해 HTTPS 인증서 체인을 검증합니다. 인증서 오류로 구버전 런처가 업데이트를 받지 못하면 아래의 새 런처 ZIP/EXE를 직접 받아 한 번 교체하세요.
+- 기존 세이브·설정을 유지하고, 새 언어팩 캐시 생성에 실패하면 이전 팩을 유지합니다.
+- 공개 0.3.8의 렌더러·기본 블룸·HD·셰이더 사전 준비를 유지합니다. 30 FPS 제한도 유지하며 FPS 해제·실험적 반사광·진동 수정은 포함하지 않습니다.
+- HD는 기존 미리보기용 텍스처를 전투에서 사용하는 기능이며 기체별 색상 차이가 있을 수 있습니다.
+- 사용자 후보 확인 후 공개한 테스트 배포입니다. 전체 플레이/원어민 검수 완료를 뜻하지 않으며 RU 글자 잘림 등 번역·표시 문제 제보를 받습니다.
+
+English
+- Game and launcher 0.3.9. Korean and English image/base packs remain at the verified 0.3.8 version.
+- Adds Russian full-text v5, Spanish full-text v3 and 1,980 English corrections (1,911 GOP entries and 69 ELF display strings).
+- Adds the common language loader and portable launcher installation/selection support. Russian and Spanish also use the English image base.
+- Configure resolution, HD textures, fullscreen, VSync and subtitles before play; open the game's options while running to adjust supported settings. Resolution/HD changes apply on the next launch.
+- Validates HTTPS chains using the Windows certificate store. If a certificate error blocks an older launcher's update, manually replace it once with the new launcher ZIP/EXE below.
+- Preserves saves/settings and retains the previous language pack if preparation of a replacement fails.
+- Retains the public 0.3.8 renderer, default bloom, HD support and shader preparation. The 30 FPS cap remains; FPS unlocking, experimental reflections and rumble changes are excluded.
+- HD reuses existing preview textures during battles; colors can vary by aircraft.
+- This test release follows user confirmation of the candidate. It is not a full-playthrough or native-language QA claim; please report translation/display issues, including Russian text clipping.
+
+Download Macross30-launcher-0.3.9.zip, extract it and run Macross30Launcher.exe. Existing launchers check for the launcher update before game/language updates. Original game data is prepared locally from the user's own supported original ISO.

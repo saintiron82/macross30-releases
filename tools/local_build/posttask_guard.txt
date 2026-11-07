@@ -5,6 +5,7 @@
 #include <windows.h>
 #include "../../../vendor/ps3recomp-master/runtime/spu/spu_posttask_dma_trace.h"
 #include <stdio.h>
+#include "../code_signature.h"
 #include "family0.h"
 LOCAL_EXPECTED_0
 #include "family1.h"
@@ -105,16 +106,16 @@ int macross_posttask_native_try(spu_context*ctx,uint32_t pc){
      off=GetFileAttributesA("no_posttask_native")!=INVALID_FILE_ATTRIBUTES;
      if(was!=off)fprintf(stderr,"[posttask-native] runtime %s (no_posttask_native file)\n",off?"OFF":"ON"); }
    if(off)return 0; }
- if(pc==0x6260u&&!memcmp(ctx->ls+0x6230,expected0,sizeof(expected0))){
-  LONG n=InterlockedIncrement(&hits[0]);if(n<=2)fprintf(stderr,"[posttask-native] family=0 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected0),n);pp_call_log(0,ctx);
+ if(pc==0x6260u&&macross_code_matches(ctx->ls+0x6230,SPU_LS_SIZE-0x6230,&expected0)){
+  LONG n=InterlockedIncrement(&hits[0]);if(n<=2)fprintf(stderr,"[posttask-native] family=0 pc=%05X sha256_bytes=%zu hit=%ld\n",pc,expected0.bytes,n);pp_call_log(0,ctx);
   ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
   int perf_token=macross_posttask_perf_begin(ctx,pc,0);
   macross_posttask_f0_spu_func_00006260(ctx);
   macross_posttask_perf_end(perf_token);
   return 1;
  }
- if(pc==0x6264u&&!memcmp(ctx->ls+0x6230,expected1,sizeof(expected1))){
-  LONG n=InterlockedIncrement(&hits[1]);if(n<=2)fprintf(stderr,"[posttask-native] family=1 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected1),n);pp_call_log(1,ctx);
+ if(pc==0x6264u&&macross_code_matches(ctx->ls+0x6230,SPU_LS_SIZE-0x6230,&expected1)){
+  LONG n=InterlockedIncrement(&hits[1]);if(n<=2)fprintf(stderr,"[posttask-native] family=1 pc=%05X sha256_bytes=%zu hit=%ld\n",pc,expected1.bytes,n);pp_call_log(1,ctx);
   ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
   int perf_token=macross_posttask_perf_begin(ctx,pc,1);
   if(pp_chain_skip())ctx->pc=ctx->gpr[0]._u32[0]&SPU_LS_MASK; else
@@ -122,8 +123,8 @@ int macross_posttask_native_try(spu_context*ctx,uint32_t pc){
   macross_posttask_perf_end(perf_token);
   return 1;
  }
- if(pc==0x6264u&&!memcmp(ctx->ls+0x6230,expected2,sizeof(expected2))){
-  LONG n=InterlockedIncrement(&hits[2]);if(n<=2)fprintf(stderr,"[posttask-native] family=2 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected2),n);pp_call_log(2,ctx);
+ if(pc==0x6264u&&macross_code_matches(ctx->ls+0x6230,SPU_LS_SIZE-0x6230,&expected2)){
+  LONG n=InterlockedIncrement(&hits[2]);if(n<=2)fprintf(stderr,"[posttask-native] family=2 pc=%05X sha256_bytes=%zu hit=%ld\n",pc,expected2.bytes,n);pp_call_log(2,ctx);
   ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
   int perf_token=macross_posttask_perf_begin(ctx,pc,2);
   if(pp_chain_skip())ctx->pc=ctx->gpr[0]._u32[0]&SPU_LS_MASK; else
@@ -131,8 +132,8 @@ int macross_posttask_native_try(spu_context*ctx,uint32_t pc){
   macross_posttask_perf_end(perf_token);
   return 1;
  }
- if(pc==0x6524u&&!memcmp(ctx->ls+0x6230,expected4,sizeof(expected4))){
-  LONG n=InterlockedIncrement(&hits[3]);if(n<=2)fprintf(stderr,"[posttask-native] family=4 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected4),n);pp_call_log(4,ctx);
+ if(pc==0x6524u&&macross_code_matches(ctx->ls+0x6230,SPU_LS_SIZE-0x6230,&expected4)){
+  LONG n=InterlockedIncrement(&hits[3]);if(n<=2)fprintf(stderr,"[posttask-native] family=4 pc=%05X sha256_bytes=%zu hit=%ld\n",pc,expected4.bytes,n);pp_call_log(4,ctx);
   ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
   int perf_token=macross_posttask_perf_begin(ctx,pc,4);
   if(pp_chain_skip())ctx->pc=ctx->gpr[0]._u32[0]&SPU_LS_MASK; else
@@ -140,32 +141,32 @@ int macross_posttask_native_try(spu_context*ctx,uint32_t pc){
   macross_posttask_perf_end(perf_token);
   return 1;
  }
- if(pc==0x659Cu&&!memcmp(ctx->ls+0x6230,expected6,sizeof(expected6))){
-  LONG n=InterlockedIncrement(&hits[4]);if(n<=2)fprintf(stderr,"[posttask-native] family=6 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected6),n);pp_call_log(6,ctx);
+ if(pc==0x659Cu&&macross_code_matches(ctx->ls+0x6230,SPU_LS_SIZE-0x6230,&expected6)){
+  LONG n=InterlockedIncrement(&hits[4]);if(n<=2)fprintf(stderr,"[posttask-native] family=6 pc=%05X sha256_bytes=%zu hit=%ld\n",pc,expected6.bytes,n);pp_call_log(6,ctx);
   ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
   int perf_token=macross_posttask_perf_begin(ctx,pc,6);
   macross_posttask_f6_spu_func_0000659C(ctx);
   macross_posttask_perf_end(perf_token);
   return 1;
  }
- if(pc==0x6724u&&!memcmp(ctx->ls+0x6230,expected8,sizeof(expected8))){
-  LONG n=InterlockedIncrement(&hits[5]);if(n<=2)fprintf(stderr,"[posttask-native] family=8 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected8),n);pp_call_log(8,ctx);
+ if(pc==0x6724u&&macross_code_matches(ctx->ls+0x6230,SPU_LS_SIZE-0x6230,&expected8)){
+  LONG n=InterlockedIncrement(&hits[5]);if(n<=2)fprintf(stderr,"[posttask-native] family=8 pc=%05X sha256_bytes=%zu hit=%ld\n",pc,expected8.bytes,n);pp_call_log(8,ctx);
   ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
   int perf_token=macross_posttask_perf_begin(ctx,pc,8);
   macross_posttask_f8_spu_func_00006724(ctx);
   macross_posttask_perf_end(perf_token);
   return 1;
  }
- if(pc==0x6264u&&!memcmp(ctx->ls+0x6230,expected9,sizeof(expected9))){
-  LONG n=InterlockedIncrement(&hits[6]);if(n<=2)fprintf(stderr,"[posttask-native] family=9 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected9),n);pp_call_log(9,ctx);
+ if(pc==0x6264u&&macross_code_matches(ctx->ls+0x6230,SPU_LS_SIZE-0x6230,&expected9)){
+  LONG n=InterlockedIncrement(&hits[6]);if(n<=2)fprintf(stderr,"[posttask-native] family=9 pc=%05X sha256_bytes=%zu hit=%ld\n",pc,expected9.bytes,n);pp_call_log(9,ctx);
   ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
   int perf_token=macross_posttask_perf_begin(ctx,pc,9);
   macross_posttask_f9_spu_func_00006264(ctx);
   macross_posttask_perf_end(perf_token);
   return 1;
  }
- if(pc==0x631Cu&&!memcmp(ctx->ls+0x6230,expected10,sizeof(expected10))){
-  LONG n=InterlockedIncrement(&hits[7]);if(n<=2)fprintf(stderr,"[posttask-native] family=10 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected10),n);pp_call_log(10,ctx);
+ if(pc==0x631Cu&&macross_code_matches(ctx->ls+0x6230,SPU_LS_SIZE-0x6230,&expected10)){
+  LONG n=InterlockedIncrement(&hits[7]);if(n<=2)fprintf(stderr,"[posttask-native] family=10 pc=%05X sha256_bytes=%zu hit=%ld\n",pc,expected10.bytes,n);pp_call_log(10,ctx);
   ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
   int perf_token=macross_posttask_perf_begin(ctx,pc,10);
   /* The LUT the SPU is about to apply (R,G,B x256 at LS 0x6590): handed to
@@ -181,8 +182,8 @@ int macross_posttask_native_try(spu_context*ctx,uint32_t pc){
   macross_posttask_perf_end(perf_token);
   return 1;
  }
- if(pc==0x6914u&&!memcmp(ctx->ls+0x6230,expected11,sizeof(expected11))){
-  LONG n=InterlockedIncrement(&hits[8]);if(n<=2)fprintf(stderr,"[posttask-native] family=11 pc=%05X exact_bytes=%zu hit=%ld\n",pc,sizeof(expected11),n);pp_call_log(11,ctx);
+ if(pc==0x6914u&&macross_code_matches(ctx->ls+0x6230,SPU_LS_SIZE-0x6230,&expected11)){
+  LONG n=InterlockedIncrement(&hits[8]);if(n<=2)fprintf(stderr,"[posttask-native] family=11 pc=%05X sha256_bytes=%zu hit=%ld\n",pc,expected11.bytes,n);pp_call_log(11,ctx);
   ctx->pc=pc;ctx->status=SPU_STATUS_RUNNING;
   int perf_token=macross_posttask_perf_begin(ctx,pc,11);
   spu_posttask_dma_trace_mark(ctx,11);
@@ -203,6 +204,6 @@ int macross_posttask_native_try(spu_context*ctx,uint32_t pc){
   macross_posttask_perf_end(perf_token);
   return 1;
  }
- LONG n=InterlockedIncrement(&misses);if(n<=8)fprintf(stderr,"[posttask-native] fallback pc=%05X exact_guard_miss=%ld\n",pc,n);
+ LONG n=InterlockedIncrement(&misses);if(n<=8)fprintf(stderr,"[posttask-native] fallback pc=%05X sha256_guard_miss=%ld\n",pc,n);
  return 0;
 }

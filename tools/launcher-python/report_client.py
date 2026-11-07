@@ -102,7 +102,10 @@ def prepare(root, save_slot=None, description='', test=False):
     return result
 
 
-def send(report, endpoint, cancelled=None, opener=urllib.request.urlopen, allow_local_test=False):
+def send(report, endpoint, cancelled=None, opener=None, allow_local_test=False):
+    if opener is None:
+        from network_tls import urlopen
+        opener = urlopen
     from urllib.parse import urlparse
     url = urlparse(endpoint)
     if not (url.scheme == 'https' and url.netloc and not url.username and not url.query and not url.fragment):
