@@ -1,14 +1,14 @@
 # Macross 30 — Downloads
 
-**0.3.9: 러시아어 v5·스페인어 v3·영어 1,980건 보정, 런처 옵션 및 HTTPS 인증서 처리 개선. 게임·런처는 0.3.9, 한글·영어 기반팩은 0.3.8입니다.**
+**0.3.10: 긴 언어팩 경로로 인한 검은 시작 화면 수정. 게임 0.3.10 · 런처 0.3.9 · 한글·영어 기반팩 0.3.8. 영어 보정·러시아어 v5·스페인어 v3는 유지합니다.**
 
 **720p~4K 지원. 30 FPS 제한을 유지하며 제한 해제는 수정 중으로 사용할 수 없습니다.**
 
 **[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.9/Macross30-launcher-0.3.9.zip)**
 
-게임 / Game **0.3.9** · 런처 / Launcher **0.3.9**
+게임 / Game **0.3.10** · 런처 / Launcher **0.3.9**
 
-**[English installation and usage guide](README.en.md)** · [Release notes](https://github.com/saintiron82/macross30-releases/releases/tag/v0.3.9) · [Discord](https://discord.gg/WqaaJ6hTmY)
+**[English installation and usage guide](README.en.md)** · [Release notes](https://github.com/saintiron82/macross30-releases/releases/tag/v0.3.10) · [Discord](https://discord.gg/WqaaJ6hTmY)
 
 ZIP 압축 해제 → `Macross30Launcher.exe` 실행 → 플레이 언어 선택 → **플레이/업데이트** → 첫 설치 시 본인 정품에서 직접 덤프한 지원 일본판 ISO 선택.
 
@@ -34,7 +34,7 @@ The v0.3.9 tag preserves the frozen language-loader, launcher, installer and too
 기존 게임 설치 폴더와 저장 파일은 삭제하지 마세요. 원본 데이터 복구가 필요하면 기존에 사용하던 본인 소유 ISO를 지정하세요.
 
 
-런처 0.3.2부터 실행 시 새 런처를 자동으로 다운로드·교체·재시작합니다. 게임 실행 중에는 런처를 유지하고 버튼에 실행 중으로 표시합니다. 기존 0.3.0/0.3.1은 런처 업데이트를 한 번 눌러 최신 버전으로 교체하세요. 게임·런처는 0.3.9, 한글·영어 기반팩은 0.3.8이며 추가 텍스트팩은 0.3.9입니다.
+런처 0.3.2부터 실행 시 새 런처를 자동으로 다운로드·교체·재시작합니다. 게임 실행 중에는 런처를 유지하고 버튼에 실행 중으로 표시합니다. 기존 0.3.0/0.3.1은 런처 업데이트를 한 번 눌러 최신 버전으로 교체하세요. 게임은 0.3.10, 런처는 0.3.9, 한글·영어 기반팩은 0.3.8이며 추가 텍스트팩은 0.3.10입니다.
 
 
 게임 종료 후 런처의 **로그 → 마지막 플레이 로그 보내기**에서 내용을 확인하고 전송할 수 있습니다. 로그인 없이 운영진 전용 Discord 채널로 보내며 세이브는 선택 첨부입니다. ZIP은 로컬 bug-reports에 남습니다.
@@ -46,3 +46,7 @@ The v0.3.9 tag preserves the frozen language-loader, launcher, installer and too
 ## 0.3.9 업데이트 안내
 
 인증서 오류(`CERTIFICATE_VERIFY_FAILED`)로 구버전 런처의 자동 업데이트가 막히면 위의 새 런처 ZIP을 직접 받아 교체하세요. 기존 설치 폴더와 세이브는 유지합니다. 실행 전 옵션은 다음 게임 실행부터 적용하며 실행 중에는 **게임 옵션 열기**를 사용합니다. HD는 기존 미리보기용 텍스처를 전투에서 사용하므로 기체별 색상 차이가 있을 수 있습니다.
+
+## 0.3.10 시작 화면 핫픽스
+
+0.3.9 이후 영어 등에서 검은 로딩 화면이 계속되면 기존 런처의 **플레이/업데이트**로 0.3.10을 받으세요. 긴 언어팩 경로가 잘려 설치 데이터를 인식하지 못하던 문제를 수정했습니다. 런처 0.3.9 표시는 정상입니다. 세이브와 설정은 유지합니다. 수정 소스와 해시는 `v0.3.10` 태그의 `release-baselines/0.3.10`에 보존합니다.

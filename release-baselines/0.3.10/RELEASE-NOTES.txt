@@ -1,0 +1,24 @@
+Macross 30 0.3.10 — startup hotfix / 시작 화면 핫픽스
+
+한국어
+- 0.3.9 업데이트 후 일부 설치 환경에서 검은 로딩 화면에 머무는 오류를 수정했습니다.
+- 긴 언어팩 캐시 경로가 127바이트에서 잘려, 이미 설치된 게임 데이터를 찾지 못하고 BROKEN_EXIT_GAMEDATA 오류로 이어지던 문제입니다. PC 파일 경로 버퍼와 PS3 출력 버퍼를 분리했습니다.
+- 게임은 0.3.10입니다. 런처는 0.3.9, 한글·영어 기반팩은 0.3.8을 유지합니다.
+- 기존 런처에서 플레이/업데이트를 누르면 수정 게임과 선택 언어의 검증팩을 받습니다. 단독 EXE를 수동 덮어쓰지 마세요.
+- 영어 보정 1,980건·러시아어 v5·스페인어 v3의 번역/폰트/자막 내용은 유지합니다. 새 게임 실행 파일에 맞는 검증 정보만 갱신했습니다.
+- 세이브·설정·렌더러·기본 블룸·HD·셰이더 사전 준비·30 FPS 제한을 유지합니다.
+- 긴 경로 회귀 검사 7개, 실제 런처의 0.3.9 → 0.3.10 업데이트 및 세 언어 캐시 검사, 사용자 실행 확인 후 공개했습니다. 전체 플레이 및 원어민 검수 완료를 뜻하지 않습니다.
+
+English
+- Fixes black startup loading after updating to 0.3.9 on affected installations.
+- Long language-cache paths were truncated to 127 bytes, making installed game data appear missing and leading to BROKEN_EXIT_GAMEDATA. Host filesystem buffers are now separate from the unchanged PS3 output-buffer ABI.
+- Game: 0.3.10. Launcher: 0.3.9. Korean/English base packs: 0.3.8.
+- Use Play/Update in your existing launcher to install the game hotfix and the matching text-pack verification update. Do not manually replace only the game EXE.
+- English's 1,980 corrections, Russian v5 and Spanish v3 retain identical translation/font/subtitle payloads. Only verification information changes for the new executable.
+- Saves, settings, renderer, default bloom, HD, shader preparation and the 30 FPS cap are retained.
+- Released after seven long-path regression checks, actual frozen-launcher upgrade and language-cache checks, and user startup confirmation. This is not a full-playthrough or native-language QA claim.
+
+The launcher is unchanged and remains available here:
+https://github.com/saintiron82/macross30-releases/releases/download/v0.3.9/Macross30-launcher-0.3.9.zip
+
+If CERTIFICATE_VERIFY_FAILED prevents an older launcher from updating, manually replace it once using that launcher ZIP. Keep your game folder and saves.

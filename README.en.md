@@ -1,12 +1,12 @@
 # Macross 30 — English setup guide
 
-**0.3.9 adds Russian v5, Spanish v3, 1,980 English corrections, launcher options and Windows HTTPS certificate handling. Game/launcher: 0.3.9; Korean/English base packs: 0.3.8.**
+**0.3.10 fixes black startup loading caused by long language-cache paths. Game: 0.3.10; launcher: 0.3.9; Korean/English base packs: 0.3.8. English corrections, Russian v5 and Spanish v3 are retained.**
 
 **720p through 4K supported. FPS unlocking is under repair and unavailable; the 30 FPS cap remains enabled.**
 
 **[Download the Windows launcher](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.9/Macross30-launcher-0.3.9.zip)**
 
-Game **0.3.9** · Launcher **0.3.9** · Windows x64 test release.
+Game **0.3.10** · Launcher **0.3.9** · Windows x64 test release.
 
 ## Install and play
 
@@ -60,7 +60,7 @@ This is an unofficial, non-commercial fan project, not affiliated with or endors
 Keep your installed game folder and save files. If original data needs repair, select the same supported ISO dumped from your own copy; you do not need to obtain another ISO.
 
 
-From launcher 0.3.2, startup automatically downloads, replaces and restarts newer launchers. The launcher stays open while the game runs and shows Game running. Existing 0.3.0/0.3.1 users must click Launcher update once to migrate. Game/launcher are 0.3.9; Korean/English base packs remain 0.3.8, with additional text packs at 0.3.9.
+From launcher 0.3.2, startup automatically downloads, replaces and restarts newer launchers. The launcher stays open while the game runs and shows Game running. Existing 0.3.0/0.3.1 users must click Launcher update once to migrate. Game is 0.3.10; launcher remains 0.3.9; Korean/English base packs remain 0.3.8, with additional text packs at 0.3.10.
 
 
 After the game exits, choose **Logs → Send last play logs**, review the files and send. No user login is needed; reports go to a private Discord support channel. Saves are optional and the ZIP remains in local bug-reports.
@@ -72,3 +72,7 @@ In launcher 0.3.7, open **ISO settings**, check the SHA-1 identity hash, and sel
 ## Updating to 0.3.9
 
 If `CERTIFICATE_VERIFY_FAILED` prevents an older launcher from updating, manually download and replace it with the new launcher ZIP above. Keep your installation folder and saves. Saved launch options apply on the next game launch; while playing, use **Open game options**. HD uses existing preview textures in battles, so aircraft colors can vary.
+
+## 0.3.10 startup hotfix
+
+If startup remains on a black loading screen after 0.3.9, use **Play/Update** in your existing launcher to get 0.3.10. This fixes truncated language-cache paths that caused installed data to appear missing. Launcher 0.3.9 is still current; saves/settings are retained. Fix sources and hashes are preserved by the `v0.3.10` tag under `release-baselines/0.3.10`.

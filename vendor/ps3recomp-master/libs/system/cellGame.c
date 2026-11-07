@@ -57,7 +57,11 @@ static char s_app_ver[16]   = "01.00";
  *
  * The literal below is only the fallback for a host with no VFS configured;
  * content_root() resolves the real one on first use. */
-static char s_content_path[CELL_GAME_PATH_MAX] = "./gamedata/dev_hdd0/game";
+/* CELL_GAME_PATH_MAX is the 128-byte PS3 guest ABI, not a host path limit.
+ * Portable language caches include a SHA-256 directory below the user's
+ * installation. Truncating that host root makes existing data look missing. */
+enum { HOST_GAME_PATH_MAX = 4096 };
+static char s_content_path[HOST_GAME_PATH_MAX] = "./gamedata/dev_hdd0/game";
 static int  s_content_path_resolved = 0;
 
 /* Resolved the same way ppu_fs.cpp resolves the /dev_hdd0 mount: $PS3_HDD0_ROOT
@@ -69,8 +73,13 @@ static const char* content_root(void)
 {
     if (!s_content_path_resolved) {
         s_content_path_resolved = 1;
+        const char* game = getenv("PS3_HDD0_GAME_ROOT");
         const char* hdd0 = getenv("PS3_HDD0_ROOT");
-        if (hdd0 && *hdd0)
+        /* Match ppu_fs's language-specific /dev_hdd0/game mount. Otherwise
+         * an installed language is mistaken for a fresh game-data install. */
+        if (game && *game)
+            snprintf(s_content_path, sizeof s_content_path, "%s", game);
+        else if (hdd0 && *hdd0)
             snprintf(s_content_path, sizeof s_content_path, "%s/game", hdd0);
         else if (ppu_vfs_root && *ppu_vfs_root && strcmp(ppu_vfs_root, ".") != 0)
             /* NB: <root>/game, not <root>/dev_hdd0/game. ppu_fs STRIPS the mount
@@ -83,9 +92,9 @@ static const char* content_root(void)
     }
     return s_content_path;
 }
-static char s_content_info_path[CELL_GAME_PATH_MAX] = "";
-static char s_usrdir_path[CELL_GAME_PATH_MAX] = "";
-static char s_tmp_path[CELL_GAME_PATH_MAX] = "";
+static char s_content_info_path[HOST_GAME_PATH_MAX] = "";
+static char s_usrdir_path[HOST_GAME_PATH_MAX] = "";
+static char s_tmp_path[HOST_GAME_PATH_MAX] = "";
 static char s_exit_param[256] = "";
 
 static int  s_boot_checked = 0;
@@ -102,7 +111,7 @@ static char s_check_dir[64] = "";
 
 static void ensure_dirs(const char* path)
 {
-    char tmp[CELL_GAME_PATH_MAX];
+    char tmp[HOST_GAME_PATH_MAX];
     strncpy(tmp, path, sizeof(tmp) - 1);
     tmp[sizeof(tmp) - 1] = '\0';
 
@@ -133,7 +142,7 @@ static int dir_exists(const char* path)
  * so installation checks use the destination volume, without creating data. */
 static s32 content_free_kb(void)
 {
-    char path[CELL_GAME_PATH_MAX];
+    char path[HOST_GAME_PATH_MAX];
     snprintf(path, sizeof(path), "%s", s_content_path[0] ? s_content_path : ".");
     for (;;) {
 #ifdef _WIN32
@@ -398,7 +407,7 @@ s32 cellGameContentPermit(char* contentInfoPath, char* usrdirPath)
         ensure_dirs(s_usrdir_path);
         {
             extern const char* ppu_vfs_root;
-            char vpath[CELL_GAME_PATH_MAX];
+            char vpath[HOST_GAME_PATH_MAX];
             snprintf(vpath, sizeof vpath, "%s/game/%s/USRDIR", ppu_vfs_root, s_check_dir);
             ensure_dirs(vpath);
         }
@@ -442,7 +451,7 @@ s32 cellGameDataCheck(u32 type, const char* dirName, CellGameContentSize* size)
     strncpy(s_check_dir, check_dir, sizeof(s_check_dir) - 1);
     s_check_dir[sizeof(s_check_dir) - 1] = '\0';
 
-    char path[CELL_GAME_PATH_MAX];
+    char path[HOST_GAME_PATH_MAX];
     snprintf(path, sizeof(path), "%s/%s", content_root(), check_dir);
 
     uint32_t size_ea = (uint32_t)(uintptr_t)size;
@@ -721,13 +730,13 @@ s32 cellGameCreateGameData(CellGameSetInitParams* init, char* tmp_contentInfoPat
      * precedes this call, which is exactly what firmware creates. */
     const char* create_dir = s_check_dir[0] ? s_check_dir : s_title_id;
 
-    char path[CELL_GAME_PATH_MAX];
+    char path[HOST_GAME_PATH_MAX];
     snprintf(path, sizeof(path), "%s/%s", content_root(), create_dir);
 
     ensure_dirs(path);
 
     /* Also create USRDIR */
-    char usrdir[CELL_GAME_PATH_MAX];
+    char usrdir[HOST_GAME_PATH_MAX];
     snprintf(usrdir, sizeof(usrdir), "%s/USRDIR", path);
     ensure_dirs(usrdir);
 

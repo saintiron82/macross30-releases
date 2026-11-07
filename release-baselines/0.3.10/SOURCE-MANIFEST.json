@@ -1,0 +1,29 @@
+{
+  "baseline_tag": "v0.3.9",
+  "baseline_commit": "941e4be47a503660454265dbee79bbc8a4c30066",
+  "files": {
+    "vendor/ps3recomp-master/libs/system/cellGame.c": {
+      "bytes": 35956,
+      "sha256": "b6e5d40f168734f435f25cc79b5f2907f0cf3224c69afa7febca3e8887a35c90"
+    },
+    "vendor/ps3recomp-master/libs/system/tests/test_cellGame_host_paths.c": {
+      "bytes": 2975,
+      "sha256": "91a63a86beb123afbf18960d6dfd0c176e3391121d93299695c03431fa452809"
+    },
+    "tools/tests/test_cell_game_host_paths.py": {
+      "bytes": 2798,
+      "sha256": "b8fa9488f0d1516a3bd64ad453d650668b8085fb33940959a0963f09da3a53dd"
+    },
+    "tools/build/build_release039_startup_path_fix.py": {
+      "bytes": 2825,
+      "sha256": "56fb25c3d8ed45a39a7db4170517f739b6b5041c78f9262c90c105de886074f3"
+    },
+    "tools/dist/prepare_startup_path_hotfix.py": {
+      "bytes": 4905,
+      "sha256": "8c9165e2fa3b069abe79887126a42ed4b29f8ebb873adeae9f14235d9d2b4338"
+    }
+  },
+  "retained_objects": 176,
+  "replaced_object": "cellGame.c.obj",
+  "full_generated_game_sources_in_git": false
+}

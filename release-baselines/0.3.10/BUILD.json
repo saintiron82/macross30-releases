@@ -1,0 +1,47 @@
+{
+  "version": "0.3.10",
+  "launcher_version": "0.3.9",
+  "korean_base": "0.3.8",
+  "english_base": "0.3.8",
+  "program": {
+    "file": "Macross30-program-0.3.10.zip",
+    "bytes": 76155998,
+    "sha256": "be3883ce5ac67e76469451d76f5f58d505f2900e3e14a1d07d830d28885919e4",
+    "exe_sha256": "aa3a89cd8f61ac998fae8995b741c061dcfbf10931b9bab1e095720e1368a2ab"
+  },
+  "text_packs": {
+    "ru-RU": {
+      "file": "Macross30-text-ru-RU-0.3.10.zip",
+      "bytes": 2368034,
+      "sha256": "b0aef9b767919e44007cbc049120ec460857eddced7ce67aad5a2c191a4b72d5",
+      "manifest_sha256": "b4dd20ae3173abbab58c095a5c790200abc6377b832ff20471753c55c257d0f5",
+      "label": "Русский",
+      "text_revision": "v5"
+    },
+    "es-ES": {
+      "file": "Macross30-text-es-ES-0.3.10.zip",
+      "bytes": 2274419,
+      "sha256": "10a4d9feda8bd7cc2ba19cf616ee60648dd0c992974abbca67dce139fbd6ec33",
+      "manifest_sha256": "9d2da238affdb19720333d35a8f07c1dac2de4eaae83198218888ab5412148f8",
+      "label": "Español",
+      "text_revision": "v3"
+    },
+    "en-US": {
+      "file": "Macross30-text-en-US-0.3.10.zip",
+      "bytes": 2079946,
+      "sha256": "7d0719aa31774626face4c4033364c25c3c7b2db85ff7d29fdf2e329fdf3a451",
+      "manifest_sha256": "fc9b558a3c8ed8f9487e230c423e9ab30698fb5395d4c4a667c3bf57047f1611",
+      "label": "English",
+      "text_revision": "corrections-1980"
+    }
+  },
+  "native_regression_cases": 7,
+  "actual_frozen_launcher_migration_checked": true,
+  "shared_saves_settings_preserved": true,
+  "translation_payloads_identical": true,
+  "renderer_shader_hd_assets_unchanged": true,
+  "user_startup_confirmed": true,
+  "private_source_snapshot_sha256": "154f623a6dd9989b1f658ee623bde08afc71a51cabbf08ea519fb9df21bc06c1",
+  "guest_output_path_bytes": 128,
+  "host_path_buffer_bytes": 4096
+}

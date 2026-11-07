@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-07T10:24:45.158150+00:00",
+  "updated_at": "2026-11-07T16:43:34.957446+00:00",
   "closed": false,
   "default_language": "ko",
   "message": {
@@ -10,7 +10,7 @@
   },
   "latest": {
     "game": {
-      "version": "0.3.9"
+      "version": "0.3.10"
     },
     "launcher": {
       "version": "0.3.9"
@@ -25,15 +25,15 @@
     },
     "text_packs": {
       "ru-RU": {
-        "version": "0.3.9",
+        "version": "0.3.10",
         "text_revision": "v5"
       },
       "es-ES": {
-        "version": "0.3.9",
+        "version": "0.3.10",
         "text_revision": "v3"
       },
       "en-US": {
-        "version": "0.3.9",
+        "version": "0.3.10",
         "text_revision": "corrections-1980"
       }
     }
@@ -55,6 +55,21 @@
     }
   ],
   "patch_notes": [
+    {
+      "id": "startup-path-0.3.10",
+      "component": "game",
+      "version": "0.3.10",
+      "title": {
+        "ko": "0.3.10 시작 경로 수정",
+        "en": "0.3.10 startup path fix",
+        "ja": "0.3.10 起動パス修正"
+      },
+      "body": {
+        "ko": "0.3.9의 긴 언어팩 경로가 잘려 검은 로딩 화면에 머무는 문제를 수정합니다. 런처는 0.3.9를 유지합니다.",
+        "en": "Fixes black startup loading caused by truncated language-cache paths in 0.3.9. Launcher remains 0.3.9.",
+        "ja": "0.3.9で言語パックの長いパスが切り詰められ起動が進まない問題を修正。ランチャーは0.3.9を継続します。"
+      }
+    },
     {
       "id": "release-0.3.9",
       "component": "game",
