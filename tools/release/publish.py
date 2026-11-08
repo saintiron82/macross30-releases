@@ -133,15 +133,16 @@ def publish(output, checkout):
         path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(data)
     git('add','--',*[str(Path('channels/stable')/name) for name in META],'README.md','README.en.md')
     for index in range(0,len(preserved),40):git('add','--',*[row[0] for row in preserved[index:index+40]])
-    git('commit','-m','Release '+proof['release']+': '+', '.join(plan['changed']))
+    changed_labels = plan['changed'] + [locale+' text' for locale,row in plan.get('text_packs',{}).items() if row['changed']]
+    git('commit','-m','Release '+proof['release']+': '+', '.join(changed_labels))
     commit = git('rev-parse','HEAD')
     receipt = dict(stage='metadata_committed',tag=tag,branch=branch,commit=commit,baseline=head,repo=REPO)
     write(state,receipt)
-    git('tag','-a',tag,'-m','Macross release '+proof['release']+'; changed: '+', '.join(plan['changed']))
+    git('tag','-a',tag,'-m','Macross release '+proof['release']+'; changed: '+', '.join(changed_labels))
     git('push','origin','HEAD:refs/heads/'+branch,'refs/tags/'+tag)
     assets = [str(output/'assets'/r['file']) for r in plan['artifacts']]
     command(['gh','release','create',tag,'--repo',REPO,'--draft','--verify-tag',
-             '--title','Macross components '+proof['release']+' — '+', '.join(plan['changed']),
+             '--title','Macross components '+proof['release']+' — '+', '.join(changed_labels),
              '--notes-file',str(output/'assets/RELEASE-NOTES.txt'),*assets])
     releases = json.loads(command(['gh','api','repos/'+REPO+'/releases?per_page=100']))
     release = next(r for r in releases if r['tag_name']==tag)

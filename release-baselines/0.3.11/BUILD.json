@@ -1,0 +1,33 @@
+{
+  "release": "0.3.11",
+  "component": "ru-RU text pack",
+  "revision": "v6-r2",
+  "game_version": "0.3.10",
+  "launcher_version": "0.3.9",
+  "korean_english_base": "0.3.8",
+  "artifact": {
+    "file": "Macross30-text-ru-RU-0.3.11.zip",
+    "bytes": 2367889,
+    "sha256": "dc6534422d3fb3bdc3a10dff6f44e43c4f1ebc215cc488dedd184f8dd3559e61",
+    "manifest_sha256": "765b805565ca15aa502f4b755b80c4f412379cdfa5d91e2a1a4e3daa4e23e1a6",
+    "label": "Русский",
+    "text_revision": "v6-r2"
+  },
+  "related_tests": 29,
+  "pipeline_tests": 21,
+  "actual_frozen_launcher_update_restart_recovery_rollback": true,
+  "user_visual_confirmation": {
+    "confirmed": true,
+    "resolutions": [
+      "720p",
+      "1080p"
+    ],
+    "screens": [
+      "hangar aircraft/pilot",
+      "options TYPE A/B/C",
+      "options NORMAL/REAL"
+    ]
+  },
+  "fonts_subtitles_other_languages_executables_saves_preserved": true,
+  "source_review_zip_sha256": "e8c87a7f67280e1002f9026adb60059dc5e7b1a274b2be00c983bb3023f1c5be"
+}

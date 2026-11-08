@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-07T16:43:34.957446+00:00",
+  "updated_at": "2026-11-08T11:39:36.787125+00:00",
   "closed": false,
   "default_language": "ko",
   "message": {
@@ -25,8 +25,8 @@
     },
     "text_packs": {
       "ru-RU": {
-        "version": "0.3.10",
-        "text_revision": "v5"
+        "version": "0.3.11",
+        "text_revision": "v6-r2"
       },
       "es-ES": {
         "version": "0.3.10",
@@ -55,6 +55,21 @@
     }
   ],
   "patch_notes": [
+    {
+      "id": "russian-layout-v6-r2-0.3.11",
+      "component": "ru-RU",
+      "version": "0.3.11",
+      "title": {
+        "ko": "러시아어 v6-r2 표시 개선",
+        "en": "Russian v6-r2 text layout",
+        "ja": "ロシア語v6-r2表示改善"
+      },
+      "body": {
+        "ko": "격납고·파일럿 정보·옵션의 러시아어 문구 30곳을 축약했습니다. 게임 0.3.10과 런처 0.3.9는 유지합니다.",
+        "en": "Shortens 30 Russian hangar, pilot and options strings. Game remains 0.3.10; launcher remains 0.3.9.",
+        "ja": "格納庫・パイロット情報・設定のロシア語30箇所を短縮。ゲーム0.3.10とランチャー0.3.9は継続。"
+      }
+    },
     {
       "id": "startup-path-0.3.10",
       "component": "game",

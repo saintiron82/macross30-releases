@@ -69,7 +69,10 @@ def assets_dir(config, key, component):
 
 def plan(config):
     changed = config['changed']
-    if not changed or len(set(changed)) != len(changed) or set(changed)-set(COMPONENTS):
+    locale_updates = config.get('locale_updates', {})
+    if not isinstance(locale_updates, dict): raise ValueError('Text-pack updates must be a locale mapping')
+    if (not isinstance(changed, list) or (not changed and not locale_updates) or
+            len(set(changed)) != len(changed) or set(changed)-set(COMPONENTS)):
         raise ValueError('Choose distinct changed components from '+str(COMPONENTS))
     version(config['release'])
     base = Path(config['baseline_metadata']).resolve(strict=True)
@@ -91,6 +94,12 @@ def plan(config):
             boot['language_packs'][locale] = next_boot['language_packs'][locale]
     if 'launcher' in changed:
         launcher = read(assets_dir(config,'input_assets','launcher')/'PYTHON-LAUNCHER.json')
+    for locale, row in locale_updates.items():
+        if (not re.fullmatch(r'[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*', locale) or
+                locale in ('ko-KR','ja-JP') or not isinstance(row, dict)):
+            raise ValueError('Invalid requested text-pack locale')
+        if old_text.get(locale) == row: raise ValueError('Requested text-pack update is unchanged: '+locale)
+        boot.setdefault('locale_packs', {})[locale] = copy.deepcopy(row)
     selected = rows(boot, launcher)
     components = {}
     for component, row in selected.items():
@@ -120,6 +129,10 @@ def plan(config):
         changed_text = old_text.get(locale) != row
         if changed_text and match[1] != config['release']:
             raise ValueError('Changed text-pack version must match release tag')
+        if changed_text and locale in old_text:
+            old_match = re.fullmatch(r'Macross30-text-' + re.escape(locale) + r'-(\d+\.\d+\.\d+)\.zip', old_text[locale].get('file', ''))
+            if not old_match or version(match[1]) <= version(old_match[1]):
+                raise ValueError('Changed text-pack must advance: '+locale)
         directory = Path(config['locale_assets']).resolve(strict=True) if config.get('locale_assets') else assets_dir(config, 'baseline_assets', 'game')
         path = directory / row['file']
         if not path.is_file() or path.stat().st_size != row['bytes'] or sha(path) != row['sha256']:
@@ -211,7 +224,7 @@ def prepare(config, output):
                         ('LAUNCHER.json',result['launcher']), ('PYTHON-LAUNCHER.json',result['launcher']), ('STATUS.json',status)):
         write(assets/name, value)
     preserve = []
-    if not set(result['changed']) & {'game','korean','english'}: preserve.append('BOOT-INSTALL.json')
+    if not set(result['changed']) & {'game','korean','english'} and not any(row['changed'] for row in result.get('text_packs', {}).values()): preserve.append('BOOT-INSTALL.json')
     if not set(result['changed']) & {'korean','english'}: preserve.append('LANGUAGE-PACKS.json')
     if 'launcher' not in result['changed']: preserve.extend(('LAUNCHER.json','PYTHON-LAUNCHER.json'))
     for name in preserve: shutil.copyfile(base/name,assets/name)
@@ -261,6 +274,10 @@ def verify(output):
             if any(item[key] != row['artifact'][key] for key in ('file','bytes','sha256')):
                 raise ValueError('Staged text-pack identity changed: ' + locale)
     status = read(output/'assets/STATUS.json')['latest']
+    if result.get('text_packs') and status.get('text_packs') != {
+        locale: dict(version=row['version'], text_revision=row['artifact'].get('text_revision'))
+        for locale,row in result['text_packs'].items()}:
+        raise ValueError('Status text-pack versions disagree')
     versions = dict(game=status['game']['version'],launcher=status['launcher']['version'],
                     korean=status['language_packs']['ko-KR']['version'],english=status['language_packs']['en-US']['version'])
     if versions != {k:v['version'] for k,v in result['components'].items()}:

@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "locale": "ru-RU",
+  "report_id": "msg_ce423feed63b",
+  "date": "2026-11-08",
+  "baseline": "ru-RU-full-text-v5; public text 0.3.10 preserves payloads",
+  "font": "ru v5 compact80 unchanged",
+  "coordinate_note": "Conservative atlas-unit budgets from supplied1920x1080 screenshots at1280x720 UI basis; offline budget checks do not replace runtime visual QA.",
+  "entries": [
+    {
+      "id": "elf:string:9364376",
+      "source_ja": "集中",
+      "source_sha256": "a24f502c764c34cbdc9a4acb6846fbcdd0ec8df364db062d220796720cd37d24",
+      "previous_ru": "Сосредоточенность",
+      "ru": "Концентр.",
+      "budget_atlas_units": 102,
+      "area": "pilot_stat",
+      "reason": "Concentration abbreviated, not renamed to another attribute."
+    },
+    {
+      "id": "elf:string:9700224",
+      "source_ja": "集中",
+      "source_sha256": "a24f502c764c34cbdc9a4acb6846fbcdd0ec8df364db062d220796720cd37d24",
+      "previous_ru": "Сосредоточенность",
+      "ru": "Концентр.",
+      "budget_atlas_units": 102,
+      "area": "pilot_stat",
+      "reason": "Concentration abbreviated, not renamed to another attribute."
+    },
+    {
+      "id": "elf:string:9732160",
+      "source_ja": "レーダー性能",
+      "source_sha256": "2abd23b87ada268290fcc3e3cca5bfc73ddb8b631088cc4c1667fbba45a3ca57",
+      "previous_ru": "Характеристики радара",
+      "ru": "Радар",
+      "budget_atlas_units": 102,
+      "area": "aircraft_stat",
+      "reason": "Radar stat label; performance remains the numeric value."
+    },
+    {
+      "id": "elf:string:9732208",
+      "source_ja": "射撃防御",
+      "source_sha256": "a30a647da3ba8bbb4e19b930eca4e08fe48b02e433c5fa7518038293216aea0f",
+      "previous_ru": "Защита от стрельбы",
+      "ru": "Защ. от огня",
+      "budget_atlas_units": 102,
+      "area": "aircraft_stat",
+      "reason": "Abbreviated protection against ranged fire; not attack."
+    },
+    {
+      "id": "elf:string:9732224",
+      "source_ja": "格闘防御",
+      "source_sha256": "4aa39a1a374fb88f9a43a5b8aef4cebfaca2ac60a88ee49e85e2bb3ed993d710",
+      "previous_ru": "Защита в ближнем бою",
+      "ru": "Защ. ближн.",
+      "budget_atlas_units": 102,
+      "area": "aircraft_stat",
+      "reason": "Abbreviated melee protection; retains explicit close-combat distinction."
+    },
+    {
+      "id": "elf:string:9744688",
+      "source_ja": "射撃防御",
+      "source_sha256": "a30a647da3ba8bbb4e19b930eca4e08fe48b02e433c5fa7518038293216aea0f",
+      "previous_ru": "Защита от стрельбы",
+      "ru": "Защ. от огня",
+      "budget_atlas_units": 102,
+      "area": "aircraft_stat",
+      "reason": "Abbreviated protection against ranged fire; not attack."
+    },
+    {
+      "id": "elf:string:9744704",
+      "source_ja": "格闘防御",
+      "source_sha256": "4aa39a1a374fb88f9a43a5b8aef4cebfaca2ac60a88ee49e85e2bb3ed993d710",
+      "previous_ru": "Защита в ближнем бою",
+      "ru": "Защ. ближн.",
+      "budget_atlas_units": 102,
+      "area": "aircraft_stat",
+      "reason": "Abbreviated melee protection; retains explicit close-combat distinction."
+    },
+    {
+      "id": "elf:string:9744760",
+      "source_ja": "レーダー性能",
+      "source_sha256": "2abd23b87ada268290fcc3e3cca5bfc73ddb8b631088cc4c1667fbba45a3ca57",
+      "previous_ru": "Характеристики радара",
+      "ru": "Радар",
+      "budget_atlas_units": 102,
+      "area": "aircraft_stat",
+      "reason": "Radar stat label; performance remains the numeric value."
+    },
+    {
+      "id": "elf:string:9749208",
+      "source_ja": "射撃防御",
+      "source_sha256": "a30a647da3ba8bbb4e19b930eca4e08fe48b02e433c5fa7518038293216aea0f",
+      "previous_ru": "Защита от стрельбы",
+      "ru": "Защ. от огня",
+      "budget_atlas_units": 102,
+      "area": "aircraft_stat",
+      "reason": "Abbreviated protection against ranged fire; not attack."
+    },
+    {
+      "id": "elf:string:9749224",
+      "source_ja": "格闘防御",
+      "source_sha256": "4aa39a1a374fb88f9a43a5b8aef4cebfaca2ac60a88ee49e85e2bb3ed993d710",
+      "previous_ru": "Защита в ближнем бою",
+      "ru": "Защ. ближн.",
+      "budget_atlas_units": 102,
+      "area": "aircraft_stat",
+      "reason": "Abbreviated melee protection; retains explicit close-combat distinction."
+    },
+    {
+      "id": "elf:string:9749280",
+      "source_ja": "レーダー性能",
+      "source_sha256": "2abd23b87ada268290fcc3e3cca5bfc73ddb8b631088cc4c1667fbba45a3ca57",
+      "previous_ru": "Характеристики радара",
+      "ru": "Радар",
+      "budget_atlas_units": 102,
+      "area": "aircraft_stat",
+      "reason": "Radar stat label; performance remains the numeric value."
+    },
+    {
+      "id": "elf:string:9751968",
+      "source_ja": "所属",
+      "source_sha256": "dae8c66b63296c37712c6fe5a3a2db1a8e60711b21407647b020023a405a7491",
+      "previous_ru": "Принадлежность",
+      "ru": "Орг.",
+      "budget_atlas_units": 38,
+      "area": "pilot_affiliation",
+      "reason": "Affiliation/organization label before fixed value start."
+    },
+    {
+      "id": "elf:string:9751976",
+      "source_ja": "階級",
+      "source_sha256": "06062af79c672d4a0e96eeb5672bdd72b1fe587d6f0e9cd0889c774848fb39bf",
+      "previous_ru": "Звание",
+      "ru": "Ранг",
+      "budget_atlas_units": 38,
+      "area": "pilot_rank",
+      "reason": "Military rank, shorter than Звание."
+    },
+    {
+      "id": "elf:string:9752048",
+      "source_ja": "集中",
+      "source_sha256": "a24f502c764c34cbdc9a4acb6846fbcdd0ec8df364db062d220796720cd37d24",
+      "previous_ru": "Сосредоточенность",
+      "ru": "Концентр.",
+      "budget_atlas_units": 102,
+      "area": "pilot_stat",
+      "reason": "Concentration abbreviated, not renamed to another attribute."
+    },
+    {
+      "id": "elf:string:9754480",
+      "source_ja": "所属",
+      "source_sha256": "dae8c66b63296c37712c6fe5a3a2db1a8e60711b21407647b020023a405a7491",
+      "previous_ru": "Принадлежность",
+      "ru": "Орг.",
+      "budget_atlas_units": 38,
+      "area": "pilot_affiliation",
+      "reason": "Affiliation/organization label before fixed value start."
+    },
+    {
+      "id": "elf:string:9754488",
+      "source_ja": "階級",
+      "source_sha256": "06062af79c672d4a0e96eeb5672bdd72b1fe587d6f0e9cd0889c774848fb39bf",
+      "previous_ru": "Звание",
+      "ru": "Ранг",
+      "budget_atlas_units": 38,
+      "area": "pilot_rank",
+      "reason": "Military rank, shorter than Звание."
+    },
+    {
+      "id": "elf:string:9754560",
+      "source_ja": "集中",
+      "source_sha256": "a24f502c764c34cbdc9a4acb6846fbcdd0ec8df364db062d220796720cd37d24",
+      "previous_ru": "Сосредоточенность",
+      "ru": "Концентр.",
+      "budget_atlas_units": 102,
+      "area": "pilot_stat",
+      "reason": "Concentration abbreviated, not renamed to another attribute."
+    },
+    {
+      "id": "gop_guide:string:169",
+      "source_ja": "カメラ上下操作",
+      "source_sha256": "bac0e07f19203278f7f928e3a2cb7b35082662924795ef06acb92774e7b35411",
+      "previous_ru": "Вертикальное управление камерой",
+      "ru": "Камера по Y",
+      "budget_atlas_units": 140,
+      "area": "option_label",
+      "reason": "Short UI label; full function retained in help."
+    },
+    {
+      "id": "elf:string:9737392",
+      "source_ja": "カメラ上下操作",
+      "source_sha256": "bac0e07f19203278f7f928e3a2cb7b35082662924795ef06acb92774e7b35411",
+      "previous_ru": "Вертикальное управление камерой",
+      "ru": "Камера по Y",
+      "budget_atlas_units": 140,
+      "area": "option_label",
+      "reason": "Short UI label; full function retained in help."
+    },
+    {
+      "id": "gop_guide:string:175",
+      "source_ja": "オートページ送り",
+      "source_sha256": "67f096d4ca7f77b30e3bb976109decf075f32c85ccd5d9f06d88ca28ed280af8",
+      "previous_ru": "Автоматическая смена реплик",
+      "ru": "Автопереход",
+      "budget_atlas_units": 140,
+      "area": "option_label",
+      "reason": "Short UI label; full function retained in help."
+    },
+    {
+      "id": "elf:string:9737432",
+      "source_ja": "オートページ送り",
+      "source_sha256": "67f096d4ca7f77b30e3bb976109decf075f32c85ccd5d9f06d88ca28ed280af8",
+      "previous_ru": "Автоматическая смена реплик",
+      "ru": "Автопереход",
+      "budget_atlas_units": 140,
+      "area": "option_label",
+      "reason": "Short UI label; full function retained in help."
+    },
+    {
+      "id": "gop_guide:string:157",
+      "source_ja": "A：従来シリーズ　B：標準TPS　C：カメラエイム特化",
+      "source_sha256": "2d0bee8cf0ab8c7a9f7fc9f37891518dc9f3cc87619a6e456e37359b3115d130",
+      "previous_ru": "A: классическая схема; B: стандартный TPS; C: упор на прицеливание камерой",
+      "ru": "A: классика; B: TPS; C: прицел камерой",
+      "budget_atlas_units": 380,
+      "area": "option_help",
+      "reason": "Fits separate left help slot; preserves source function and mode distinction."
+    },
+    {
+      "id": "gop_guide:string:161",
+      "source_ja": "ノーマル：通常操作　リアル：フライトシミュレーター操作",
+      "source_sha256": "712a56fc5bde1344600e4703ef0216afa6dc2420544837ab78c3832d5a801397",
+      "previous_ru": "Обычный: стандартное управление; реалистичный: управление авиасимулятора",
+      "ru": "NORMAL: стандарт; REAL: авиасимулятор.",
+      "budget_atlas_units": 380,
+      "area": "option_help",
+      "reason": "Fits separate left help slot; preserves source function and mode distinction."
+    },
+    {
+      "id": "gop_guide:string:164",
+      "source_ja": "機首の上下操作設定",
+      "source_sha256": "86d737a46cb14f73287d375599210b43889e5eadb16961de9e05d92dd3ed3383",
+      "previous_ru": "Настройка подъёма и опускания носа",
+      "ru": "Тангаж: нос вверх/вниз.",
+      "budget_atlas_units": 380,
+      "area": "option_help",
+      "reason": "Fits separate left help slot; preserves source function and mode distinction."
+    },
+    {
+      "id": "gop_guide:string:167",
+      "source_ja": "カメラ速度設定（遅い：1 ⇔ 10：速い）",
+      "source_sha256": "d61d325f4547329f620ac664328301efc1f8d44075a672f30bebe39e33133bd5",
+      "previous_ru": "Настройка скорости камеры (медленно: 1 ⇔ 10: быстро)",
+      "ru": "Камера: 1 — медленно; 10 — быстро.",
+      "budget_atlas_units": 380,
+      "area": "option_help",
+      "reason": "Fits separate left help slot; preserves source function and mode distinction."
+    },
+    {
+      "id": "gop_guide:string:170",
+      "source_ja": "カメラの上下操作設定",
+      "source_sha256": "fa3fd4d7f73696cdc4cb3226e4e98d2a6786a11667743718a780964f9bca4fc4",
+      "previous_ru": "Настройка перемещения камеры вверх и вниз",
+      "ru": "Камера: вверх/вниз.",
+      "budget_atlas_units": 380,
+      "area": "option_help",
+      "reason": "Fits separate left help slot; preserves source function and mode distinction."
+    },
+    {
+      "id": "gop_guide:string:173",
+      "source_ja": "フィールドでの2D表示のON/OFF",
+      "source_sha256": "655814f4bfdae6e30521e9e256b92827f8384dcb1050f6db1b80af4c804bcc72",
+      "previous_ru": "Включение и выключение двумерного отображения на местности",
+      "ru": "2D HUD на местности: вкл./выкл.",
+      "budget_atlas_units": 380,
+      "area": "option_help",
+      "reason": "Fits separate left help slot; preserves source function and mode distinction."
+    },
+    {
+      "id": "gop_guide:string:176",
+      "source_ja": "会話モード時、音声再生後にオートで次へ進む",
+      "source_sha256": "b3c73e65959ef5fc9f55f89cb9a9bd605805d6e72503b98ecba953d079ae8eaf",
+      "previous_ru": "В диалоге автоматически переходить дальше после окончания озвучивания",
+      "ru": "Диалог: после озвучки — дальше.",
+      "budget_atlas_units": 380,
+      "area": "option_help",
+      "reason": "Fits separate left help slot; preserves source function and mode distinction."
+    },
+    {
+      "id": "gop_guide:string:191",
+      "source_ja": "カスタムサウンド機能のON/OFF",
+      "source_sha256": "cd3be0fa99bc9d06066ec8af68407304abc13dfb3aaa0a0fe019cd2d24ef6e63",
+      "previous_ru": "Включение и выключение своей музыки",
+      "ru": "Своя музыка: вкл./выкл.",
+      "budget_atlas_units": 380,
+      "area": "option_help",
+      "reason": "Fits separate left help slot; preserves source function and mode distinction."
+    },
+    {
+      "id": "gop_guide:string:158",
+      "source_ja": "方向キー←/→：設定変更　SELECT：デフォルトに戻す　×：「戻る」を選択",
+      "source_sha256": "7b3f7569ff768901163fcec244698d5183014ef10b2320ac9b0630f842facb27",
+      "previous_ru": "Крестовина ←/→: изменить; SELECT: по умолчанию; ×: выбрать «Назад»",
+      "ru": "←/→: изменить; SELECT: сброс; ×: к «Назад»",
+      "budget_atlas_units": 620,
+      "area": "option_controls",
+      "reason": "Retains adjustment, restore defaults and select Back actions in right slot."
+    }
+  ]
+}

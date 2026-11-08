@@ -65,6 +65,53 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(set(proof['versions'].values()),{'0.3.6'})
         self.assertTrue((root/'stage/assets/Macross30-program-0.3.6.zip').exists())
 
+    def locale_fixture(self):
+        root,baseline,inputs,config=self.fixture(())
+        def text(folder,locale,version,payload):
+            path=folder/f'Macross30-text-{locale}-{version}.zip'
+            with zipfile.ZipFile(path,'w') as z:z.writestr('pack.json',payload)
+            return dict(**identity(path),manifest_sha256=hashlib.sha256(payload).hexdigest(),text_revision='fixture')
+        old=text(baseline,'ru-RU','0.3.4',b'old RU')
+        spanish=text(baseline,'es-ES','0.3.4',b'unchanged ES')
+        (inputs/spanish['file']).write_bytes((baseline/spanish['file']).read_bytes())
+        boot=read(baseline/'BOOT-INSTALL.json');boot['locale_packs']={'ru-RU':old,'es-ES':spanish};write(baseline/'BOOT-INSTALL.json',boot)
+        new=text(inputs,'ru-RU','0.3.6',b'new RU')
+        config.update(locale_updates={'ru-RU':new},locale_assets=str(inputs))
+        return root,baseline,inputs,config,old,new
+
+    def test_russian_only_release_preserves_all_four_components_and_other_locales(self):
+        root,baseline,_,config,_,new=self.locale_fixture()
+        old_boot=read(baseline/'BOOT-INSTALL.json')
+        with patch('pipeline.verify_text_packs'):
+            result=prepare(config,root/'stage')
+        self.assertTrue(all(not item['changed'] for item in result['components'].values()))
+        boot=read(root/'stage/assets/BOOT-INSTALL.json')
+        expected=copy.deepcopy(old_boot);expected['locale_packs']['ru-RU']=new
+        self.assertEqual(boot,expected)
+        for name in ('LANGUAGE-PACKS.json','LAUNCHER.json','PYTHON-LAUNCHER.json'):
+            self.assertEqual((root/'stage/assets'/name).read_bytes(),(baseline/name).read_bytes())
+        zips=[p.name for p in (root/'stage/assets').glob('*.zip')]
+        self.assertEqual(zips,[new['file']])
+        self.assertEqual(verify(root/'stage')['versions'],dict.fromkeys(('game','korean','english','launcher'),'0.3.4'))
+
+    def test_text_only_rejects_unchanged_and_nonadvancing_artifacts(self):
+        _,_,inputs,config,old,new=self.locale_fixture()
+        config['locale_updates']['ru-RU']=old
+        with self.assertRaisesRegex(ValueError,'unchanged'):plan(config)
+        config['release']='0.3.4'
+        renamed=inputs/old['file'];renamed.write_bytes((inputs/new['file']).read_bytes())
+        config['locale_updates']['ru-RU']={**new,**identity(renamed)}
+        with self.assertRaisesRegex(ValueError,'must advance'):plan(config)
+
+    def test_text_only_status_must_match_the_new_locale_catalog(self):
+        root,_,_,config,_,_=self.locale_fixture()
+        with patch('pipeline.verify_text_packs'):prepare(config,root/'stage')
+        status=read(root/'stage/assets/STATUS.json');status['latest']['text_packs']['ru-RU']['version']='0.3.4'
+        write(root/'stage/assets/STATUS.json',status)
+        record=read(root/'stage/release-plan.json');record['artifacts']=[identity(p) for p in sorted((root/'stage/assets').iterdir())]
+        write(root/'stage/release-plan.json',record)
+        with self.assertRaisesRegex(ValueError,'Status text-pack versions disagree'):verify(root/'stage')
+
     def test_corrupt_reused_pack_blocks_launcher_only_release(self):
         _, baseline, _, config = self.fixture()
         (baseline/'Macross30-language-en-US-0.3.4.zip').write_bytes(b'corrupt')

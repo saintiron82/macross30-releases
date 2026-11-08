@@ -1,6 +1,6 @@
 # Macross 30 — English setup guide
 
-**0.3.10 fixes black startup loading caused by long language-cache paths. Game: 0.3.10; launcher: 0.3.9; Korean/English base packs: 0.3.8. English corrections, Russian v5 and Spanish v3 are retained.**
+**Russian text pack 0.3.11 (v6-r2) improves hangar, pilot and options text layout. Game: 0.3.10; launcher: 0.3.9; Korean/English base packs: 0.3.8. English corrections and Spanish v3 are retained.**
 
 **720p through 4K supported. FPS unlocking is under repair and unavailable; the 30 FPS cap remains enabled.**
 
@@ -23,7 +23,7 @@ The common program package contains a precompiled Windows game executable. Requi
 ## Languages and features
 
 - **English:** the 0.3.8 base pack plus 1,980 corrections in a separate 0.3.9 text layer.
-- **Russian v5 / Spanish v3:** text packs using the English image base. Translation/display review is ongoing; please report issues, including text clipping.
+- **Russian v6-r2 / Spanish v3:** text packs using the English image base. Translation/display review is ongoing; please report issues, including text clipping.
 - **Korean:** available as a separate language pack.
 - **Japanese:** uses the original game data; no Japanese language pack is required.
 - Keyboard/gamepad input, remappable controls and FHD/QHD resolution options are supported. Performance depends on hardware, settings and scene.
@@ -60,7 +60,7 @@ This is an unofficial, non-commercial fan project, not affiliated with or endors
 Keep your installed game folder and save files. If original data needs repair, select the same supported ISO dumped from your own copy; you do not need to obtain another ISO.
 
 
-From launcher 0.3.2, startup automatically downloads, replaces and restarts newer launchers. The launcher stays open while the game runs and shows Game running. Existing 0.3.0/0.3.1 users must click Launcher update once to migrate. Game is 0.3.10; launcher remains 0.3.9; Korean/English base packs remain 0.3.8, with additional text packs at 0.3.10.
+From launcher 0.3.2, startup automatically downloads, replaces and restarts newer launchers. The launcher stays open while the game runs and shows Game running. Existing 0.3.0/0.3.1 users must click Launcher update once to migrate. Game is 0.3.10; launcher remains 0.3.9; Korean/English base packs remain 0.3.8. The Russian text pack is 0.3.11 (v6-r2); English/Spanish text packs remain 0.3.10.
 
 
 After the game exits, choose **Logs → Send last play logs**, review the files and send. No user login is needed; reports go to a private Discord support channel. Saves are optional and the ZIP remains in local bug-reports.
@@ -76,3 +76,7 @@ If `CERTIFICATE_VERIFY_FAILED` prevents an older launcher from updating, manuall
 ## 0.3.10 startup hotfix
 
 If startup remains on a black loading screen after 0.3.9, use **Play/Update** in your existing launcher to get 0.3.10. This fixes truncated language-cache paths that caused installed data to appear missing. Launcher 0.3.9 is still current; saves/settings are retained. Fix sources and hashes are preserved by the `v0.3.10` tag under `release-baselines/0.3.10`.
+
+## Russian v6-r2 text layout (0.3.11)
+
+Select **Русский → Play/Update** in your existing launcher. This shortens 30 hangar/pilot/options strings. No game or launcher reinstall is required; fonts, subtitles and saves are retained. Existing English image labels and remaining Japanese values are outside this update. Rules, tooling and hashes are preserved by the `v0.3.11` tag under `release-baselines/0.3.11`.

@@ -19,6 +19,8 @@ $python = '.tools/launcher-python-venv/Scripts/python.exe'
 
 `baseline_assets`와 `input_assets`는 단일 폴더 또는 구성요소별 폴더 매핑을 받습니다. 서로 다른 버전의 팩을 한 폴더로 복사할 필요가 없습니다. 다음 빌드용 설정 틀은 `examples/next-launcher.template.json`입니다. 실제 버전, 릴리스 노트, 빌드 입력을 준비해 별도 설정으로 저장한 뒤 사용하세요.
 
+추가 텍스트팩 하나만 갱신할 때는 `changed`를 빈 배열로 두고, `locale_updates`에 해당 locale과 검증된 배포 항목을 명시합니다. 예를 들어 `locale_updates.ru-RU`만 지정하면 공통 게임·KO/EN 기반팩·런처·다른 locale은 기존 버전과 해시를 유지합니다. `locale_assets`는 새 RU ZIP과 검사에 재사용할 다른 텍스트팩이 있는 폴더입니다. 새 팩의 숫자 버전은 새 릴리스 태그와 같아야 하며 기존 버전보다 증가해야 합니다. 변경한 팩만 업로드하고 BOOT/STATUS의 해당 locale만 갱신합니다. 이미 만든 텍스트팩에는 `build` 대신 `prepare`를 사용합니다.
+
 ## 빌드 연결
 
 설정의 `build_steps`는 구성요소별 **인자 배열 목록**입니다. 셸 문자열을 조합하지 않습니다.

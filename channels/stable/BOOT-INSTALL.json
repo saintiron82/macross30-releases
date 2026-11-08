@@ -102,12 +102,12 @@
   },
   "locale_packs": {
     "ru-RU": {
-      "file": "Macross30-text-ru-RU-0.3.10.zip",
-      "bytes": 2368034,
-      "sha256": "b0aef9b767919e44007cbc049120ec460857eddced7ce67aad5a2c191a4b72d5",
-      "manifest_sha256": "b4dd20ae3173abbab58c095a5c790200abc6377b832ff20471753c55c257d0f5",
+      "file": "Macross30-text-ru-RU-0.3.11.zip",
+      "bytes": 2367889,
+      "sha256": "dc6534422d3fb3bdc3a10dff6f44e43c4f1ebc215cc488dedd184f8dd3559e61",
+      "manifest_sha256": "765b805565ca15aa502f4b755b80c4f412379cdfa5d91e2a1a4e3daa4e23e1a6",
       "label": "Русский",
-      "text_revision": "v5"
+      "text_revision": "v6-r2"
     },
     "es-ES": {
       "file": "Macross30-text-es-ES-0.3.10.zip",

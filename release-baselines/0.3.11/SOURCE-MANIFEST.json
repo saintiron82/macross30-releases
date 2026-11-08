@@ -1,0 +1,36 @@
+{
+  "baseline_tag": "v0.3.10",
+  "baseline_commit": "c4412da89c0e5e1af05c8199d1ceba0821a971a4",
+  "files": {
+    "tools/localization/layout_variants.py": {
+      "bytes": 2837,
+      "sha256": "4b6a0d67714322dd7f6d7ad77167a6c027757ec34aa5c9a44494b146826052af"
+    },
+    "tools/tests/test_russian_ui_layout.py": {
+      "bytes": 5339,
+      "sha256": "cb20508b037381645aab7c3b3ec785cf425428016789a9568ede5c4048c5e197"
+    },
+    "tools/dist/prepare_russian_layout_hotfix.py": {
+      "bytes": 2623,
+      "sha256": "36ed98e5ab35e4585bec4d9910195abebf870f81fb6d440cdc7ded94a338c495"
+    },
+    "tools/release/pipeline.py": {
+      "bytes": 18187,
+      "sha256": "9dfc76dee8de3edb8e3dacfa42b226f65d6f93f514e57c69b536156ce01061cb"
+    },
+    "tools/release/publish.py": {
+      "bytes": 9933,
+      "sha256": "e51f2b8e284f018313ed061744dfea34515c77126ed1162e0458bdd3e0a538ff"
+    },
+    "tools/release/test_pipeline.py": {
+      "bytes": 18182,
+      "sha256": "2be9e47dba62ea6c4af4eeee31c5e441ee7b0f05436b1c6a455c8d55669fc011"
+    },
+    "tools/release/README.md": {
+      "bytes": 9682,
+      "sha256": "7fb4ffdc8bc16db6a7761f8997d2fef8fab596837d69420bb04776d1f3008291"
+    }
+  },
+  "layout_rules_sha256": "a57099ba98637c340383bd0d257cf02e158993890e9da45fd13a795d8d23f812",
+  "layout_rules_original_path": "localization/ru-RU/layout-overrides-v1.json"
+}

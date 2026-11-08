@@ -1,0 +1,26 @@
+Macross 30 0.3.11 — Russian text pack v6-r2 / 러시아어 표시 개선
+
+한국어
+- 러시아어 팩만 갱신합니다. 게임 0.3.10, 런처 0.3.9, 한글·영어 기반팩 0.3.8은 유지합니다.
+- 격납고 기체·파일럿 정보와 옵션의 긴 러시아어 문구 30곳(ELF 19, GOP guide 11)을 짧게 조정했습니다.
+- 기존 폰트·영상/음성 자막·다른 언어·게임/런처 실행 파일·세이브는 유지합니다.
+- 기존 런처에서 Русский를 선택한 뒤 플레이/업데이트를 눌러 적용하세요. 러시아어 팩 0.3.11 표시는 정상이며 게임/런처 버전과 같을 필요가 없습니다.
+- 검사 29건 및 배포 파이프라인 검사 21건 통과. 공개 런처 0.3.9 EXE로 업데이트·프로세스 재시작·잘못된 팩 거부·이전 팩 복구를 확인했습니다. 사용자도 720p/1080p 격납고·옵션 및 TYPE A/B/C, NORMAL/REAL 전환 화면을 확인했습니다.
+- Player/Wingman/Special, TYPE A/B/C, NORMAL/REAL 등 기존 영어 이미지와 잔존 일본어 값은 이번 텍스트 수정 범위에 포함하지 않습니다. 모든 장면/원어민 전수 검수 완료를 뜻하지 않습니다.
+
+English
+- Updates only the Russian text pack to v6-r2. Game remains 0.3.10; launcher remains 0.3.9; Korean/English base packs remain 0.3.8.
+- Shortens 30 Russian aircraft/pilot/hangar/options strings (19 ELF display strings and 11 GOP guide strings) to fit their UI slots.
+- Fonts, movie/voice subtitles, other languages, game/launcher executables and saves are unchanged.
+- In your existing launcher, select Русский and press Play/Update. The Russian pack version is 0.3.11; game and launcher versions remain unchanged.
+- Passed 29 related tests and 21 release-pipeline tests. Update, fresh-process restart, invalid-pack rejection and rollback were checked using the public launcher 0.3.9 EXE. The user confirmed the 720p/1080p hangar/options screens including TYPE A/B/C and NORMAL/REAL changes.
+- Existing English image labels and remaining Japanese values are outside this text-layout update. This is not a full-playthrough or complete native-language review claim.
+
+Русский
+- Сокращены подписи характеристик самолёта, организации, звания и концентрации пилота в ангаре.
+- Сокращены длинные названия параметров и подсказки в меню настроек.
+- Шрифт, субтитры и английские изображения интерфейса сохранены.
+- Для игры 0.3.10 и лаунчера 0.3.9 требуется обновить только русский текстовый пакет. Выберите Русский и нажмите Play/Update.
+
+Launcher download (unchanged):
+https://github.com/saintiron82/macross30-releases/releases/download/v0.3.9/Macross30-launcher-0.3.9.zip
