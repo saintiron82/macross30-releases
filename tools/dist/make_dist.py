@@ -1,6 +1,6 @@
 """Build the Macross 30 QA distribution without any original disc data.
 
-Output (default C:/GameDev/Macross-dist):
+Output (default build/releases/legacy-dist):
   Macross30/            runnable QA folder
     (program pack)      Macross30.cmd, Install.cmd, VerifyData.cmd, CollectLogs.cmd,
                         bin/ (exe, VC runtime, localized EBOOT, ffmpeg/), tools/, docs,
@@ -312,7 +312,7 @@ def prune(directory, keep):
 def main():
     raise SystemExit('Precompiled game distribution is disabled. Use tools/local_build/source_bundle.py and the user-local build pipeline. No EBOOT or game EXE export is permitted.')
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--target', type=Path, default=Path(r'C:\GameDev\Macross-dist'))
+    parser.add_argument('--target', type=Path, default=Path(r'build/releases/legacy-dist'))
     parser.add_argument('--vfs', type=Path, default=ROOT / 'build/game-ko-full')
     parser.add_argument('--state', type=Path, default=ROOT / 'native/state-ko-full')
     parser.add_argument('--original', type=Path, default=ROOT / 'native/vfs', help='unmodified disc extraction + source_manifest.json')

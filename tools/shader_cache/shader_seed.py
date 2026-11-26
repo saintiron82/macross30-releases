@@ -252,7 +252,8 @@ def cmd_build(a):
         r, rec, stats = read_records(Path(p))
         roots.update(r)
         records.update(rec)
-        sources.append(stats)
+        # The portable seed manifest ships to users; keep machine-local provenance out.
+        sources.append({**stats, 'file': Path(p).name})
     by_name = {m['name']: m for m in manifest_entries}
     kept, dropped = {}, []
     for key, raw in records.items():

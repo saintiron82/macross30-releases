@@ -1,10 +1,10 @@
 # Drives a freshly launched game to the loaded save without the user:
 # presses START (via the PAD_FILE the game was launched with) until the
 # save-data list dialog appears, then confirms it with Enter.
-# Launch the game with: --env PAD_FILE=C:\GameDev\Macross\native\play\pad.txt
+# Launch the game with: --env PAD_FILE=./native/play/pad.txt
 param([int]$TimeoutSec = 180)
 $ErrorActionPreference = 'Stop'
-$play = 'C:\GameDev\Macross\native\play'
+$play = './native/play'
 $pad = Join-Path $play 'pad.txt'
 Add-Type @'
 using System; using System.Runtime.InteropServices;

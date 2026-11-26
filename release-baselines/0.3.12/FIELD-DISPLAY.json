@@ -1,0 +1,69 @@
+{
+  "korean": {
+    "labels": 75,
+    "csv_files": 123,
+    "definitions": 1609
+  },
+  "english": {
+    "label": "Mania Club",
+    "definitions": 60
+  },
+  "korean_club": "마니아동아리",
+  "program_changed_members": [
+    "program/bin/assets/locale-base.json",
+    "program/program-manifest.json"
+  ],
+  "game_exe_unchanged": true,
+  "text_packs": {
+    "ru-RU": {
+      "changed_members": [
+        "pack.json"
+      ],
+      "source_guard_sha256": "770e1dd34f0ffb31cd8234dd6386c66131d37d67bedbcad786249f32f01612b7",
+      "translation_payloads_unchanged": true
+    },
+    "es-ES": {
+      "changed_members": [
+        "pack.json"
+      ],
+      "source_guard_sha256": "770e1dd34f0ffb31cd8234dd6386c66131d37d67bedbcad786249f32f01612b7",
+      "translation_payloads_unchanged": true
+    },
+    "en-US": {
+      "changed_members": [
+        "pack.json"
+      ],
+      "source_guard_sha256": "770e1dd34f0ffb31cd8234dd6386c66131d37d67bedbcad786249f32f01612b7",
+      "translation_payloads_unchanged": true
+    }
+  },
+  "guard": {
+    "schema": 1,
+    "runtime_version": "0.3.9",
+    "runtime_exe_sha256": "60500703c9a3c0babfb602c5d28e79ad69b6ef139b5f35ce5c3e473cc993f50c",
+    "english_elf_sha256": "40437d598dd00f4aaadb18675ec8351452b2bfcf662e0d1075df03b3d61036ba",
+    "english_data_id": "3cde72ab74b20e7c",
+    "english_plan_sha256": "3cde72ab74b20e7c358d0221f934d7c7c4928ccc8766a670b62d8354db3959ec",
+    "pack_files": [
+      {
+        "file": "DATA.DAT",
+        "sha256": "3962255f10becc974cea71705ca7dd8b4794a8da359c33d859d226c48c7f2efb"
+      },
+      {
+        "file": "FILESET2.DAT",
+        "sha256": "bc63357897dab67eb69d98cce1675d67e5975b5b3c1de362521a7e8751e32c62"
+      },
+      {
+        "file": "PACK.IDX",
+        "sha256": "b0c5959c033ad32a60fe771c5137300f0c081a565b725400774cdb334a6673d0"
+      }
+    ],
+    "runtime_release_version": "0.3.12"
+  },
+  "guard_sha256": "770e1dd34f0ffb31cd8234dd6386c66131d37d67bedbcad786249f32f01612b7",
+  "old_english_data_id": "4bb220cd0999f5c8",
+  "new_english_data_id": "3cde72ab74b20e7c",
+  "game_started": false,
+  "visual_check": "pending",
+  "published": false
+}

@@ -15,8 +15,8 @@ def sha(path):
 
 
 def main():
-    dist = Path('C:/GameDev/Macross-dist-0.1.0/Macross30')
-    output = Path('C:/GameDev/Macross-language-0.1.0')
+    dist = Path('build/releases/legacy-dist-0.1.0/Macross30')
+    output = Path('build/tests/Macross-language-0.1.0')
     stage = output / 'languages/ja-JP/0.1.0'
     stage.mkdir(parents=True, exist_ok=True)
     originals = {r['path'].casefold(): r for r in json.loads((ROOT / 'native/vfs/source_manifest.json').read_text(encoding='utf8'))['files']}

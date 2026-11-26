@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "placement_csvs_read": 189,
+  "active_definitions_read": 6434,
+  "remaining_japanese_display_labels": [],
+  "negative_input_rejections": 3,
+  "game_started": false,
+  "visual_check": "pending"
+}

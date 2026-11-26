@@ -18,10 +18,10 @@ import zipfile
 _adjacent_manifest = Path(__file__).resolve().with_name('measurement.json')
 ROOT = (Path(json.loads(_adjacent_manifest.read_text(encoding='utf-8'))['project_root'])
         if _adjacent_manifest.exists() else Path(__file__).resolve().parents[2])
-DEFAULT = Path('D:/Game/Macross-0.3.5-measurement-20261101')
+DEFAULT = Path('build/tests/Macross-0.3.5-measurement-20261101')
 PREFIXES = ('MACROSS_', 'SPU_', 'SPURS_', 'PS3_', 'PPU_', 'LD_', 'RSX_', 'GCM_',
             'FIFO_', 'AUDIO_', 'ATRAC_', 'PAD_', 'VP_', 'FP_', 'CELLMARK_', 'RTT_', 'D3D12_', 'EDGE_', 'RIBBON_')
-RELEASE_ARCHIVE = Path('D:/Game/Macross-release-034-20261101-30fps-4k/artifacts/Macross30-program-0.3.4.zip')
+RELEASE_ARCHIVE = Path('build/releases/0.3.4/artifacts/Macross30-program-0.3.4.zip')
 RELEASE_ARCHIVE_SHA = '20d314bfaaa1b97222563be2bb769c1a8d591b3d30702632982f2284d807b64b'
 REQUIRED_RENDER_SETTINGS = dict(LD_ASYNC_ALLOW_MOVIE='1',LD_ASYNC_FRAME_RESOURCES='1',
     LD_ASYNC_GPU_WAKE='1',LD_ASYNC_IMMEDIATE_LABELS='1',LD_SHADER_METADATA_CACHE='1',

@@ -6,7 +6,7 @@
 
 **[런처 다운로드 / Download launcher / ランチャー](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.9/Macross30-launcher-0.3.9.zip)**
 
-게임 / Game **0.3.10** · 런처 / Launcher **0.3.9**
+게임 / Game **0.4.0** · 런처 / Launcher **0.3.9**
 
 **[English installation and usage guide](README.en.md)** · [Release notes](https://github.com/saintiron82/macross30-releases/releases/tag/v0.3.11) · [Discord](https://discord.gg/WqaaJ6hTmY)
 
@@ -54,3 +54,5 @@ The v0.3.9 tag preserves the frozen language-loader, launcher, installer and too
 ## 러시아어 v6-r2 표시 개선 (0.3.11)
 
 러시아어 이용자는 기존 런처에서 **Русский → 플레이/업데이트**로 적용하세요. 격납고·파일럿 정보·옵션 문구 30곳을 줄였습니다. 게임/런처 재설치는 필요하지 않으며 폰트·자막·세이브는 유지합니다. 기존 영어 이미지와 잔존 일본어 값은 이번 변경에 포함하지 않습니다. 수정 규칙·도구·해시는 `v0.3.11` 태그와 `release-baselines/0.3.11`에 보존합니다.
+
+**0.4.0:** F9 최대 프레임 30/60/무제한·진동·마우스 조작, 성능 및 번역 개선. 게임·언어팩 0.4.0 / 런처 0.3.9.

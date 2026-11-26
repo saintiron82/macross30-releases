@@ -8,7 +8,7 @@ environment, arguments and working directory. Both are compared after mapping
 the workspace paths to their distribution equivalents, for several
 settings.ini cases and a polluted parent environment.
 
-  python tools/dist/check_dist_env.py [--dist C:/GameDev/Macross-dist/Macross30]
+  python tools/dist/check_dist_env.py [--dist build/releases/legacy-dist/Macross30]
 """
 import argparse
 import contextlib
@@ -230,7 +230,7 @@ def flag_files():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--dist', type=Path, default=Path(r'C:\GameDev\Macross-dist\Macross30'))
+    parser.add_argument('--dist', type=Path, default=Path(r'build/releases/legacy-dist/Macross30'))
     parser.add_argument('--report', type=Path, help='write a JSON report here')
     args = parser.parse_args()
     dist = args.dist.resolve()

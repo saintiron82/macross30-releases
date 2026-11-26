@@ -11,8 +11,8 @@
 ```powershell
 $python = '.tools/launcher-python-venv/Scripts/python.exe'
 & $python tools/release/pipeline.py plan --config tools/release/examples/launcher-only.json
-& $python tools/release/pipeline.py prepare --config tools/release/examples/launcher-only.json --output C:/GameDev/Macross-release-builds/rehearsal-036
-& $python tools/release/pipeline.py verify C:/GameDev/Macross-release-builds/rehearsal-036
+& $python tools/release/pipeline.py prepare --config tools/release/examples/launcher-only.json --output build/releases/Macross-release-builds/rehearsal-036
+& $python tools/release/pipeline.py verify build/releases/Macross-release-builds/rehearsal-036
 ```
 
 `prepare`는 게임·한국어·영어·런처 **네 항목을 모두 확인**합니다. 기존 세 팩도 파일 크기와 SHA-256을 대조하고 기존 배포 검사기로 ZIP 내부를 확인합니다. 런처 ZIP과 단독 EXE가 같은 파일인지 확인합니다. 임시 검사 사본은 자동 정리합니다. 업로드 폴더에는 변경된 팩만 넣으며 원본 ISO/ELF, 설치 데이터나 세이브를 넣지 않습니다. 변경하지 않은 메타데이터는 바이트 그대로 유지합니다.
@@ -40,8 +40,8 @@ $python = '.tools/launcher-python-venv/Scripts/python.exe'
 새 버전의 스테이지만 공개할 수 있습니다. `--checkout`은 깨끗한 **전용 공개 메타데이터 저장소 체크아웃**을 지정합니다. 현재 개발 저장소의 HEAD나 인덱스를 바꾸지 않습니다.
 
 ```powershell
-& $python tools/release/pipeline.py publish C:/GameDev/Macross-release-builds/next-release --checkout C:/GameDev/Macross-public-metadata
-& $python tools/release/pipeline.py verify-public C:/GameDev/Macross-release-builds/next-release
+& $python tools/release/pipeline.py publish build/releases/Macross-release-builds/next-release --checkout build/tests/Macross-public-metadata
+& $python tools/release/pipeline.py verify-public build/releases/Macross-release-builds/next-release
 ```
 
 순서: 로컬 해시 재확인 → 공개 stable 기준과 설정 일치 확인 → 별도 릴리스 브랜치/태그 → 초안 업로드 → 서버 자산 해시 확인 → 공개 → stable 갱신 → 로그인 없는 실제 다운로드 해시 확인. 공개 태그 덮어쓰기와 force push를 하지 않습니다. 변경하지 않은 팩은 새 릴리스에 업로드하지 않습니다.
@@ -51,7 +51,7 @@ $python = '.tools/launcher-python-venv/Scripts/python.exe'
 ## ISO 진단
 
 ```powershell
-& $python tools/release/iso.py 'C:/path/to/game.iso' --report C:/GameDev/Macross-release-builds/iso-report.json
+& $python tools/release/iso.py 'C:/path/to/game.iso' --report build/releases/Macross-release-builds/iso-report.json
 & $python tools/release/iso.py 'C:/path/to/game.iso' --hashes
 ```
 
@@ -63,9 +63,9 @@ EBOOT의 크기와 시작 헤더를 읽고 `ELF`, `SCE SELF`, 미인식 상태�
 
 ```powershell
 & $python tools/release/build_iso_tool.py
-& $python tools/release/disc_key.py --sevenzip D:/Game/mAC30/.local-build/tools/7zr.exe
+& $python tools/release/disc_key.py --sevenzip build/tests/installed-game/.local-build/tools/7zr.exe
 & $python tools/release/decrypt_iso.py 'C:/path/game.iso' --key-file '.tools/iso-private/Macross 30 - Ginga o Tsunagu Utagoe (Japan).dkey' --probe
-& $python tools/release/decrypt_iso.py 'C:/path/game.iso' --output 'C:/path/game.decrypted.iso' --key-file '.tools/iso-private/Macross 30 - Ginga o Tsunagu Utagoe (Japan).dkey' --rpcs3 D:/Game/mAC30/.local-build/tools/rpcs3/rpcs3.exe --report C:/path/decryption-report.json
+& $python tools/release/decrypt_iso.py 'C:/path/game.iso' --output 'C:/path/game.decrypted.iso' --key-file '.tools/iso-private/Macross 30 - Ginga o Tsunagu Utagoe (Japan).dkey' --rpcs3 build/tests/installed-game/.local-build/tools/rpcs3/rpcs3.exe --report C:/path/decryption-report.json
 ```
 
 - 유지보수용 빌드는 고정된 PS3Dec/mbedTLS 커밋을 사용합니다. 기존 MSVC/CMake가 필요합니다. 최종 실행 파일과 소스 패치의 SHA-256을 `tool-manifest.json`에 기록합니다.
@@ -80,7 +80,7 @@ EBOOT의 크기와 시작 헤더를 읽고 `ELF`, `SCE SELF`, 미인식 상태�
 ## 직접 다운로드
 
 ```powershell
-& $python tools/release/download.py --item ITEM_ID --file 'exact-name.iso' --output-dir C:/GameDev/Macross-downloads/ITEM_ID
+& $python tools/release/download.py --item ITEM_ID --file 'exact-name.iso' --output-dir build/tests/Macross-downloads/ITEM_ID
 ```
 
 명시한 항목의 ISO 한 개를 HTTPS로 받습니다. 토렌트는 받지 않습니다. 범위별 이어받기와 동시 실행 잠금, 서버 범위 응답 확인, 완료된 구간 재검사, 최종 SHA-1/MD5 대조를 수행합니다. 검증 후에만 `.part`를 `.iso`로 바꿉니다. ISO 선택과 다운로드는 사용자가 요청한 파일에 한해 실행하세요. 현재 진행 중인 최초 다운로드는 기존 실행을 유지하며, 이 도구는 후속 다운로드부터 사용할 수 있습니다.

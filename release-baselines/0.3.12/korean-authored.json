@@ -1,0 +1,1238 @@
+{
+  "source_elf_sha256": "3e29d7c62adbabf2c7ae1e8799737cbdf16617d8b87958daeed298364aff1a0b",
+  "entries": [
+    {
+      "offset": "0x909cf8",
+      "source": "遺跡の眠り姫",
+      "source_sha256": "85400dd51bb24c480414640e9c1ada1f3a712771ee09448782249c2dc3314983",
+      "translation": "유적의 잠든 공주",
+      "capacity": 24,
+      "target_bytes": 24
+    },
+    {
+      "offset": "0x913378",
+      "source": "ファストパック",
+      "source_sha256": "85af16ffc9fce42ac33ee2cc7a14d25ef06aba7e3c4721a5ba9f17332099eef7",
+      "translation": "FAST 팩",
+      "capacity": 24,
+      "target_bytes": 9
+    },
+    {
+      "offset": "0x913390",
+      "source": "VF-0用ファストパック",
+      "source_sha256": "7ca28a22e13d253e4c627d521f22bb13f7b33971bafd6fa055724e59265e554d",
+      "translation": "VF-0용 FAST 팩",
+      "capacity": 32,
+      "target_bytes": 17
+    },
+    {
+      "offset": "0x9133c0",
+      "source": "全弾発射",
+      "source_sha256": "a4675f200aa51079c27ffc4bb90c42aa91421c5561bc29b60d8d8a908442b2c9",
+      "translation": "전탄 발사",
+      "capacity": 16,
+      "target_bytes": 14
+    },
+    {
+      "offset": "0x9133f0",
+      "source": "ＶＦ－０用の追加装備。\nエンジンナセルに装着するパーツで、\nミサイルと燃料タンクが内蔵されている。",
+      "source_sha256": "b6b3d57e6eed75202b114fd22deb9f6871efef3c43d1b90b3e44765622e4c850",
+      "translation": "VF-0용 추가 장비.\n엔진 나셀에 장착하는 부품으로,\n미사일과 연료통가 내장되어 있다.",
+      "capacity": 144,
+      "target_bytes": 114
+    },
+    {
+      "offset": "0x913480",
+      "source": "ゴーストブースター",
+      "source_sha256": "dba28a2a16c82e3c69a171b44a6aa9b2a573152c359f234d8ac7c430dad2914a",
+      "translation": "고스트 부스터",
+      "capacity": 32,
+      "target_bytes": 20
+    },
+    {
+      "offset": "0x9134a0",
+      "source": "VF-0用ゴーストブースター",
+      "source_sha256": "1768ee3720ebdd154cf0e8d52cc8a60a9dfd8ee0bd21f823bc309ebc32440b64",
+      "translation": "VF-0용 고스트 부스터",
+      "capacity": 40,
+      "target_bytes": 28
+    },
+    {
+      "offset": "0x9134e8",
+      "source": "ＶＦ－０用の追加装備。\n無人偵察機「ゴースト」をブースターパックとして使用し、\n機体上面や主翼下部にもミサイルパックが\n増設されている。",
+      "source_sha256": "8b2a28294c55ad5623906b72be09f44d3dfbf5965db04175ebd810580b86964d",
+      "translation": "VF-0용 추가 장비.\n무인 정찰기 「고스트」를 부스터 팩으로 사용하며,\n기체 윗면과 주익 아래에도 미사일 팩이\n추가 장착되어 있다.",
+      "capacity": 200,
+      "target_bytes": 175
+    },
+    {
+      "offset": "0x9135b0",
+      "source": "ツインブースター",
+      "source_sha256": "b58b76f4425bbb65521b69456f029bb5ccf841db97233eb6d3c31ff805f7ed85",
+      "translation": "트윈 부스터",
+      "capacity": 32,
+      "target_bytes": 17
+    },
+    {
+      "offset": "0x9135d0",
+      "source": "SV-51用ツインブースター",
+      "source_sha256": "70b27160311a8c12b5ab16761cfb0cfaa06db69ad70a84ff730660fd3cdba083",
+      "translation": "SV-51용 트윈 부스터",
+      "capacity": 40,
+      "target_bytes": 26
+    },
+    {
+      "offset": "0x913618",
+      "source": "ＳＶ－５１用の追加装備。\nロケットブースター２基と、追加武装として各種ミサイルが\n装備されており、機動性と火力が強化される。",
+      "source_sha256": "ef615659ebcd46dff3d913506b12b5a99750ef6884f5926addfb02b64e949105",
+      "translation": "SV-51용 추가 장비.\n로켓 부스터 2기와 각종 미사일을 추가 무장으로\n장착하여 기동성과 화력이 강화된다.",
+      "capacity": 184,
+      "target_bytes": 139
+    },
+    {
+      "offset": "0x9136d0",
+      "source": "スーパーパック",
+      "source_sha256": "0d58b55be4cc171005a9686887ccd8336fb43b27d945dd41d5eaa649e507571d",
+      "translation": "슈퍼 팩",
+      "capacity": 24,
+      "target_bytes": 11
+    },
+    {
+      "offset": "0x9136e8",
+      "source": "VF-1用スーパーパック",
+      "source_sha256": "1d620f00bfdbf716899b3d7fe502b480b83af9541ebfa30b35a945c0d6eeb5f6",
+      "translation": "VF-1용 슈퍼 팩",
+      "capacity": 32,
+      "target_bytes": 19
+    },
+    {
+      "offset": "0x913718",
+      "source": "ＶＦ－１用の追加装備。\n大型ブースターとミサイルポッドにより、\n火力・加速力・機動性が強化される。",
+      "source_sha256": "d32e88d762479b67eed0929193aed1765b15d2ab0cc85de25694a4450b09d363",
+      "translation": "VF-1용 추가 장비.\n대형 부스터와 미사일 포드로\n화력·가속력·기동성이 강화된다.",
+      "capacity": 144,
+      "target_bytes": 109
+    },
+    {
+      "offset": "0x9137a8",
+      "source": "ストライクパック",
+      "source_sha256": "cc343513d21cec5fb105d833b242246488071af5a1fb0d5a981003537f5fc583",
+      "translation": "스트라이크 팩",
+      "capacity": 32,
+      "target_bytes": 20
+    },
+    {
+      "offset": "0x9137c8",
+      "source": "VF-1用ストライクパック",
+      "source_sha256": "a401ff8d9ff3eb4408c0f1f54136aa789ff0cb83a60669227a3026e532150c7c",
+      "translation": "VF-1용 스트라이크 팩",
+      "capacity": 32,
+      "target_bytes": 28
+    },
+    {
+      "offset": "0x913808",
+      "source": "ＶＦ－１用の追加装備。\nスーパーパックではミサイルポッドだった\n右ブースターの武装を連装ビーム砲に変更し、\n更なる火力の向上が図られている。",
+      "source_sha256": "26a6d2af9a924e8de1561341a12d02ace472d41e779e6acf1c7009bddb622bb2",
+      "translation": "VF-1용 추가 장비.\n슈퍼 팩에서는 미사일 포드였던\n오른쪽 부스터의 무장을 2연장 빔포로 바꾸어,\n화력을 더욱 높였다.",
+      "capacity": 208,
+      "target_bytes": 156
+    },
+    {
+      "offset": "0x9138d8",
+      "source": "Wストライクパック",
+      "source_sha256": "c203a00d7cdd1c025cbc4861a7fcbc371378149026d7d1284267ada2830b6c47",
+      "translation": "W 스트라이크 팩",
+      "capacity": 32,
+      "target_bytes": 22
+    },
+    {
+      "offset": "0x9138f8",
+      "source": "VF-1用Ｗストライクパック",
+      "source_sha256": "c8bbfc7def37da79d875fea74adec8dd3be6d4450aa137fb7695fbd7b9a570c6",
+      "translation": "VF-1용 W 스트라이크 팩",
+      "capacity": 40,
+      "target_bytes": 30
+    },
+    {
+      "offset": "0x913920",
+      "source": "ダブル超射撃",
+      "source_sha256": "02bb54606f2285413f8ec0fafb0b3ac857de88cc90121e3a7ef28fe6068cadd4",
+      "translation": "더블 초사격",
+      "capacity": 24,
+      "target_bytes": 17
+    },
+    {
+      "offset": "0x913958",
+      "source": "ＶＦ－１用の追加装備。\nダブルストライクパックでは両方のブースターの武装を\n連装ビーム砲に変更し、ストライクパック以上の火力を有する。",
+      "source_sha256": "095c480ea91d7e5a3f2e6a36576c04af69fa144a6afca46168322b8d53dcc347",
+      "translation": "VF-1용 추가 장비.\n더블 스트라이크 팩은 양쪽 부스터의 무장을\n2연장 빔포로 바꾸어 스트라이크 팩보다 화력이 높다.",
+      "capacity": 200,
+      "target_bytes": 155
+    },
+    {
+      "offset": "0x913a20",
+      "source": "VF-11B用スーパーパック",
+      "source_sha256": "7c4d60e10aaac32f5eaf345a3d0d680319709d7a1fc907ad9b4c473958fd4324",
+      "translation": "VF-11B용 슈퍼 팩",
+      "capacity": 32,
+      "target_bytes": 21
+    },
+    {
+      "offset": "0x913a60",
+      "source": "ＶＦ－１１Ｂ用の追加装備。\nブースターとミサイルポッドにより、\n推力と火力が強化される。また、ブースターが\nコンパクトになりバトロイド形態時の運動性も良好。",
+      "source_sha256": "990bfca2052c77f3d219394ec85fb668d68a191fe271660d72ea560de3c081d2",
+      "translation": "VF-11B용 추가 장비.\n부스터와 미사일 포드로\n추력과 화력이 강화된다. 또한 소형화된 부스터로\n배틀로이드 형태에서도 운동성이 좋다.",
+      "capacity": 232,
+      "target_bytes": 178
+    },
+    {
+      "offset": "0x913b48",
+      "source": "VF-11C用スーパーパック",
+      "source_sha256": "232052b6b40362ef99225d1776ecafc10b9057c97a933c1b57b9c9e76750abe4",
+      "translation": "VF-11C용 슈퍼 팩",
+      "capacity": 32,
+      "target_bytes": 21
+    },
+    {
+      "offset": "0x913b88",
+      "source": "ＶＦ－１１Ｃ用の追加装備。\nブースターとミサイルポッドにより、\n推力と火力が強化される。また、ブースターが\nコンパクトになりバトロイド形態時の運動性も良好。",
+      "source_sha256": "5b37dedff80bcb7b96d978a5dbb0a052ca8caaec6a107497cd4552ee0db9276b",
+      "translation": "VF-11C용 추가 장비.\n부스터와 미사일 포드로\n추력과 화력이 강화된다. 또한 소형화된 부스터로\n배틀로이드 형태에서도 운동성이 좋다.",
+      "capacity": 232,
+      "target_bytes": 178
+    },
+    {
+      "offset": "0x913c70",
+      "source": "YF-19用ファストパック",
+      "source_sha256": "2da0016a83f857ff701db5a556ebd7aa224162bc954fba3f3ab04d8b62368f26",
+      "translation": "YF-19용 FAST 팩",
+      "capacity": 32,
+      "target_bytes": 18
+    },
+    {
+      "offset": "0x913cb0",
+      "source": "ＹＦ－１９用の追加装備。\n推力の上昇を目的としたブースター類は無く、ミサイル\nランチャーやアーマーユニット、機動性の低下を補う\n高機動バーニアのみで構成されている。",
+      "source_sha256": "bb03d7ec39db44c2ed476b8c9ea2fb4ec6302bba4b99a29764c1d3d85ae80b68",
+      "translation": "YF-19용 추가 장비.\n추력 향상용 부스터 없이 미사일 런처와\n아머 유닛, 기동성 저하를 보완하는\n고기동 버니어만으로 구성된다.",
+      "capacity": 248,
+      "target_bytes": 169
+    },
+    {
+      "offset": "0x913da8",
+      "source": "YF-21用ファストパック",
+      "source_sha256": "a35f0ee099860c638c16365cd61536ed0bfc5f27bcd379214e4cbf15d367714e",
+      "translation": "YF-21용 FAST 팩",
+      "capacity": 32,
+      "target_bytes": 18
+    },
+    {
+      "offset": "0x913de8",
+      "source": "ＹＦ－２１、ＶＦ－２２用の追加装備。\n推力の上昇を目的としたブースター類は無く、ミサイル\nランチャーや増槽のみで構成されている。",
+      "source_sha256": "62140a5c82b08b31fd4a4988cc3cd2f114fc700a278608b71812a5b096d10228",
+      "translation": "YF-21, VF-22용 추가 장비.\n추력 향상용 부스터 없이 미사일\n런처와 보조 연료통만으로 구성된다.",
+      "capacity": 192,
+      "target_bytes": 125
+    },
+    {
+      "offset": "0x913ea8",
+      "source": "アーマードパック",
+      "source_sha256": "5f309dea1018b58b242322c86c75431e3834eee85cf80d5260a8ae630633c77c",
+      "translation": "아머드 팩",
+      "capacity": 32,
+      "target_bytes": 14
+    },
+    {
+      "offset": "0x913ec8",
+      "source": "VF-171EX用アーマードパック",
+      "source_sha256": "1229eaaf99146ae8603df3589a850dc9e6c1339a79d1fa1d34b51def4699bf95",
+      "translation": "VF-171EX용 아머드 팩",
+      "capacity": 40,
+      "target_bytes": 26
+    },
+    {
+      "offset": "0x913f18",
+      "source": "ＶＦ－１７１ＥＸ用の追加装備。\n胸部や脚部を覆うプロテクターに装備された\n小型バーニアやミサイルにより、\n火力・防御力・機動性が向上する。",
+      "source_sha256": "6892009108fc7695135e35dde9a907a88eacfc6684a9539dff984556d434d2d9",
+      "translation": "VF-171EX용 추가 장비.\n가슴과 다리를 덮는 보호대에 장착된\n소형 버니어와 미사일로\n화력·방어력·기동성이 향상된다.",
+      "capacity": 208,
+      "target_bytes": 156
+    },
+    {
+      "offset": "0x913fe8",
+      "source": "VF-25用スーパーパック",
+      "source_sha256": "4eba488796fa248130d89f535947edef0f21cabad785f7bdb886e77318fd27e3",
+      "translation": "VF-25용 슈퍼 팩",
+      "capacity": 32,
+      "target_bytes": 20
+    },
+    {
+      "offset": "0x914028",
+      "source": "ＶＦ－２５用の追加装備。\nメイン／サブ合わせて４基のブースターユニットと、\nミサイルなどの武装、追加装甲パネルで構成された\n全体的なバランスの取れたパック。",
+      "source_sha256": "e8b58e948d07b26ce2d14e1442e11fa7410561ea9334d1b49c8988eb84ebfb0d",
+      "translation": "VF-25용 추가 장비.\n주·보조 부스터 유닛 총 4기와\n미사일 등의 무장, 추가 장갑 패널로 구성된\n전체적으로 균형 잡힌 팩이다.",
+      "capacity": 232,
+      "target_bytes": 165
+    },
+    {
+      "offset": "0x914110",
+      "source": "VF-25用アーマードパック",
+      "source_sha256": "bc7fd5d049c3d1ab44c21246e69e043799f357d620393cff2020ec90b2b67230",
+      "translation": "VF-25용 아머드 팩",
+      "capacity": 40,
+      "target_bytes": 23
+    },
+    {
+      "offset": "0x914158",
+      "source": "ＶＦ－２５用の追加装備。\n頭以外をカバーする重装甲と、全身に装備された多数の\n武装により、非常に高い防御力と火力を持つパック。",
+      "source_sha256": "33c02e1955168539af876497f3f9b0f389afe067bb3318e2c4306381f1823e4e",
+      "translation": "VF-25용 추가 장비.\n머리 외 전신을 덮는 중장갑과 온몸에 장착된\n다수의 무장으로 매우 높은 방어력과 화력을 갖춘 팩.",
+      "capacity": 192,
+      "target_bytes": 157
+    },
+    {
+      "offset": "0x914218",
+      "source": "トルネードパック",
+      "source_sha256": "8bb258af8e81120f5bf742eee6636e2e89a2d6a66067d9b711c9f3b4c7d34cff",
+      "translation": "토네이도 팩",
+      "capacity": 32,
+      "target_bytes": 17
+    },
+    {
+      "offset": "0x914238",
+      "source": "VF-25用トルネードパック",
+      "source_sha256": "e3839d43fc88232862674003069b4ae694f0f8d434f931db67a991153d5fc755",
+      "translation": "VF-25용 토네이도 팩",
+      "capacity": 40,
+      "target_bytes": 26
+    },
+    {
+      "offset": "0x914290",
+      "source": "ＶＦ－２５用の追加装備。\n４基の可動式高機動バーニア、マイクロミサイルポッド\nや旋回式連装ビーム砲などで構成されており、\n非常に高い機動性と火力を持つ。",
+      "source_sha256": "f9965e0b28160442e00dbee37b7f6d4c4d06769a54f17c5108895fa7f549cb2e",
+      "translation": "VF-25용 추가 장비.\n가동식 고기동 버니어 4기와 마이크로 미사일 포드,\n회전식 2연장 빔포 등으로 구성되어\n매우 높은 기동성과 화력을 갖췄다.",
+      "capacity": 224,
+      "target_bytes": 189
+    },
+    {
+      "offset": "0x914370",
+      "source": "VF-27用スーパーパック",
+      "source_sha256": "04b3fa32c95e6edd0a88d222ae891fd9578d3d20c3c0b5cc9cb45dd50571fa60",
+      "translation": "VF-27용 슈퍼 팩",
+      "capacity": 32,
+      "target_bytes": 20
+    },
+    {
+      "offset": "0x9143b0",
+      "source": "ＶＦ－２７用の追加装備。\n背面と脚部に装備されるパーツで、追加のロケット\nブースターと推進剤のみで構成されている。これにより\n大推力を誇るＶＦ－２７の機動性がさらに向上する。",
+      "source_sha256": "b8d4988a902ef9d0203b2eba4763eac2da16aa6d401136f3aea7ec763aa40479",
+      "translation": "VF-27용 추가 장비.\n등과 다리에 장착하는 부품으로, 추가 로켓\n부스터와 추진제로만 구성된다. 이를 통해\n강력한 추력을 자랑하는 VF-27의 기동성이 더 높아진다.",
+      "capacity": 256,
+      "target_bytes": 212
+    },
+    {
+      "offset": "0x9144b0",
+      "source": "YF-29用スーパーパック",
+      "source_sha256": "347c6a60fe7d1c2e11c105f0a938f3874ff2abd7f127d09ffea5908cc160076f",
+      "translation": "YF-29용 슈퍼 팩",
+      "capacity": 32,
+      "target_bytes": 20
+    },
+    {
+      "offset": "0x9144f0",
+      "source": "ＹＦ－２９用の追加装備。\n２基の化学ロケットブースターやマイクロミサイルポッドが\n装備されており、推力や火力が強化される。",
+      "source_sha256": "57ae699f0e90a2b92df1236405943716feb1407405a6033a7da70cd776ea92d5",
+      "translation": "YF-29용 추가 장비.\n화학 로켓 부스터 2기와 마이크로 미사일 포드를\n장착하여 추력과 화력이 강화된다.",
+      "capacity": 184,
+      "target_bytes": 136
+    },
+    {
+      "offset": "0x9170d8",
+      "source": "●通常装備\n主武装　　：新型ガンポッド５８ｍｍ\n特殊武装１：ミサイル（マルチ）\n特殊武装２：マイクロミサイル（連射）\n特殊武装３：１２．７ｍｍビーム機銃×２",
+      "source_sha256": "980700a12dd5049bba07a738f0d8d3ee0640c3f3d95f45598529ca07bdbc112a",
+      "translation": "●일반 장비\n주 무장: 신형 58mm 건포드\n특수 무장1: 미사일(멀티)\n특수 무장2: 마이크로 미사일(연사)\n특수 무장3: 12.7mm 빔 기관총×2",
+      "capacity": 232,
+      "target_bytes": 172
+    },
+    {
+      "offset": "0x918720",
+      "source": "MY FRIENDS　※一定時間無敵",
+      "source_sha256": "816fb938a24532872ddac4acf9e116bd3bca211fad1d1c03f3f787a1fe9eaaa9",
+      "translation": "MY FRIENDS ※일정 시간 무적",
+      "capacity": 40,
+      "target_bytes": 35
+    },
+    {
+      "offset": "0x9193c0",
+      "source": "●通常装備\n主武装　　：高速回転３砲身レーザーパルスガン\n特殊武装１：マイクロミサイル（連射）\n特殊武装２：５５ｍｍ中口径速射インパクト・キャノン\n特殊武装３：対艦用インパクト・キャノン",
+      "source_sha256": "d782d05f8430f9c8834eb2f7422f90030032869f428e3fe06318485f74c392f3",
+      "translation": "●일반 장비\n주 무장: 고속 회전 3총신 레이저 펄스 건\n특수 무장1: 마이크로 미사일(연사)\n특수 무장2: 55mm 중구경 속사 임팩트 캐논\n특수 무장3: 대함용 임팩트 캐논",
+      "capacity": 272,
+      "target_bytes": 217
+    },
+    {
+      "offset": "0x919d18",
+      "source": "ワンダーリング　※一定時間無敵",
+      "source_sha256": "b49fac12ac572d5de12c883389377b89fc03d5658fc01129a6379d02a6fc378d",
+      "translation": "ワンダーリング ※일정 시간 무적",
+      "capacity": 48,
+      "target_bytes": 46
+    },
+    {
+      "offset": "0x91c140",
+      "source": "●通常装備\n主武装　　：対空対地機銃\n特殊武装１：３連装対地対艦重ミサイル\n特殊武装２：３２０ｍｍ４連レールガン\n特殊武装３：反応弾",
+      "source_sha256": "7915579bea6cfc235ad0592128b6690141a7ded2cb573d9fd7a19f7ed745bedb",
+      "translation": "●일반 장비\n주 무장: 대공·대지 기관총\n특수 무장1: 3연장 대지·대함 중미사일\n특수 무장2: 320mm 4연장 레일건\n특수 무장3: 반응탄",
+      "capacity": 192,
+      "target_bytes": 172
+    },
+    {
+      "offset": "0x91d580",
+      "source": "●通常装備\n主武装　　：ビームガンポッド\n特殊武装１：マイクロミサイル（連射・ブラスト）\n特殊武装２：マイクロミサイル（マルチ・ブラスト）\n特殊武装３：ビームグレネード",
+      "source_sha256": "0ec24e88a4852ccd18ad8128258b266959e71af3ab331e9aae65c57a2f647a83",
+      "translation": "●일반 장비\n주 무장: 빔 건포드\n특수 무장1: 마이크로 미사일(연사·블라스트)\n특수 무장2: 마이크로 미사일(멀티·블라스트)\n특수 무장3: 빔 그레네이드",
+      "capacity": 248,
+      "target_bytes": 201
+    },
+    {
+      "offset": "0x91dd28",
+      "source": "●通常装備\n主武装　　：重量子ビームガンポッド\n特殊武装１：マイクロミサイル（連射・ブラスト）\n特殊武装２：マイクロミサイル（マルチ・ブラスト）\n特殊武装３：隠顕式連装ＭＤＥビーム砲",
+      "source_sha256": "0dcd871c9edc132368112bd45345038942cec09b8017ef4af4a5c24896bd34e0",
+      "translation": "●일반 장비\n주 무장: 중양자 빔 건포드\n특수 무장1: 마이크로 미사일(연사·블라스트)\n특수 무장2: 마이크로 미사일(멀티·블라스트)\n특수 무장3: 수납식 2연장 MDE 빔포",
+      "capacity": 272,
+      "target_bytes": 220
+    },
+    {
+      "offset": "0x91e408",
+      "source": "サヨナラノツバサ　※一定時間無敵",
+      "source_sha256": "82ac7680cc931f949843faa219f5a43f6a111190c6a394068c8f482d17a2bd0e",
+      "translation": "サヨナラノツバサ ※일정 시간 무적",
+      "capacity": 56,
+      "target_bytes": 49
+    },
+    {
+      "offset": "0x91e978",
+      "source": "●通常装備\n主武装　　：マシンガン\n特殊武装１：ミサイルバジュラ（マルチ）\n特殊武装２：インパクト・ラム",
+      "source_sha256": "27dabf6d8d3deb909457e99ba18079583e4d690fb2501696f92b2c854aa9f20f",
+      "translation": "●일반 장비\n주 무장: 머신건\n특수 무장1: 미사일 바주라(멀티)\n특수 무장2: 임팩트 램",
+      "capacity": 152,
+      "target_bytes": 113
+    },
+    {
+      "offset": "0x920308",
+      "source": "敬礼",
+      "source_sha256": "8a3639e900e1fd54e22dc8f27e46fd1e7caf897c2848cdf1dfa51c3f0f41b69e",
+      "translation": "경례",
+      "capacity": 8,
+      "target_bytes": 7
+    },
+    {
+      "offset": "0x9204f0",
+      "source": "歌（ＨＯＬＹ　ＬＯＮＥＬＹ　ＬＩＧＨＴ）\n魂が震える熱い歌を聴かせる",
+      "source_sha256": "e06798b9f37c7a5a79607e2ab13f76e4d5674b27f31f73c8fa04bb22bdf7754b",
+      "translation": "노래(HOLY LONELY LIGHT)\n영혼을 떨리게 하는 뜨거운 노래를 들려준다",
+      "capacity": 104,
+      "target_bytes": 86
+    },
+    {
+      "offset": "0x9206c8",
+      "source": "ミーナソング　　　★ＨＰ回復",
+      "source_sha256": "8366e28f0ac0197508ec1b7ca5af0d8442496785cc98409db9e1017b45ed48f1",
+      "translation": "미나 송 ★HP 회복",
+      "capacity": 48,
+      "target_bytes": 24
+    },
+    {
+      "offset": "0x9206f8",
+      "source": "ミーナソング",
+      "source_sha256": "3d9025f4c1e5db27d1c71e35506876c4491f635161a456cdff4091f0c64ee291",
+      "translation": "미나 송",
+      "capacity": 24,
+      "target_bytes": 11
+    },
+    {
+      "offset": "0x9214a8",
+      "source": "ランカへの想い",
+      "source_sha256": "99268244e7d3424bb202748031bf7f5e515c5e24a9cc7474454b5867951050ea",
+      "translation": "란카를 향한 마음",
+      "capacity": 24,
+      "target_bytes": 24
+    },
+    {
+      "offset": "0x921668",
+      "source": "サヨナラノツバサ　　　　　　★ＨＰ回復",
+      "source_sha256": "d945968984d738f137e798b76c107ef4a0b7c24c8cfb3e82454f17c510fcf82d",
+      "translation": "サヨナラノツバサ ★HP 회복",
+      "capacity": 64,
+      "target_bytes": 38
+    },
+    {
+      "offset": "0x9216a8",
+      "source": "サヨナラノツバサ",
+      "source_sha256": "6973323288fa30a6b8102cbb78385e6e632be97a4d7f451ba99e56760d421869",
+      "translation": "サヨナラノツバサ",
+      "capacity": 32,
+      "target_bytes": 25
+    },
+    {
+      "offset": "0x928cc8",
+      "source": "穴の底のリオン",
+      "source_sha256": "93516524022c11cea6aee75d697df4e8c966baa143c55b645fc35443ae929162",
+      "translation": "구덩이 밑의 리온",
+      "capacity": 24,
+      "target_bytes": 24
+    },
+    {
+      "offset": "0x928d10",
+      "source": "Ｓ．Ｍ．Ｓセフィーラ支社に所属するパイロット。\n任務のため惑星ウロボロスを訪れたところから、\nリオンの物語が幕を開ける。\n（ＣＶ：入野　自由）",
+      "source_sha256": "af924565487fd008dd836b391296dad80577912d95dd025d9240fa03581c8ffc",
+      "translation": "S.M.S 세피라 지사 소속 파일럿.\n임무를 위해 행성 우로보로스를 방문하면서\n리온의 이야기가 시작된다.\n(CV: 이리노 미유)",
+      "capacity": 208,
+      "target_bytes": 160
+    },
+    {
+      "offset": "0x928de0",
+      "source": "リオン（S.M.S服）",
+      "source_sha256": "e8b2ee876925db47ded18fe83d68323a6131042c6d5a02f0bdf8fdb12c7220cc",
+      "translation": "리온(S.M.S복)",
+      "capacity": 24,
+      "target_bytes": 17
+    },
+    {
+      "offset": "0x928e08",
+      "source": "リオン（ヘルメットなし）",
+      "source_sha256": "e9f29bc87b6fc28250c627937af0fe869a1dbda17d55704f6b1c2b3c6850cc9b",
+      "translation": "리온(헬멧 없음)",
+      "capacity": 40,
+      "target_bytes": 22
+    },
+    {
+      "offset": "0x928e50",
+      "source": "Ｓ．Ｍ．Ｓウロボロス支社の支社長を務める、天才（美）少女。\nメカニックも兼任しており、機体開発もお手の物。\n遺跡に関することになると、時折我を忘れることも。\n（ＣＶ：井上　麻里奈）",
+      "source_sha256": "cebbede28ab9252b6e102b248e382debf2d6b12a4cde91f12e117f89830fd004",
+      "translation": "S.M.S 우로보로스 지사장을 맡은 천재 미소녀.\n정비사도 겸하며 기체 개발에도 능숙하다.\n유적에 관한 일에는 가끔 이성을 잃기도 한다.\n(CV: 이노우에 마리나)",
+      "capacity": 272,
+      "target_bytes": 208
+    },
+    {
+      "offset": "0x928f60",
+      "source": "アイシャ（私服）",
+      "source_sha256": "f9a079ef2094966301002fe3383d5016c97a957f39f3dd6aceba7c4cd6493a8c",
+      "translation": "아이샤(사복)",
+      "capacity": 32,
+      "target_bytes": 18
+    },
+    {
+      "offset": "0x928f90",
+      "source": "Ｓ．Ｍ．Ｓウロボロス支社の支社長を務める、天才（美）少女。\nメカニックも兼任しており、機体開発もお手の物。\nまたパイロットとしての腕前も高い。\n（ＣＶ：井上　麻里奈）",
+      "source_sha256": "a804dc146ba057de55338189f3ea8091908c29338a66c85feb0a524f9fc7aa7d",
+      "translation": "S.M.S 우로보로스 지사장을 맡은 천재 미소녀.\n정비사도 겸하며 기체 개발에도 능숙하다.\n파일럿으로서의 실력도 뛰어나다.\n(CV: 이노우에 마리나)",
+      "capacity": 248,
+      "target_bytes": 192
+    },
+    {
+      "offset": "0x929088",
+      "source": "アイシャ（ヘルメットなし）",
+      "source_sha256": "ad429e87ac476baa3473d437f7c5b2e29bb0519eb55dfe8f56c4b0b9a0e29e98",
+      "translation": "아이샤(헬멧 없음)",
+      "capacity": 40,
+      "target_bytes": 25
+    },
+    {
+      "offset": "0x9290e0",
+      "source": "惑星ウロボロスにある太古の遺跡で眠っていた謎の少女。\n記憶を失っており、自分の名前以外何も覚えていない。\n目覚めたときに出会ったリオンたちと行動を共にする。\n（ＣＶ：千菅　春香）",
+      "source_sha256": "cdddb07d0999c4b0faf3b8f914e8fe0e168ae6cebc5a59c3fe0211b707dd1b96",
+      "translation": "행성 우로보로스의 태고 유적에서 잠들어 있던 의문의 소녀.\n기억을 잃어 자신의 이름 외에는 아무것도 기억하지 못한다.\n깨어났을 때 만난 리온 일행과 함께 행동한다.\n(CV: 치스가 하루카)",
+      "capacity": 264,
+      "target_bytes": 250
+    },
+    {
+      "offset": "0x9291e8",
+      "source": "ミーナ（私服）",
+      "source_sha256": "f21d5b91dae2ce920673a48c334e33417355c05e22c33e03fb802f83797f5bde",
+      "translation": "미나(사복)",
+      "capacity": 24,
+      "target_bytes": 15
+    },
+    {
+      "offset": "0x929210",
+      "source": "ミーナ（マーチング衣装）",
+      "source_sha256": "c9d68151b05e8b1efc5c1d87050e79c60967a1cbda4ea313ce0da583d1626960",
+      "translation": "미나(마칭 의상)",
+      "capacity": 40,
+      "target_bytes": 22
+    },
+    {
+      "offset": "0x929248",
+      "source": "ミーナ（ヘルメットなし）",
+      "source_sha256": "db198f3fc580c7450bf0cac591f44d0d87d39175b95d8b321e55aac086d25596",
+      "translation": "미나(헬멧 없음)",
+      "capacity": 40,
+      "target_bytes": 22
+    },
+    {
+      "offset": "0x929290",
+      "source": "ハンターギルド",
+      "source_sha256": "7d1f61dbfdc7372689c63ffeb17feb5c2d07e4c26ece2674c8f0e61fd0d231cd",
+      "translation": "헌터 길드",
+      "capacity": 24,
+      "target_bytes": 14
+    },
+    {
+      "offset": "0x9292a8",
+      "source": "ブリタイシティのハンターギルド代表。\n独特な喋りで外見も幼く見えるが、年齢はそれなりに高いらしい。真実（年齢）を知るものは誰もいない……。\n（ＣＶ：竹達　彩奈）",
+      "source_sha256": "91a550bdaed6d4ea49c825f798edbcea8d717928b329c4048d51e49c7430c5f2",
+      "translation": "브리타이 시티의 헌터 길드 대표.\n독특한 말투에 어려 보이는 외모지만 나이는 꽤 많다는 듯하다. 진짜 나이를 아는 사람은 없다...\n(CV: 타케타츠 아야나)",
+      "capacity": 240,
+      "target_bytes": 203
+    },
+    {
+      "offset": "0x9293a8",
+      "source": "バンデット",
+      "source_sha256": "818c2c7583f0fba2721a4d0aa372d0c68efb50f66126b0ae9f1cd4b81c110aa5",
+      "translation": "밴디트",
+      "capacity": 16,
+      "target_bytes": 10
+    },
+    {
+      "offset": "0x9293b8",
+      "source": "元ハンターだったが、色々と問題を起こしてバンデットとなる。\n基本的にバカで、アイシャのことが大好き。\nカムジンを兄貴として慕っている。\n（ＣＶ：吉野　裕行）",
+      "source_sha256": "5ebcc48438c8e8d2460734b4933e13019eb5cf7549e9b39958b57c60fbfaf34b",
+      "translation": "원래 헌터였으나 여러 문제를 일으켜 밴디트가 되었다.\n기본적으로 바보이며 아이샤를 무척 좋아한다.\n캄진을 형님으로 모시며 따른다.\n(CV: 요시노 히로유키)",
+      "capacity": 232,
+      "target_bytes": 210
+    },
+    {
+      "offset": "0x9294a0",
+      "source": "ロッド・バルトマー",
+      "source_sha256": "3e72270ef8729855eb4ce1833c69224a9cf383ea9b49be3eb6d0d2e80545ec21",
+      "translation": "로드 발트머",
+      "capacity": 32,
+      "target_bytes": 17
+    },
+    {
+      "offset": "0x9294d0",
+      "source": "ハーヴァマール",
+      "source_sha256": "67fe9b3ecdd9d2b2df787f5adc20083eace24e666c25ff000c53ce1759c67f55",
+      "translation": "하바말",
+      "capacity": 24,
+      "target_bytes": 10
+    },
+    {
+      "offset": "0x9294e8",
+      "source": "ハーヴァマールに所属するパイロット。リオンの幼馴染であり、\nリオンの妹であるミアとは恋人同士だった。ミアと再び会うため、\nユルヴァ・アーガの起動に尽力する。\n（ＣＶ：宮野　真守）",
+      "source_sha256": "636a15b46ee16368e32256a79bfeaedad2e32249674ab5e860cc549e4804b119",
+      "translation": "하바말 소속 파일럿. 리온의 소꿉친구이며,\n리온의 여동생 미아와는 연인 사이였다. 미아와 다시 만나고자\n율바 아가의 기동에 힘을 쏟는다.\n(CV: 미야노 마모루)",
+      "capacity": 264,
+      "target_bytes": 213
+    },
+    {
+      "offset": "0x9295f0",
+      "source": "ロッド（ヘルメットなし）",
+      "source_sha256": "142bfd09fdb1dd9a13818d19956b7c8bf1732bd4280b22b993e88d1b517632ce",
+      "translation": "로드(헬멧 없음)",
+      "capacity": 40,
+      "target_bytes": 22
+    },
+    {
+      "offset": "0x929638",
+      "source": "\n（ＣＶ：中田　譲治）",
+      "source_sha256": "8477c267f34cd7275ac606b43d95b21f8aa872456cf04b923f0a54d49ec62b4e",
+      "translation": "\n(CV: 나카타 조지)",
+      "capacity": 32,
+      "target_bytes": 24
+    },
+    {
+      "offset": "0x929658",
+      "source": "藤堂（エビル融合状態）",
+      "source_sha256": "2780b2267e596fdfcfa04b656d463193429f1c6aeec5f8bf71a9b8f642280f25",
+      "translation": "토도(에빌 융합 상태)",
+      "capacity": 40,
+      "target_bytes": 29
+    },
+    {
+      "offset": "0x9296a0",
+      "source": "統合軍",
+      "source_sha256": "28b1b1270ad035a72b8fc670c03a3fb422aca02da3ae78f119ce7c28b89eb9b4",
+      "translation": "통합군",
+      "capacity": 16,
+      "target_bytes": 10
+    },
+    {
+      "offset": "0x9296b0",
+      "source": "\n（ＣＶ：竹達　彩奈）",
+      "source_sha256": "900ab6b89836e55b3c088c3cb915d7cffc0e325262696976e311596cad8d7cda",
+      "translation": "\n(CV: 타케타츠 아야나)",
+      "capacity": 32,
+      "target_bytes": 30
+    },
+    {
+      "offset": "0x9296e0",
+      "source": "不明",
+      "source_sha256": "bd5a8814a3635ecb4ebc9785cbc8223ae32444a5a07329a811526c29cd45f77c",
+      "translation": "불명",
+      "capacity": 8,
+      "target_bytes": 7
+    },
+    {
+      "offset": "0x929740",
+      "source": "統合軍に所属するパイロット。\nノーラに撃墜されマヤン島に漂着したことからサラと出会い、\n反発し合いながらも徐々に心を通わせていく。\n（ＣＶ：鈴村　健一）",
+      "source_sha256": "3a996c4bf002cd7328f21a3846676da5dc8a5199191f539ea151e9787aa15f1c",
+      "translation": "통합군 소속 파일럿.\n노라에게 격추되어 마얀 섬에 표류한 뒤 사라와 만난다.\n서로 반발하면서도 서서히 마음을 나누게 된다.\n(CV: 스즈무라 겐이치)",
+      "capacity": 224,
+      "target_bytes": 196
+    },
+    {
+      "offset": "0x929840",
+      "source": "マヤン島",
+      "source_sha256": "6ebb54acd72de2a4f5ed4aa4a5719967165aec4f90af6ad2c491a89bfd581dae",
+      "translation": "마얀 섬",
+      "capacity": 16,
+      "target_bytes": 11
+    },
+    {
+      "offset": "0x929850",
+      "source": "マヤン島の巫女であり、風の導き手。外部の者を必要以上に\n敵視し、シンにもきつくあたる。しかしエイフォスの欠片を巡る\n争奪戦の中で、徐々にシンと心を通わせていく。\n（ＣＶ：小林　沙苗）",
+      "source_sha256": "3be88653522cc68df636291a657c4ac9f153da44346ec67786c152e67c84301c",
+      "translation": "마얀 섬의 무녀이자 바람의 인도자. 외부인을 지나치게\n적대하며 신에게도 매정하게 군다. 하지만 에이포스 조각을 둘러싼\n쟁탈전 속에서 점차 신과 마음을 나누게 된다.\n(CV: 코바야시 사나에)",
+      "capacity": 272,
+      "target_bytes": 255
+    },
+    {
+      "offset": "0x929980",
+      "source": "サラの妹で都会にあこがれる少女。\n好奇心旺盛で島に漂着したシンから都会の話を聞くうちに\n親しくなり、恋心を抱くようになる。\n（ＣＶ：南里　侑香）",
+      "source_sha256": "7abcc0bd23619ee7deff5516bd014e785a238f94f52a76a44c297dd7e1683aae",
+      "translation": "사라의 여동생으로 도시를 동경하는 소녀.\n호기심이 많아 섬에 표류한 신에게 도시 이야기를 들으며\n가까워지고 연심을 품게 된다.\n(CV: 난리 유카)",
+      "capacity": 216,
+      "target_bytes": 195
+    },
+    {
+      "offset": "0x929a68",
+      "source": "反統合同盟軍",
+      "source_sha256": "b6e954edfb3b635d096ec1719247eed1275d79a7e0ee90d1a9432cc672e032ff",
+      "translation": "반통합동맹군",
+      "capacity": 24,
+      "target_bytes": 19
+    },
+    {
+      "offset": "0x929a80",
+      "source": "統合軍に家族を殺された過去を持つ、反統合同盟軍のパイロット。\nシンを二度も撃墜するほどの腕前で、イワノフとコンビを\n組んで統合軍を翻弄した。\n（ＣＶ：高山　みなみ）",
+      "source_sha256": "63c4b79716010bdc186bf246d232a1fb6c6569292780f671002b89721c166750",
+      "translation": "통합군에게 가족을 잃은 과거를 지닌 반통합동맹군 파일럿.\n신을 두 번이나 격추할 만큼 실력이 뛰어나며, 이바노프와\n짝을 이뤄 통합군을 농락했다.\n(CV: 타카야마 미나미)",
+      "capacity": 248,
+      "target_bytes": 228
+    },
+    {
+      "offset": "0x929b88",
+      "source": "反統合同盟軍のエースパイロットであり、フォッカーの元教官。\n「デイジー・イワノフ」という通り名と、フォッカーを\nヒヨッ子扱いするほどの高い操縦技術を持つ。\n（ＣＶ：大友　龍三郎）",
+      "source_sha256": "1844fd3f7141ca963ca44c046f78cda4ba66c157b83716d5f903695eabdb07e9",
+      "translation": "반통합동맹군의 에이스 파일럿이자 포커의 옛 교관.\n「데이지 이바노프」라는 별명으로 불리며, 포커를\n풋내기 취급할 정도로 조종 실력이 뛰어나다.\n(CV: 오오토모 류자부로)",
+      "capacity": 264,
+      "target_bytes": 232
+    },
+    {
+      "offset": "0x929ca0",
+      "source": "ＳＤＦ－１マクロスのスカル小隊に所属するパイロット。\nゼントラーディとの度重なる戦闘を経て、スカル小隊の隊長を\n継ぐほどのパイロットに成長する。\n（ＣＶ：野島　健児）",
+      "source_sha256": "a1a10950f1a15df17afe1879927bc8ff75bc1151c1d52eade1675a5fdc241886",
+      "translation": "SDF-1 마크로스의 스컬 소대 소속 파일럿.\n젠트라디와 거듭 싸우며 스컬 소대장을\n이어받을 만큼 뛰어난 파일럿으로 성장한다.\n(CV: 노지마 겐지)",
+      "capacity": 248,
+      "target_bytes": 190
+    },
+    {
+      "offset": "0x929d98",
+      "source": "リン・ミンメイ",
+      "source_sha256": "fbb17ca70d809dcea1ff978848e62efb1f66d1dfb6441af4e4c4021d39845cd7",
+      "translation": "린 민메이",
+      "capacity": 24,
+      "target_bytes": 14
+    },
+    {
+      "offset": "0x929dd0",
+      "source": "マクロス",
+      "source_sha256": "bebf7ca78e4347778d0ca0e8ee3b48153ed70115b09d35546bb2be4c4db824d6",
+      "translation": "마크로스",
+      "capacity": 16,
+      "target_bytes": 13
+    },
+    {
+      "offset": "0x929de0",
+      "source": "マクロスで絶大な人気を誇るトップアイドル。\nボドルザーとの決戦時に歌で戦争を終結させたことにより、\n伝説の歌姫として後世にも語り継がれる。\n（ＣＶ：飯島　真理）",
+      "source_sha256": "8c2432535fc78db2b0edfce25e94fbdf3ccced9757203a0bb1623acda81a0c3b",
+      "translation": "마크로스에서 절대적인 인기를 누리는 톱 아이돌.\n보돌저와의 결전에서 노래로 전쟁을 끝낸 뒤,\n전설의 가희로 후세에도 전해진다.\n(CV: 이이지마 마리)",
+      "capacity": 240,
+      "target_bytes": 201
+    },
+    {
+      "offset": "0x929ed0",
+      "source": "ミンメイ（パイロットスーツ）",
+      "source_sha256": "675e034de627ef45cf216e608504d4f588d875748ecf17d05fee4aba732b5bb2",
+      "translation": "민메이(파일럿 슈트)",
+      "capacity": 48,
+      "target_bytes": 28
+    },
+    {
+      "offset": "0x929f10",
+      "source": "ミンメイ（メドレー）",
+      "source_sha256": "d3633f9b7cc73fcfd2315d7f72a437bd3b0860609402751cd055853708e4e065",
+      "translation": "민메이(메들리)",
+      "capacity": 32,
+      "target_bytes": 21
+    },
+    {
+      "offset": "0x929f70",
+      "source": "ＳＤＦ－１マクロスの主任航空管制官を務める統合軍の\nエリート士官。軍務一筋の堅物で、輝からは「おばさん」扱い\nされていたが次第に心を寄せるようになっていく。\n（ＣＶ：土井　美加）",
+      "source_sha256": "e4de49f0f4351ba17fa0cc7c1bfc9c252384873fea8640987e76320f54061a6c",
+      "translation": "SDF-1 마크로스의 주임 항공 관제관을 맡은 통합군\n엘리트 장교. 군무만 아는 고지식한 성격으로 히카루에게\n「아줌마」 취급을 받지만 점차 그에게 마음을 품게 된다.\n(CV: 도이 미카)",
+      "capacity": 264,
+      "target_bytes": 241
+    },
+    {
+      "offset": "0x92a088",
+      "source": "ゼントラーディ軍",
+      "source_sha256": "a4228bca6d2dfc2abd295871a74bfbfaa6d81edc5cf5abf156cf54959d6606f9",
+      "translation": "젠트라디군",
+      "capacity": 32,
+      "target_bytes": 16
+    },
+    {
+      "offset": "0x92a0a8",
+      "source": "ゼントラーディ軍師団長。好戦的で喧嘩っぱやく、\n自ら前線に乗り出し、マクロス撃沈に執念を燃やす。\n地球と共に生きることを選ぶ者が多い中、戦いを求め続けた。\n（ＣＶ：目黒　光祐）",
+      "source_sha256": "7d43530238057738d3db43272e6bda7d3062a7ddfba0a454203026bfe9c77d9b",
+      "translation": "젠트라디군 사단장. 호전적이고 다혈질이며,\n직접 최전선에 나서 마크로스 격침에 집념을 불태운다.\n많은 이들이 지구와의 공존을 택한 뒤에도 싸움을 추구했다.\n(CV: 메구로 코스케)",
+      "capacity": 264,
+      "target_bytes": 241
+    },
+    {
+      "offset": "0x92a1c0",
+      "source": "卓越した操縦技術を買われ、新型機のテストパイロットに\n就任する。ミュン、ガルドとは幼馴染だが、とある事件を境に\n交流を絶つ。ダルメシアンハイスクールの暴れん坊。\n（ＣＶ：山崎　たくみ）",
+      "source_sha256": "d33e1543d45c0cfb69b69c5cae16c544a81932d1ec03f8ab0ae6c2533c185aaa",
+      "translation": "탁월한 조종 실력을 인정받아 신형기의 시험 파일럿이 된다.\n뮨, 갈드와 소꿉친구였으나 어떤 사건 이후\n교류를 끊었다. 달마시안 고교의 말썽꾸러기.\n(CV: 야마자키 타쿠미)",
+      "capacity": 272,
+      "target_bytes": 229
+    },
+    {
+      "offset": "0x92a2e0",
+      "source": "ゼネラル・ギャラクシー",
+      "source_sha256": "4e932d7d578b2a6a7a2d387e0ec911617f8fed3b650b24200b86045b6fd97397",
+      "translation": "제너럴 갤럭시",
+      "capacity": 40,
+      "target_bytes": 20
+    },
+    {
+      "offset": "0x92a308",
+      "source": "ＢＤＩシステムを搭載する試作機ＹＦ－２１の開発主任であり、\nパイロットも務める。次世代機開発競争と幼馴染のミュンを巡り、\nイサムと激しくぶつかり合う。\n（ＣＶ：石塚　運昇）",
+      "source_sha256": "051f6fc1ebcbef10cc26c750c2bf4dfb4c5448b6287cd662db021e059b268d04",
+      "translation": "BDI 시스템을 탑재한 시제기 YF-21의 개발 책임자이자\n파일럿. 차세대 기체 개발 경쟁과 소꿉친구 뮨을 둘러싸고\n이사무와 격하게 충돌한다.\n(CV: 이시즈카 운쇼)",
+      "capacity": 256,
+      "target_bytes": 210
+    },
+    {
+      "offset": "0x92a408",
+      "source": "ガルド（ヘルメットなし）",
+      "source_sha256": "3ac3a0c9562efbcfdc46fce77e00e6b7be435c9079a6b3b35d9cf4598ca031ea",
+      "translation": "갈드(헬멧 없음)",
+      "capacity": 40,
+      "target_bytes": 22
+    },
+    {
+      "offset": "0x92a468",
+      "source": "シャロンのプロデューサー。イサムとガルドの幼馴染であったが、\nある事件をきっかけに交流を絶つ。\n惑星エデンで７年ぶりに再会した２人の間で揺れ動く。\n（ＣＶ：深見　梨加）",
+      "source_sha256": "3df6ae184fb8be331f58d20f0b3fde992a216a6149b6533a777385fc41692976",
+      "translation": "샤론의 프로듀서. 이사무, 갈드와 소꿉친구였으나\n어떤 사건을 계기로 교류를 끊었다.\n행성 에덴에서 7년 만에 재회한 두 사람 사이에서 흔들린다.\n(CV: 후카미 리카)",
+      "capacity": 248,
+      "target_bytes": 218
+    },
+    {
+      "offset": "0x92a580",
+      "source": "デビューから瞬く間に銀河系人気Ｎｏ．１の地位を獲得した\nバーチャルアイドル。催眠効果のある歌によって人々を操り、\nマクロスシティを混乱の渦に巻き込む。\n（ＣＶ：兵藤　まこ）",
+      "source_sha256": "599e987701be06c1bbaf817a15c20b38272a961807362319175602484b69470c",
+      "translation": "데뷔 직후 순식간에 은하계 인기 1위를 차지한\n가상 아이돌. 최면 효과가 있는 노래로 사람들을 조종하며\n마크로스 시티를 혼란에 빠뜨린다.\n(CV: 효도 마코)",
+      "capacity": 256,
+      "target_bytes": 207
+    },
+    {
+      "offset": "0x92a6b0",
+      "source": "「俺のプロフィールだって？　人の過去を詮索するもん\nじゃないぜ。そんなことより俺の歌を聴いてくれ。\n俺のことを知りたいなら歌を聴けば分かる。そんじゃ行くぜぇ！」\n（ＣＶ：神奈　延年）",
+      "source_sha256": "14e921d56daedb1dc2ddb27f4e8aec36a99e4ae51881706cf54328ca01534ed5",
+      "translation": "「내 프로필이라고? 남의 과거를 캐묻는 게\n아니야. 그보다 내 노래를 들어 줘.\n나를 알고 싶다면 노래를 들으면 돼. 그럼 간다!」\n(CV: 칸나 노부토시)",
+      "capacity": 272,
+      "target_bytes": 198
+    },
+    {
+      "offset": "0x92a7c0",
+      "source": "バサラ（シャツ）",
+      "source_sha256": "02f4a2c794efee3222e1b9eb850bc3ef237c2d6c3f6e7e0886df0f101bf78b26",
+      "translation": "바사라(셔츠)",
+      "capacity": 32,
+      "target_bytes": 18
+    },
+    {
+      "offset": "0x92a810",
+      "source": "ＦＩＲＥ ＢＯＭＢＥＲのベースボーカル。\nマックスとミリアの娘であり、パイロットとしても優秀。\nバサラとガムリン、２人の男性が気になるお年頃。\n（ＣＶ：櫻井　智）",
+      "source_sha256": "09fbe065bff33adb8be947d8735034468be261cacc5f54ae90224950807321d2",
+      "translation": "FIRE BOMBER의 베이시스트 겸 보컬.\n맥스와 밀리아의 딸로 파일럿으로서도 뛰어나다.\n바사라와 감린, 두 남성이 신경 쓰이는 나이.\n(CV: 사쿠라이 토모)",
+      "capacity": 240,
+      "target_bytes": 195
+    },
+    {
+      "offset": "0x92a910",
+      "source": "新統合軍",
+      "source_sha256": "5629101a2cb75942fe6d4f09f626e2c7f16eba1f136bbf35136f6f402b52d8ff",
+      "translation": "신통합군",
+      "capacity": 16,
+      "target_bytes": 13
+    },
+    {
+      "offset": "0x92a920",
+      "source": "若くして特別攻撃部隊ダイヤモンドフォースの一員となった\nエリートパイロット。戦場で歌うバサラを敵視していたが、\nやがてバサラと歌の力を信じるようになる。\n（ＣＶ：子安　武人）",
+      "source_sha256": "f8593b62a55a891c7c2a08e686cc73e3b2100d307d8bce6e9b5753b85b92e489",
+      "translation": "젊은 나이에 특별 공격 부대 다이아몬드 포스의 일원이 된\n엘리트 파일럿. 전장에서 노래하는 바사라를 적대했으나,\n이윽고 바사라와 노래의 힘을 믿게 된다.\n(CV: 코야스 타케히토)",
+      "capacity": 256,
+      "target_bytes": 239
+    },
+    {
+      "offset": "0x92aa20",
+      "source": "ガムリン・木崎（洗脳）",
+      "source_sha256": "aca0c525fcb189236c7d937b9f6768d188baee3b1262e87fc112e4d8d1d2b2d9",
+      "translation": "감린 키자키(세뇌)",
+      "capacity": 40,
+      "target_bytes": 25
+    },
+    {
+      "offset": "0x92aa68",
+      "source": "移民船団マクロス７の艦隊司令。現役を退いてはいるが天才的な\nパイロットの腕は健在で、ミリアと共に戦場を駆けた。\n天才ゆえに老けるということを知らない。\n（ＣＶ：速水　奨）",
+      "source_sha256": "3328115dfe5b5451db9227e53f5cbec71b77104b4e0b93d6653461f4019cb550",
+      "translation": "이민 선단 마크로스7의 함대 사령관. 현역에서 물러났지만\n천재적인 조종 실력은 여전해 밀리아와 함께 전장을 누볐다.\n천재라서인지 늙는 법을 모른다.\n(CV: 하야미 쇼)",
+      "capacity": 256,
+      "target_bytes": 223
+    },
+    {
+      "offset": "0x92ab68",
+      "source": "マックス（洗脳）",
+      "source_sha256": "7ec2b1255011c81849dc5e647cdc98800fefaa72165e0fab4e1d4d145e9d0ecb",
+      "translation": "맥스(세뇌)",
+      "capacity": 32,
+      "target_bytes": 15
+    },
+    {
+      "offset": "0x92ab98",
+      "source": "マックス（艦長服）",
+      "source_sha256": "ed7111d5bfe5a503f8e7af5414601d02c9ad19a1dd660258705201c148f4eaf4",
+      "translation": "맥스(함장복)",
+      "capacity": 32,
+      "target_bytes": 18
+    },
+    {
+      "offset": "0x92abd8",
+      "source": "シティ7",
+      "source_sha256": "24a73b6b988597e005581831d06bcc342ea70d3ccdf439d4ea9b6b7b36b0dd29",
+      "translation": "시티7",
+      "capacity": 16,
+      "target_bytes": 8
+    },
+    {
+      "offset": "0x92abe8",
+      "source": "シティ７の市長を務める元メルトランディ軍エースパイロット。\n市長でありながらも、シティ７が襲撃されたときに出撃するなど、\n戦う市長として市民から支持されている。\n（ＣＶ：竹田　えり）",
+      "source_sha256": "68ede81b48081ad6262da3b8b60d123ae67e499f4855e05b96e16067dc2208b1",
+      "translation": "시티7의 시장을 맡은 전 멜트란디군 에이스 파일럿.\n시장이면서도 시티7이 습격당하면 출격하는 등,\n싸우는 시장으로 시민들의 지지를 받는다.\n(CV: 타케다 에리)",
+      "capacity": 272,
+      "target_bytes": 213
+    },
+    {
+      "offset": "0x92acf8",
+      "source": "ミリア・ファリーナ・ジーナス（洗脳）",
+      "source_sha256": "390533868e37f227564d8b18f215cc6688ebdec9d5183a935f4289a97d7ba7f7",
+      "translation": "밀리아 파리나 지너스(세뇌)",
+      "capacity": 56,
+      "target_bytes": 38
+    },
+    {
+      "offset": "0x92ad50",
+      "source": "美星学園のパイロット養成コースに通う高校生。\nバジュラ襲来の際にＶＦ－２５に搭乗したことから\nＳ．Ｍ．Ｓに入隊することになり、戦いに巻き込まれていく。\n（ＣＶ：中村　悠一）",
+      "source_sha256": "87c379b07d79921d60019fa69204f2aabb863de28fd7bd82a523151efd515e35",
+      "translation": "미호시 학원의 파일럿 양성 과정에 다니는 고등학생.\n바주라 습격 때 VF-25에 탑승한 것을 계기로\nS.M.S에 입대하며 싸움에 휘말려 든다.\n(CV: 나카무라 유이치)",
+      "capacity": 256,
+      "target_bytes": 207
+    },
+    {
+      "offset": "0x92ae50",
+      "source": "アルト（S.M.S服）",
+      "source_sha256": "1cbdcaa30ecf565b89fe49e85992f765ceebe7d54b938c1c8cba191f0f28ae61",
+      "translation": "알토(S.M.S복)",
+      "capacity": 24,
+      "target_bytes": 17
+    },
+    {
+      "offset": "0x92ae78",
+      "source": "アルト（ヘルメットなし）",
+      "source_sha256": "fa0dd65a0d5a6fb563ea65514e0f2c658c9dd12e9de1836c5ff1a5758381a327",
+      "translation": "알토(헬멧 없음)",
+      "capacity": 40,
+      "target_bytes": 22
+    },
+    {
+      "offset": "0x92aec0",
+      "source": "美星学園に通うアルトの同級生であり、Ｓ．Ｍ．Ｓに所属する\n凄腕のスナイパー。クランとは幼馴染で、マイクローン化した\nクランとじゃれ合ってはよく喧嘩をしている。\n（ＣＶ：神谷　浩史）",
+      "source_sha256": "2c81e850ffa488e8f434a8ff8d5ff9ec50b436b02266fe1e1f6beb6e3f0d0256",
+      "translation": "미호시 학원에 다니는 알토의 동급생이자 S.M.S 소속\n명사수. 크란과는 소꿉친구로, 마이크론화한\n크란을 놀리다가 자주 싸운다.\n(CV: 카미야 히로시)",
+      "capacity": 272,
+      "target_bytes": 196
+    },
+    {
+      "offset": "0x92afd0",
+      "source": "ミハエル・ブラン（洗脳）",
+      "source_sha256": "1b72016ad558067f43c5457e9d5f4807cb6c3a4c472481623fef504cf6fb9832",
+      "translation": "미하엘 블랑(세뇌)",
+      "capacity": 40,
+      "target_bytes": 25
+    },
+    {
+      "offset": "0x92b018",
+      "source": "美星学園に飛び級で入学した大企業Ｌ．Ａ．Ｉの御曹司。\nミシェルと同じようにＳ．Ｍ．Ｓに所属しており、\n電子機器の扱いに長けている。\n（ＣＶ：福山　潤）",
+      "source_sha256": "e839f55b936237ecb6405484ca0e841b0f5596feb82e14ca19ac9665a31f40c3",
+      "translation": "월반하여 미호시 학원에 입학한 대기업 L.A.I의 후계자.\n미셸처럼 S.M.S에 소속되어 있으며,\n전자 기기를 다루는 데 능숙하다.\n(CV: 후쿠야마 준)",
+      "capacity": 224,
+      "target_bytes": 187
+    },
+    {
+      "offset": "0x92b0f8",
+      "source": "ルカ・アンジェローニ（洗脳）",
+      "source_sha256": "168a9b0aa07f4621f41488f02b29cfe1d02a1e89568ee7da4bf008f7da3ae72c",
+      "translation": "루카 안젤로니(세뇌)",
+      "capacity": 48,
+      "target_bytes": 28
+    },
+    {
+      "offset": "0x92b148",
+      "source": "Ｓ．Ｍ．Ｓのスカル小隊の隊長。とある事情から１１年前に\nランカを引き取り、兄として彼女を大切に育ててきたが、\n少しばかり過保護すぎる一面も……。\n（ＣＶ：小西　克幸）",
+      "source_sha256": "a43d3bd7e754c0eedac8165e8f0fa7a1d8e43360944d39380254e4ea5736d8bf",
+      "translation": "S.M.S 스컬 소대의 대장. 어떤 사정으로 11년 전\n란카를 거두어 오빠로서 소중히 키워 왔으나,\n조금은 과보호하는 면도 있다...\n(CV: 코니시 카츠유키)",
+      "capacity": 248,
+      "target_bytes": 194
+    },
+    {
+      "offset": "0x92b240",
+      "source": "オズマ・リー（洗脳）",
+      "source_sha256": "be3690d7de63aff54c76b042e34a513e42eaf71f94568ac6948405a98d25551c",
+      "translation": "오즈마 리(세뇌)",
+      "capacity": 32,
+      "target_bytes": 22
+    },
+    {
+      "offset": "0x92b280",
+      "source": "Ｓ．Ｍ．Ｓピクシー小隊隊長を務めるゼントラーディ人。\n巨人時は暴力的なプロポーションだが、マイクローン化すると\nなぜか少女体型になってしまう。\n（ＣＶ：豊口　めぐみ）",
+      "source_sha256": "0f1a9f6ad3aa633bbede38ecd2a65dd85cf3cecd2ce130154f36573da746f3fd",
+      "translation": "S.M.S 픽시 소대장을 맡은 젠트라디인.\n거인일 때는 압도적인 몸매지만 마이크론화하면\n어째서인지 어린 소녀의 체형이 된다.\n(CV: 토요구치 메구미)",
+      "capacity": 248,
+      "target_bytes": 195
+    },
+    {
+      "offset": "0x92b378",
+      "source": "クラン・クラン（洗脳）",
+      "source_sha256": "f3f21e5a5a164520c0976065206f10e46ceca76441c948aafefd85b05f6a55b2",
+      "translation": "크란 크란(세뇌)",
+      "capacity": 40,
+      "target_bytes": 22
+    },
+    {
+      "offset": "0x92b3b0",
+      "source": "クラン（マイクローンPスーツ）",
+      "source_sha256": "41996414ead728d845983865a6643cd170ad3521502051eb93529d88573ea022",
+      "translation": "크란(마이크론 P슈트)",
+      "capacity": 48,
+      "target_bytes": 29
+    },
+    {
+      "offset": "0x92b3f0",
+      "source": "マイクローン化したクラン。\nマイクローン化すると少女体型になり、性格まで幼くなって\nしまうため、ミシェルによく馬鹿にされ喧嘩が絶えない。\n（ＣＶ：豊口　めぐみ）",
+      "source_sha256": "5e9ec3adc729863c8fd92d66de8f8f149b0229bb7783c2f3468d4171f98a3bf6",
+      "translation": "마이크론화한 크란.\n마이크론화하면 소녀 체형에 성격까지 어려지기에\n미셸에게 자주 놀림받아 다툼이 끊이지 않는다.\n(CV: 토요구치 메구미)",
+      "capacity": 240,
+      "target_bytes": 188
+    },
+    {
+      "offset": "0x92b4e0",
+      "source": "クラン（マイクローンS.M.S服）",
+      "source_sha256": "4bc46198a906419ccda917effebdd1903249bed24b56a7ab8d79997994848ee7",
+      "translation": "크란(마이크론 S.M.S복)",
+      "capacity": 48,
+      "target_bytes": 30
+    },
+    {
+      "offset": "0x92b530",
+      "source": "マクロス・クォーターの艦長。統合軍のパイロットとして\n活躍していた経歴を持つ歴戦の勇士で、\n戦局を見極める広い視野を持つＳ．Ｍ．Ｓの大黒柱。\n（ＣＶ：大川　透）",
+      "source_sha256": "c96af7bf65e725146a3d7bf9e3ab43b46d02db46bf7eea1a9cf497b8c8005a64",
+      "translation": "마크로스 쿼터의 함장. 통합군 파일럿으로\n활약한 경력이 있는 백전노장으로,\n전황을 꿰뚫는 넓은 시야를 지닌 S.M.S의 버팀목.\n(CV: 오오카와 토오루)",
+      "capacity": 240,
+      "target_bytes": 197
+    },
+    {
+      "offset": "0x92b620",
+      "source": "ジェフリー・ワイルダー（洗脳）",
+      "source_sha256": "997e4cd9beec5c6bd5ef03cb0748bd6d1ed917a46a699fb28a75bd7433da9192",
+      "translation": "제프리 와일더(세뇌)",
+      "capacity": 48,
+      "target_bytes": 28
+    },
+    {
+      "offset": "0x92b670",
+      "source": "マクロス・ギャラクシー",
+      "source_sha256": "55b6d233fdcea496ca2c22393c6adc18e683fdc89325207d6bceddd80b04bdde",
+      "translation": "마크로스 갤럭시",
+      "capacity": 40,
+      "target_bytes": 23
+    },
+    {
+      "offset": "0x92b698",
+      "source": "全身をインプラント化したサイバーグラント。その超越した\n身体能力でシェリルのボディガードを務める。\nまたランカの兄として、ランカへのサポートも怠らない。\n（ＣＶ：保志　総一朗）",
+      "source_sha256": "abe918162a365d9954c95df9673b85250ee162c98595e8e88bca39aab3e029d3",
+      "translation": "전신에 임플란트를 이식한 사이버그런트. 초월적인\n신체 능력으로 셰릴의 보디가드를 맡는다.\n란카의 오빠로서 란카를 돕는 일도 소홀히 하지 않는다.\n(CV: 호시 소이치로)",
+      "capacity": 264,
+      "target_bytes": 227
+    },
+    {
+      "offset": "0x92b7d0",
+      "source": "マクロス・フロンティア",
+      "source_sha256": "3b162d8debcd322a53d189f70b625e580210328b6e43e08f73dd9c155e32447c",
+      "translation": "마크로스 프런티어",
+      "capacity": 40,
+      "target_bytes": 26
+    },
+    {
+      "offset": "0x92b7f8",
+      "source": "シェリルとの出会いにより、栄光の階段を駆け上って行った\nアイドル「超時空シンデレラ」。アルトに淡い恋心を抱いており、\n精一杯アプローチ中。\n（ＣＶ：中島　愛）",
+      "source_sha256": "2c65bbbe35b2a0c7b7ed647d0ea4acd2011214b2b90d12921206930194d57d6b",
+      "translation": "셰릴과 만난 뒤 영광의 계단을 오른\n아이돌 「초시공 신데렐라」. 알토에게 풋풋한 연심을 품고\n온 힘을 다해 마음을 전하는 중.\n(CV: 나카지마 메구미)",
+      "capacity": 232,
+      "target_bytes": 200
+    },
+    {
+      "offset": "0x92b8e0",
+      "source": "ランカ（星間飛行）",
+      "source_sha256": "d7258bf11d3b13437dd2aba9918a43a3eac3e779d97bf65501fb4d8679371078",
+      "translation": "란카(星間飛行)",
+      "capacity": 32,
+      "target_bytes": 21
+    },
+    {
+      "offset": "0x92b920",
+      "source": "ランカ（制服）",
+      "source_sha256": "59e994a01be6a09b49ce5a7b1b96aa94891eefb2848e91292e93e2b90b9c4272",
+      "translation": "란카(교복)",
+      "capacity": 24,
+      "target_bytes": 15
+    },
+    {
+      "offset": "0x92b958",
+      "source": "ランカ（サヨナラノツバサ）",
+      "source_sha256": "7f866f2aa3148795d8b9a1b9f2e11bf005450bd2e6f27d69eafb819035ccdea6",
+      "translation": "란카(サヨナラノツバサ)",
+      "capacity": 40,
+      "target_bytes": 33
+    },
+    {
+      "offset": "0x92b9c0",
+      "source": "『この銀河で暮らしていて、シェリルの歌を聴かない日はない。』\nと言われるほどの人気を誇る歌姫「銀河の妖精」。\nアルトを振り向かせるために奮闘中。\n（ＣＶ：遠藤　綾）",
+      "source_sha256": "2561d1bade260c27a0c2f58917c73f61f0f03eb0d8087ed4c32325d1f9c9da54",
+      "translation": "「이 은하에 살며 셰릴의 노래를 안 듣는 날은 없다」고\n할 만큼 인기 있는 가희 「은하의 요정」.\n알토의 마음을 사로잡으려 분투 중.\n(CV: 엔도 아야)",
+      "capacity": 248,
+      "target_bytes": 199
+    },
+    {
+      "offset": "0x92bab8",
+      "source": "シェリル（軍服）",
+      "source_sha256": "01703e389bc6fe49056b0b47fdd39f4ac494e22f9ed20a39b6a0c776e7a9d1c5",
+      "translation": "셰릴(군복)",
+      "capacity": 32,
+      "target_bytes": 15
+    },
+    {
+      "offset": "0x92baf8",
+      "source": "シェリル（オルレアン）",
+      "source_sha256": "92f49f2c5a9f272f9fe53b251d6aaebc2300228da5804fe3f37c2a6e88706c11",
+      "translation": "셰릴(오를레앙)",
+      "capacity": 40,
+      "target_bytes": 21
+    },
+    {
+      "offset": "0x92bb40",
+      "source": "シェリル（サヨナラノツバサ）",
+      "source_sha256": "b7b5ca9fb00f714559ab747981eb357dfe12222284992b8bcd9efd048317617a",
+      "translation": "셰릴(サヨナラノツバサ)",
+      "capacity": 48,
+      "target_bytes": 33
+    },
+    {
+      "offset": "0x92bbb0",
+      "source": "シェリルをトップアイドルに育て上げた敏腕マネージャー。\n一方でバジュラ関連の技術に関わる科学者であり、\nマクロス・ギャラクシーの将官も務める。\n（ＣＶ：井上　喜久子）",
+      "source_sha256": "25602e0b5eb4c47a6e82a18e27839a514f8cf91e0e3db150be7a0e8a05f71ce3",
+      "translation": "셰릴을 톱 아이돌로 키운 유능한 매니저.\n한편으로 바주라 관련 기술을 연구하는 과학자이며,\n마크로스 갤럭시의 장성도 맡고 있다.\n(CV: 이노우에 키쿠코)",
+      "capacity": 248,
+      "target_bytes": 205
+    },
+    {
+      "offset": "0x92bca8",
+      "source": "グレイス（ジャミング用）",
+      "source_sha256": "c611969809e6e5993d6b38af67d1b1f519d255e156f332f4e72567b3f4fa153d",
+      "translation": "그레이스(재밍용)",
+      "capacity": 40,
+      "target_bytes": 24
+    },
+    {
+      "offset": "0x92bcf0",
+      "source": "バジュラ",
+      "source_sha256": "8372d942d22c31d839f06a89d9b0be806b46b5fd0447e4a677cb477208b8e509",
+      "translation": "바주라",
+      "capacity": 16,
+      "target_bytes": 10
+    },
+    {
+      "offset": "0x92bd10",
+      "source": "小型バジュラの５倍以上の大きさを持つ大型の個体。\n戦艦を一撃で粉砕する背面の大型ビームや、ミサイル、\n機関砲状の武装などを持ち、攻撃力も高い。",
+      "source_sha256": "fced6d8e5a817689e1d38c6267bee397d405f97595c7c5c11e43af49de2f8e8e",
+      "translation": "소형 바주라보다 5배 이상 큰 대형 개체.\n전함을 일격에 부수는 등 쪽 대형 빔과 미사일,\n기관포 모양의 무장 등을 갖춰 공격력도 높다.",
+      "capacity": 216,
+      "target_bytes": 179
+    },
+    {
+      "offset": "0x92bdf8",
+      "source": "両腕にカマを持つ、カマキリのようなバジュラで、\n高い格闘能力と機動力を持つ高速戦闘タイプの個体。\nランカを捕え連れ去ろうとしたが、その目的は不明。",
+      "source_sha256": "149797be3ac061ba6c797379197f698fe8de867dc1cfadba969f6c2dce0e30dc",
+      "translation": "양팔에 낫을 지닌 사마귀 같은 바주라.\n뛰어난 격투 능력과 기동력을 지닌 고속 전투형 개체.\n란카를 붙잡아 데려가려 했으나 목적은 불명이다.",
+      "capacity": 216,
+      "target_bytes": 191
+    },
+    {
+      "offset": "0x93c168",
+      "source": "遺跡の眠り姫",
+      "source_sha256": "85400dd51bb24c480414640e9c1ada1f3a712771ee09448782249c2dc3314983",
+      "translation": "유적의 잠든 공주",
+      "capacity": 24,
+      "target_bytes": 24
+    },
+    {
+      "offset": "0x94d728",
+      "source": "自機・僚機の防御力を上げる。",
+      "source_sha256": "21ba7fc03105ca6496f938a63df7841b56923cce068e88950dba090a8300f1c1",
+      "translation": "자기·편대기의 방어력을 높인다.",
+      "capacity": 48,
+      "target_bytes": 45
+    },
+    {
+      "offset": "0x94d758",
+      "source": "遺跡の眠り姫",
+      "source_sha256": "85400dd51bb24c480414640e9c1ada1f3a712771ee09448782249c2dc3314983",
+      "translation": "유적의 잠든 공주",
+      "capacity": 24,
+      "target_bytes": 24
+    },
+    {
+      "offset": "0x951278",
+      "source": "ゲフィオン",
+      "source_sha256": "4dc6cae55fd2423fccfc393b4996bbc717162b8ada52f866402ab6956e0222fa",
+      "translation": "게피온",
+      "capacity": 16,
+      "target_bytes": 10
+    }
+  ],
+  "problems": []
+}

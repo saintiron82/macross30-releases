@@ -6,7 +6,7 @@
 
 **[Download the Windows launcher](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.9/Macross30-launcher-0.3.9.zip)**
 
-Game **0.3.10** · Launcher **0.3.9** · Windows x64 test release.
+Game **0.4.0** · Launcher **0.3.9** · Windows x64 test release.
 
 ## Install and play
 
@@ -80,3 +80,5 @@ If startup remains on a black loading screen after 0.3.9, use **Play/Update** in
 ## Russian v6-r2 text layout (0.3.11)
 
 Select **Русский → Play/Update** in your existing launcher. This shortens 30 hangar/pilot/options strings. No game or launcher reinstall is required; fonts, subtitles and saves are retained. Existing English image labels and remaining Japanese values are outside this update. Rules, tooling and hashes are preserved by the `v0.3.11` tag under `release-baselines/0.3.11`.
+
+**0.4.0:** Live maximum FPS: 30/60/Unlimited, vibration and mouse controls, performance and translation updates. Game/language packs 0.4.0; launcher 0.3.9.

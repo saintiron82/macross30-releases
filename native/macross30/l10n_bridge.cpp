@@ -60,8 +60,24 @@ void convert_guest(ppu_context* ctx, bool fixed_sjis) {
         ctx->gpr[3] = illegal; return;
     }
     uint32_t produced = capacity;
-    const int32_t result = macross_l10n_convert_bytes(handle >> 16, handle & 65535,
-        vm_base + src, bytes, dst ? vm_base + dst : nullptr, capacity, &produced);
+    // The title's CSV loader (0x004E82B4, branches 0x004E8620/0x004E864C)
+    // passes sentinel 1 when the detected encoding already matches its target.
+    // It still calls l10n_convert_str for sizing and copying. This is a title
+    // compatibility handle, not an SDK UTF8-to-UTF16 converter request.
+    const bool identity = !fixed_sjis && handle == 1;
+    int32_t result;
+    if (identity) {
+        // Either UTF8 or SJIS may already match the requested CSV encoding.
+        // Preserve bytes; no character conversion or terminator is needed.
+        result = dst && bytes > capacity ? exhausted : ok;
+        if (result == ok) {
+            if (dst) std::memmove(vm_base + dst, vm_base + src, bytes);
+            produced = bytes;
+        }
+    } else {
+        result = macross_l10n_convert_bytes(handle >> 16, handle & 65535,
+            vm_base + src, bytes, dst ? vm_base + dst : nullptr, capacity, &produced);
+    }
     if (result == ok) vm_write32(dst_len, produced);
     ctx->gpr[3] = result;
     static std::atomic<unsigned> reports{0};

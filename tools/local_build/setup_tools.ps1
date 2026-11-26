@@ -3,12 +3,37 @@ $ErrorActionPreference='Stop'
 [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12
 $Root=[IO.Path]::GetFullPath($Root)
 New-Item -ItemType Directory -Force -Path $Root | Out-Null
+function Test-LocalPython {
+ param([Parameter(Mandatory=$true)][string]$Executable,[int]$TimeoutMilliseconds=10000)
+ # A failed native probe must not become a terminating PowerShell error.
+ # Drain both pipes while waiting; even a broken/noisy interpreter can fall back.
+ $probe=New-Object Diagnostics.Process
+ try {
+  $probe.StartInfo=New-Object Diagnostics.ProcessStartInfo
+  $probe.StartInfo.FileName=$Executable
+  $probe.StartInfo.Arguments='-I -S -c "import sys; sys.exit(0 if sys.version_info >= (3,11) else 1)"'
+  $probe.StartInfo.UseShellExecute=$false
+  $probe.StartInfo.CreateNoWindow=$true
+  $probe.StartInfo.RedirectStandardOutput=$true
+  $probe.StartInfo.RedirectStandardError=$true
+  if(-not $probe.Start()){return $false}
+  $output=$probe.StandardOutput.ReadToEndAsync()
+  $errors=$probe.StandardError.ReadToEndAsync()
+  if(-not $probe.WaitForExit($TimeoutMilliseconds)) {
+   $probe.Kill();[void]$probe.WaitForExit(1000)
+   return $false
+  }
+  [void][Threading.Tasks.Task]::WaitAll([Threading.Tasks.Task[]]@($output,$errors),1000)
+  return $probe.ExitCode -eq 0
+ } catch {return $false}
+ finally {$probe.Dispose()}
+}
 $sourceRoot=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $cachedPython=Join-Path $Root 'python\python.exe'
 if(Test-Path -LiteralPath $cachedPython){$env:PATH=(Split-Path $cachedPython -Parent)+';'+$env:PATH}
 $python=Get-Command python -ErrorAction SilentlyContinue
 $usablePython=$false
-if($python -and $python.Source -notlike '*WindowsApps*') { & $python.Source -c 'import sys; assert sys.version_info >= (3,11)' 2>$null; $usablePython=($LASTEXITCODE -eq 0) }
+if($python -and $python.Source -notlike '*WindowsApps*') {$usablePython=Test-LocalPython -Executable $python.Source}
 if(-not $usablePython) {
  Write-Output 'LOCAL_SETUP: Python (official Python.org embedded runtime)'
  $archive=Join-Path $Root 'python.zip'
@@ -16,6 +41,7 @@ if(-not $usablePython) {
  if((Get-FileHash -LiteralPath $archive).Hash.ToLowerInvariant() -ne '90905e64a840557d8c1bc4f5b74db3d7ee85e3ffb217611cac1c7813acea4159'){throw 'Python download SHA-256 mismatch'}
  $pythonHome=Join-Path $Root 'python'
  Expand-Archive -LiteralPath $archive -DestinationPath $pythonHome -Force
+ if(-not (Test-LocalPython -Executable (Join-Path $pythonHome 'python.exe'))){throw 'Prepared Python runtime could not be started or does not meet Python 3.11 requirements'}
  $pathFile=Join-Path $pythonHome 'python314._pth'
  [IO.File]::WriteAllLines($pathFile,@('python314.zip','.',(Join-Path $sourceRoot 'vendor\ps3recomp-master\tools'),(Join-Path $sourceRoot 'tools\local_build'),(Join-Path $sourceRoot 'tools\play')),(New-Object Text.UTF8Encoding($false)))
  $env:PATH=$pythonHome+';'+$env:PATH

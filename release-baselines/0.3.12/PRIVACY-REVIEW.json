@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "scan_errors": 0,
+  "credential_pattern_hits": 0,
+  "owner_path_hits": 0,
+  "owner_email_hits": 0,
+  "known_local_disc_key_hits": 0,
+  "known_local_disc_keys_compared": 1,
+  "includes_nested_launcher": true,
+  "third_party_licenses_and_runtime_provenance_retained": true,
+  "arbitrary_or_encrypted_secret_absence_proven": false
+}

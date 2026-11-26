@@ -1,4 +1,4 @@
-﻿param([string]$Output='C:/GameDev/Macross-launcher-0.3.2',[string]$HeroPath=(Join-Path $PSScriptRoot 'artwork/interstellar-v1.png'),[string]$ManifestPath=(Join-Path $PSScriptRoot 'assets/preview-manifest.json'),[string]$StatusPath=(Join-Path $PSScriptRoot '../dist/content/STATUS.json'))
+param([string]$Output='build/tests/Macross-launcher-0.3.2',[string]$HeroPath=(Join-Path $PSScriptRoot 'artwork/interstellar-v1.png'),[string]$ManifestPath=(Join-Path $PSScriptRoot 'assets/preview-manifest.json'),[string]$StatusPath=(Join-Path $PSScriptRoot '../dist/content/STATUS.json'))
 $ErrorActionPreference='Stop'
 $repo=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $python=Join-Path $repo '.tools/launcher-python-venv/Scripts/python.exe'

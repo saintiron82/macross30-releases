@@ -1,0 +1,98 @@
+MACROSS_UI_STRINGS_V1	es-ES
+common.close	Cerrar
+common.defaults	Configuración inicial
+controller.backend.sdl	Entrada: SDL2 %hs (DualSense, DualShock 4, Xbox, Switch Pro, USB/Bluetooth)
+controller.backend.xinput	Entrada: XInput (solo Xbox; falta SDL2.dll)
+controller.bindings.help	Asigna un botón de PS3 a cada botón. Los cambios se aplican al instante a todos los mandos y se guardan.\nAl pulsar un botón, se ilumina su fila. Los sticks no se pueden cambiar.\nMientras esta ventana esté abierta, el juego no recibirá entradas.
+controller.bindings.open	Configuración de botones del mando...
+controller.bindings.title	Configuración de botones del mando
+controller.count	Mandos conectados: %d
+controller.device_status	%d. %s — %s   Entrada: %s
+controller.dualsense	DualSense (PS5)
+controller.dualshock3	DualShock 3 (PS3)
+controller.dualshock4	DualShock 4 (PS4)
+controller.generic	Mando
+controller.left_stick	Stick izquierdo (L3)
+controller.none	No hay ningún mando conectado. Conéctalo por USB o Bluetooth. También puedes hacerlo durante la partida.
+controller.not_initialized	El juego aún no ha inicializado los mandos.
+controller.right_stick	Stick derecho (R3)
+controller.swap_confirm	Intercambiar ✕ / ○
+controller.switch_pro	Switch Pro
+controller.test.open	Prueba del mando...
+controller.test.title	Prueba del mando
+controller.test.vibration	Probar vibración
+controller.xbox360	Xbox 360
+controller.xbox_series	Xbox One/Series
+controller.xinput	Xbox (XInput)
+input.combined	Entrada del juego (mando + teclado)
+input.key_code	Tecla 0x%02X
+input.key_prompt	Pulsa una tecla (Esc: cancelar; Del: borrar asignación)
+input.keyboard.help	Elige una acción y pulsa una tecla o botón del ratón. Esc cancela; Supr borra.\nLas flechas también controlan el stick izquierdo si no tiene teclas asignadas.
+input.keyboard.open	Teclas y ratón...
+input.keyboard.title	Teclado y ratón
+input.keyboard_status	Teclado: %s
+input.mouse.left	Ratón: izquierdo
+input.mouse.middle	Ratón: central
+input.mouse.right	Ratón: derecho
+input.mouse.x1	Ratón: lateral 1
+input.mouse.x2	Ratón: lateral 2
+input.none	(ninguna)
+input.paused	Cierra esta ventana para volver a controlar el juego.
+input.pressed	Pulsado
+input.waiting	En espera (las teclas configuradas también se muestran abajo)
+mouse.capture_help	Cursor fijo en juego; F9/Alt+Tab lo libera
+mouse.enable	Ratón como stick derecho
+mouse.invert	Invertir eje Y
+mouse.numeric_help	Sensibilidad: 0.01–8.00 (pasos de 0.01)
+mouse.sensitivity_x	Sensibilidad del ratón X
+mouse.sensitivity_y	Sensibilidad del ratón Y
+music.choose	Elegir carpeta
+music.folder	Carpeta de música (MP3 / WAV)
+music.folder_error	No se ha podido guardar la configuración de la carpeta.
+music.help	Añade canciones, actualiza la lista y vuelve a abrir la edición de sonido personalizado del juego.\nCarpeta inicial: CustomMusic · Hasta 512 canciones · Admite subcarpetas
+music.open_folder	Abrir carpeta
+music.refresh	Actualizar lista
+music.scan_error	No se puede leer la carpeta. Comprueba su ubicación y los permisos de acceso.
+music.title	Música personalizada
+music.track_count	Canciones detectadas: %d
+options.bloom	Resplandor
+options.fps_limit	FPS máximos
+options.fps_limit.unlimited	Sin límite
+options.fullscreen	Pantalla completa (F11, Alt+Enter)
+options.fullscreen.menu	Pantalla completa\tF11
+options.hd_textures	Texturas de alta resolución (requiere reiniciar)
+options.hd_textures.help	Usar en combate las texturas de la vista previa
+options.menu	Opciones(&O)
+options.open	Opciones (gráficos y controles)...\tF9
+options.resolution	Resolución interna de renderizado
+options.resolution.original	1280 x 720 (original)
+options.restart_help	Pantalla, VSync, subtítulos y FPS: al instante.\nResolución y texturas HD: reiniciar.\nSe mantiene la corrección de velocidad.
+options.restart_help.locked	Esta versión mantiene el límite de 30 FPS. Su desactivación está en reparación.\nLos cambios de resolución se aplican al reiniciar el juego.\nLa pantalla completa, la sincronización vertical, el resplandor y los subtítulos se aplican al instante.
+options.rumble	Vibración
+options.rumble_strength	Fuerza de vibración
+options.subtitles	Subtítulos (vídeos y combate)
+options.system_menu	Opciones (gráficos y controles) (F9)
+options.title	Opciones (F9)
+options.uncap	Desactivar el límite de 30 FPS
+options.uncap.unavailable	Desactivar el límite de 30 FPS — en reparación (no disponible)
+options.vsync	Sincronización vertical (VSync)
+save.action.back	Volver
+save.action.cancel	Cancelar
+save.action.confirm	Confirmar
+save.action.load	CARGAR
+save.action.overwrite	Sobrescribir
+save.action.save	GUARDAR
+save.controls.primary	↑↓: seleccionar     ○ / Enter: confirmar     × / Esc: cancelar
+save.controls.secondary	Compatible con teclado y mando
+save.new.badge	Nuevos
+save.new.description	Guardar en una ranura nueva
+save.new.title	Datos nuevos
+save.overwrite.badge	¿Sobrescribir?
+save.overwrite.hint	Confirma de nuevo para sobrescribir
+save.overwrite.prompt	¿Sobrescribir? ○ / Enter: confirmar · × / Esc: volver
+save.select.title	Seleccionar datos guardados
+save.thumbnail.missing	SIN IMAGEN
+save.thumbnail.new	DATOS NUEVOS
+save.title.load	Cargar — Seleccionar datos guardados
+save.title.save	Guardar — Seleccionar datos guardados
+window.title	%hs | FPS: %.2f | dibujados: %u | %ux%u | F9: Opciones

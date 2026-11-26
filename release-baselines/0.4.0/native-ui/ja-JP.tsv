@@ -1,0 +1,98 @@
+MACROSS_UI_STRINGS_V1	ja-JP
+common.close	閉じる
+common.defaults	初期設定
+controller.backend.sdl	入力: SDL2 %hs (DualSense、DualShock 4、Xbox、Switch Pro、USB/Bluetooth)
+controller.backend.xinput	入力: XInput (Xboxのみ。SDL2.dllがありません)
+controller.bindings.help	各ボタンにPS3ボタンを割り当てます。全パッドに即時適用して保存します。\nボタンを押すと行が点灯します。スティックは変更できません。\nこのウィンドウを開いている間はゲームに入力されません。
+controller.bindings.open	パッドボタン設定...
+controller.bindings.title	パッドボタン設定
+controller.count	接続中のコントローラー: %d台
+controller.device_status	%d. %s — %s   入力: %s
+controller.dualsense	DualSense (PS5)
+controller.dualshock3	DualShock 3 (PS3)
+controller.dualshock4	DualShock 4 (PS4)
+controller.generic	ゲームパッド
+controller.left_stick	左スティック (L3)
+controller.none	未接続です。USBまたはBluetoothで接続できます。プレイ中も接続可能です。
+controller.not_initialized	ゲームがまだパッドを初期化していません。
+controller.right_stick	右スティック (R3)
+controller.swap_confirm	✕ / ○を入れ替え
+controller.switch_pro	Switch Pro
+controller.test.open	コントローラーテスト...
+controller.test.title	コントローラーテスト
+controller.test.vibration	振動テスト
+controller.xbox360	Xbox 360
+controller.xbox_series	Xbox One/Series
+controller.xinput	Xbox (XInput)
+input.combined	ゲームへの入力 (パッド＋キーボード)
+input.key_code	キー 0x%02X
+input.key_prompt	キー/マウス入力 (Esc取消)
+input.keyboard.help	項目を選び、キーかマウスボタンを押します。Escで取消、Delで解除。\n左スティック未設定時は方向キーでも操作できます。
+input.keyboard.open	キー / マウス設定...
+input.keyboard.title	キーボード / マウス設定
+input.keyboard_status	キーボード: %s
+input.mouse.left	マウス左
+input.mouse.middle	マウス中
+input.mouse.right	マウス右
+input.mouse.x1	マウス側面1
+input.mouse.x2	マウス側面2
+input.none	(なし)
+input.paused	このウィンドウを閉じるとゲーム操作に戻ります。
+input.pressed	入力中
+input.waiting	待機中 (設定したキーの入力も以下に表示されます)
+mouse.capture_help	ゲーム中はカーソル固定 · F9/Alt+Tabで解除
+mouse.enable	マウスで右スティック
+mouse.invert	Y軸反転
+mouse.numeric_help	感度を入力: 0.01～8.00 (小数第2位)
+mouse.sensitivity_x	マウス感度 X
+mouse.sensitivity_y	マウス感度 Y
+music.choose	フォルダーを選択
+music.folder	音楽フォルダー (MP3・WAV)
+music.folder_error	フォルダー設定を保存できませんでした。
+music.help	曲を追加して一覧を更新し、ゲームのカスタムサウンド編集を開き直してください。\n初期フォルダー: CustomMusic・最大512曲・サブフォルダー対応
+music.open_folder	フォルダーを開く
+music.refresh	一覧を更新
+music.scan_error	フォルダーを読み込めません。場所とアクセス権限を確認してください。
+music.title	カスタム音楽
+music.track_count	認識した曲数: %d
+options.bloom	ブルーム
+options.fps_limit	最大フレームレート
+options.fps_limit.unlimited	無制限
+options.fullscreen	全画面 (F11, Alt+Enter)
+options.fullscreen.menu	全画面\tF11
+options.hd_textures	高解像度テクスチャ (再起動後に適用)
+options.hd_textures.help	プレビュー用テクスチャを戦闘で使用
+options.menu	オプション(&O)
+options.open	オプション (描画・入力)...\tF9
+options.resolution	内部描画解像度
+options.resolution.original	1280 x 720 (原本)
+options.restart_help	全画面・VSync・字幕・FPS制限は即時反映されます。\n解像度とHDテクスチャは再起動後に反映されます。\n制限を切り替えてもゲーム速度の補正を維持します。
+options.restart_help.locked	このビルドは30 FPS制限を維持します。制限解除は修正中です。\n解像度はゲーム再起動後に適用されます。\n全画面・垂直同期・ブルーム・字幕は即時適用です。
+options.rumble	振動
+options.rumble_strength	振動の強さ
+options.subtitles	字幕表示 (ムービー・戦闘)
+options.system_menu	オプション (描画・入力) (F9)
+options.title	オプション (F9)
+options.uncap	30 FPS制限解除
+options.uncap.unavailable	30 FPS制限解除 — 修正中（使用不可）
+options.vsync	垂直同期 (VSync)
+save.action.back	戻る
+save.action.cancel	キャンセル
+save.action.confirm	決定
+save.action.load	ロード
+save.action.overwrite	上書き
+save.action.save	セーブ
+save.controls.primary	↑↓ 選択     ○ / Enter 決定     × / Esc キャンセル
+save.controls.secondary	キーボード・コントローラー対応
+save.new.badge	新規
+save.new.description	新しいスロットにセーブします
+save.new.title	新規データ
+save.overwrite.badge	上書き？
+save.overwrite.hint	もう一度決定すると上書きします
+save.overwrite.prompt	上書きしますか？ ○ / Enter 決定 · × / Esc 戻る
+save.select.title	セーブデータ選択
+save.thumbnail.missing	画像なし
+save.thumbnail.new	新規データ
+save.title.load	ロード - セーブデータ選択
+save.title.save	セーブ - セーブデータ選択
+window.title	%hs | FPS: %.2f | draws: %u | %ux%u | F9: オプション

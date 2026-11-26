@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -192,12 +192,12 @@ class LauncherTests {
                 Packages.Apply(real,args[0],actual,Console.WriteLine);
                 Check(Packages.InstalledVersion(real)=="0.1.0" && File.Exists(Path.Combine(real,"bin/Macross30Recompiled.exe")),"Actual two-pack application");tests++;
                 Check(Packages.ProgramReady(real),"Actual installed program ready");tests++;
-                var languageCatalog=Packages.Read(File.ReadAllText("C:/GameDev/Macross-language-0.1.0/LANGUAGES.json"));
+                var languageCatalog=Packages.Read(File.ReadAllText("build/tests/Macross-language-0.1.0/LANGUAGES.json"));
                 var japanese=GameLanguage.Select(languageCatalog,"ja-JP","0.1.0");tests++;
                 Reject(() => GameLanguage.Select(languageCatalog,"en-US","0.1.0"),"English unavailable without fallback");
                 Reject(() => GameLanguage.Select(languageCatalog,"ja-JP","0.2.0"),"Wrong language catalog version");
                 var addon=Packages.Object(japanese["asset"]);
-                GameLanguage.ApplyAddon(real,"ja-JP","C:/GameDev/Macross-language-0.1.0/"+Packages.Text(addon,"file"),addon);
+                GameLanguage.ApplyAddon(real,"ja-JP","build/tests/Macross-language-0.1.0/"+Packages.Text(addon,"file"),addon);
                 GameLanguage.Prepare(real,"ja-JP");
                 string japaneseFolder=GameLanguage.Folder(real,"ja-JP");
                 var japaneseMeta=Packages.Read(File.ReadAllText(Path.Combine(japaneseFolder,"language.json")));

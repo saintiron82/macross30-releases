@@ -9,8 +9,8 @@ import sys
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
-PUBLIC = Path('D:/Game/Macross-release-038-hd-shader-20261103/public-final/assets')
-OUT = Path('D:/Game/Macross-release-039-integration-20261107')
+PUBLIC = Path('build/releases/0.3.8/public-final/assets')
+OUT = Path('build/releases/0.3.9')
 
 
 def sha(data):

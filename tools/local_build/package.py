@@ -21,7 +21,7 @@ def sha(path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--target', type=Path, default=Path('C:/GameDev/Macross-local-build-0.2.0'))
+    parser.add_argument('--target', type=Path, default=Path('build/releases/local-build-0.2.0'))
     args = parser.parse_args()
     out = args.target.resolve()
     out.mkdir(parents=True, exist_ok=True)
@@ -31,12 +31,12 @@ def main():
     version = '0.2.0'
     source_zip = out / f'Macross30-source-{version}.zip'
     subprocess.run([sys.executable, str(ROOT / 'tools/local_build/source_bundle.py'), '--output', str(source_zip)], check=True)
-    dist = Path('C:/GameDev/Macross-dist-0.1.0/Macross30')
+    dist = Path('build/releases/legacy-dist-0.1.0/Macross30')
     original = ROOT / 'analysis/extracted/PS3_GAME/USRDIR/EBOOT.elf'
     localized = dist / 'bin/EBOOT.ko.elf'
     delta, _ = make_delta(original, localized, sha(original), sha(localized), 2048)
     assert hashlib.sha256(apply(original.read_bytes(), delta)).hexdigest() == sha(localized)
-    original_plan = Path('C:/GameDev/Macross-language-0.1.0/languages/ja-JP/0.1.0/install-plan.tsv')
+    original_plan = Path('build/tests/Macross-language-0.1.0/languages/ja-JP/0.1.0/install-plan.tsv')
     if not original_plan.exists():
         subprocess.run([sys.executable, str(ROOT / 'tools/launcher/build_language_catalog.py')], check=True)
     recipe = dict(version=version, mode='user-local-generate-and-compile',

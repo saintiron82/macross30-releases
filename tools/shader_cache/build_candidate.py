@@ -23,7 +23,7 @@ sys.path.insert(0, str(HERE))
 import patch_live_draw  # noqa: E402
 import toolchain  # noqa: E402
 
-MEASURE = Path('D:/Game/Macross-0.3.5-measurement-20261101')
+MEASURE = Path('build/tests/Macross-0.3.5-measurement-20261101')
 BASE = MEASURE / 'shader-seed-v2-candidate-20261103'
 VIDEO = Path('vendor/ps3recomp-master/libs/video')
 HEADERS = ['rsx_shader_prep.h', 'rsx_shader_prep_runtime.h']
@@ -131,7 +131,7 @@ def main():
             raise SystemExit('a link input changed after the frozen base was linked; refusing mixed build')
         rsp = rsp.replace(str(old), str(obj))
         (out / 'link.rsp').write_text(rsp, encoding='utf-8')
-        link_plan = json.loads((Path('D:/Game/Macross-034-source-reference-20261101') / 'plan.json').read_text())
+        link_plan = json.loads((Path('build/tests/Macross-034-source-reference-20261101') / 'plan.json').read_text())
         run([x.replace(link_plan['output'], str(out)) for x in link_plan['link']], out / 'link.log', env)
         for name in ['SDL2.dll']:
             shutil.copy2(BASE / name, out / name)

@@ -2,7 +2,7 @@ param([string]$Output)
 $ErrorActionPreference = 'Stop'
 $compiler = Join-Path $env:SystemRoot 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
 $launcherVersion = [regex]::Match([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'SelfUpdate.cs')), 'public const string Version = "([0-9.]+)"').Groups[1].Value
-if (-not $Output) { $Output = "C:\GameDev\Macross-launcher-$launcherVersion" }
+if (-not $Output) { $Output = "build/tests/Macross-launcher-$launcherVersion" }
 $destination = [IO.Path]::GetFullPath($Output)
 New-Item -ItemType Directory -Force -Path $destination | Out-Null
 & $compiler /nologo /target:winexe /optimize+ /platform:x64 "/out:$destination\Macross30Launcher.exe" /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.Web.Extensions.dll /r:System.IO.Compression.dll /r:System.IO.Compression.FileSystem.dll (Join-Path $PSScriptRoot 'Launcher.cs') (Join-Path $PSScriptRoot 'SelfUpdate.cs') (Join-Path $PSScriptRoot 'UiText.cs') (Join-Path $PSScriptRoot 'GameLanguage.cs') (Join-Path $PSScriptRoot 'LocalBuild.cs') (Join-Path $PSScriptRoot 'InstallProgress.cs') (Join-Path $PSScriptRoot 'PrebuiltInstall.cs')

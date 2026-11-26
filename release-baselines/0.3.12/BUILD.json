@@ -1,0 +1,100 @@
+{
+  "version": "0.3.12",
+  "program_metadata": {
+    "pdb_paths_generalized": 1,
+    "changed_bytes": 99,
+    "same_length": true,
+    "executable_sections_identical": [
+      {
+        "name": ".text",
+        "sha256": "6628ef0a9ec06f1accaf957c71ce25e57289e5959ad9ea7e85f76a2041673342"
+      }
+    ],
+    "non_metadata_bytes_identical": true,
+    "before_sha256": "aa3a89cd8f61ac998fae8995b741c061dcfbf10931b9bab1e095720e1368a2ab",
+    "after_sha256": "60500703c9a3c0babfb602c5d28e79ad69b6ef139b5f35ce5c3e473cc993f50c"
+  },
+  "shader_metadata": {
+    "input_paths_generalized": 1,
+    "manifest_sha256": "bc285cf02ebc1ac250784a035017e286dc6ef874159f348af8404e517f87deb0"
+  },
+  "korean": {
+    "strings": 154,
+    "sha256": "5a542d106130634ece688fb4e3afb0a16a884eae9d638f88aab3319d7462d2fd",
+    "changed_members": [
+      "payload/elf/ko-KR.mkdelta",
+      "payload/recipe.json"
+    ],
+    "delta_readback": true,
+    "slot_only_changes": true
+  },
+  "text_packs": {
+    "ru-RU": {
+      "changed_members": [
+        "pack.json"
+      ],
+      "content_bytes_identical": true,
+      "revision": "v7"
+    },
+    "es-ES": {
+      "changed_members": [
+        "pack.json"
+      ],
+      "content_bytes_identical": true,
+      "revision": "v3"
+    },
+    "en-US": {
+      "changed_members": [
+        "pack.json"
+      ],
+      "content_bytes_identical": true,
+      "revision": "corrections-1980"
+    }
+  },
+  "all_four_locales_readback": 154,
+  "public_published": false,
+  "game_started": false,
+  "launcher_version": "0.3.9",
+  "pending": [
+    "User in-game Korean v23 and Russian v7 display confirmation",
+    "Full GUI update/recovery check"
+  ],
+  "acceptance": {
+    "passed": true,
+    "public_launcher_bridge": "0.3.9",
+    "program_extract_stage_inspect": true,
+    "runtime_status": 2,
+    "korean_package_extract_and_actual_installer_readback": true,
+    "korean_strings": 154,
+    "korean_update_detected": true,
+    "same_data_id_different_elf_detected": true,
+    "public_font_verified": true,
+    "font_missing": 0,
+    "text_pack_imports": 3,
+    "old_guard_rejections": 3,
+    "failed_imports_leave_no_install": true,
+    "synthetic_saves_settings_unchanged": true,
+    "game_started": false,
+    "full_gui_update_tested": false,
+    "game_exe_sha256": "60500703c9a3c0babfb602c5d28e79ad69b6ef139b5f35ce5c3e473cc993f50c"
+  },
+  "regressions": {
+    "passed": true,
+    "tests": 43,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "privacy": {
+    "passed": true,
+    "scan_errors": 0,
+    "credential_pattern_hits": 0,
+    "owner_path_hits": 0,
+    "owner_email_hits": 0,
+    "known_local_disc_key_hits": 0,
+    "known_local_disc_keys_compared": 1,
+    "includes_nested_launcher": true,
+    "third_party_licenses_and_runtime_provenance_retained": true,
+    "arbitrary_or_encrypted_secret_absence_proven": false
+  }
+}

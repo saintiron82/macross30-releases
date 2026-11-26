@@ -1,0 +1,98 @@
+MACROSS_UI_STRINGS_V1	ru-RU
+common.close	Закрыть
+common.defaults	Исходные настройки
+controller.backend.sdl	Ввод: SDL2 %hs (DualSense, DualShock 4, Xbox, Switch Pro, USB/Bluetooth)
+controller.backend.xinput	Ввод: XInput (только Xbox; отсутствует SDL2.dll)
+controller.bindings.help	Назначьте каждой кнопке кнопку PS3. Изменения сразу применяются ко всем геймпадам и сохраняются.\nПри нажатии кнопки её строка подсвечивается. Стики переназначить нельзя.\nПока это окно открыто, ввод в игру не передаётся.
+controller.bindings.open	Настройка кнопок геймпада...
+controller.bindings.title	Настройка кнопок геймпада
+controller.count	Подключено геймпадов: %d
+controller.device_status	%d. %s — %s   Ввод: %s
+controller.dualsense	DualSense (PS5)
+controller.dualshock3	DualShock 3 (PS3)
+controller.dualshock4	DualShock 4 (PS4)
+controller.generic	Геймпад
+controller.left_stick	Левый стик (L3)
+controller.none	Геймпад не подключён. Подключите его через USB или Bluetooth. Это можно сделать во время игры.
+controller.not_initialized	Игра ещё не инициализировала геймпады.
+controller.right_stick	Правый стик (R3)
+controller.swap_confirm	Поменять местами ✕ / ○
+controller.switch_pro	Switch Pro
+controller.test.open	Проверка геймпада...
+controller.test.title	Проверка геймпада
+controller.test.vibration	Проверить вибрацию
+controller.xbox360	Xbox 360
+controller.xbox_series	Xbox One/Series
+controller.xinput	Xbox (XInput)
+input.combined	Ввод в игре (геймпад + клавиатура)
+input.key_code	Клавиша 0x%02X
+input.key_prompt	Нажмите клавишу (Esc — отмена, Del — убрать назначение)
+input.keyboard.help	Выберите действие и нажмите клавишу или кнопку мыши. Esc — отмена, Del — очистка.\nСтрелки также управляют левым стиком, если ему не назначены клавиши.
+input.keyboard.open	Клавиши и мышь...
+input.keyboard.title	Клавиатура и мышь
+input.keyboard_status	Клавиатура: %s
+input.mouse.left	Мышь: левая
+input.mouse.middle	Мышь: средняя
+input.mouse.right	Мышь: правая
+input.mouse.x1	Мышь: боковая 1
+input.mouse.x2	Мышь: боковая 2
+input.none	(нет)
+input.paused	Закройте это окно, чтобы вернуться к управлению игрой.
+input.pressed	Нажато
+input.waiting	Ожидание (ввод назначенными клавишами также отображается ниже)
+mouse.capture_help	Курсор закреплён; F9/Alt+Tab — отпустить
+mouse.enable	Мышь: правый стик
+mouse.invert	Инверсия Y
+mouse.numeric_help	Чувствительность: 0.01–8.00 (шаг 0.01)
+mouse.sensitivity_x	Чувствит. мыши X
+mouse.sensitivity_y	Чувствит. мыши Y
+music.choose	Выбрать папку
+music.folder	Папка с музыкой (MP3 / WAV)
+music.folder_error	Не удалось сохранить настройку папки.
+music.help	Добавьте музыку, обновите список и снова откройте редактирование своего звука в игре.\nПапка по умолчанию: CustomMusic · До 512 композиций · Подпапки поддерживаются
+music.open_folder	Открыть папку
+music.refresh	Обновить список
+music.scan_error	Не удалось прочитать папку. Проверьте её расположение и права доступа.
+music.title	Своя музыка
+music.track_count	Найдено композиций: %d
+options.bloom	Свечение
+options.fps_limit	Макс. частота кадров
+options.fps_limit.unlimited	Без ограничения
+options.fullscreen	Полный экран (F11, Alt+Enter)
+options.fullscreen.menu	Полный экран\tF11
+options.hd_textures	Текстуры высокого разрешения (после перезапуска)
+options.hd_textures.help	Использовать в бою текстуры из режима просмотра
+options.menu	Настройки(&O)
+options.open	Настройки (графика и управление)...\tF9
+options.resolution	Внутреннее разрешение отрисовки
+options.resolution.original	1280 x 720 (исходное)
+options.restart_help	Экран, VSync, субтитры и FPS: сразу.\nРазрешение и HD-текстуры: перезапуск.\nКоррекция скорости игры всегда активна.
+options.restart_help.locked	В этой сборке действует ограничение 30 FPS. Снятие ограничения исправляется.\nРазрешение меняется после перезапуска игры.\nПолный экран, вертикальная синхронизация, свечение и субтитры применяются сразу.
+options.rumble	Вибрация
+options.rumble_strength	Сила вибрации
+options.subtitles	Субтитры (видеоролики и бой)
+options.system_menu	Настройки (графика и управление) (F9)
+options.title	Настройки (F9)
+options.uncap	Снять ограничение 30 FPS
+options.uncap.unavailable	Снять ограничение 30 FPS — исправляется (недоступно)
+options.vsync	Вертикальная синхронизация (VSync)
+save.action.back	Назад
+save.action.cancel	Отмена
+save.action.confirm	Подтвердить
+save.action.load	ЗАГРУЗИТЬ
+save.action.overwrite	Перезаписать
+save.action.save	СОХРАНИТЬ
+save.controls.primary	↑↓ — выбрать     ○ / Enter — подтвердить     × / Esc — отмена
+save.controls.secondary	Поддерживаются клавиатура и геймпад
+save.new.badge	Новые
+save.new.description	Сохранить в новую ячейку
+save.new.title	Новые данные
+save.overwrite.badge	Перезаписать?
+save.overwrite.hint	Подтвердите ещё раз, чтобы перезаписать
+save.overwrite.prompt	Перезаписать? ○ / Enter — подтвердить · × / Esc — назад
+save.select.title	Выбор сохранённых данных
+save.thumbnail.missing	НЕТ ИЗОБРАЖЕНИЯ
+save.thumbnail.new	НОВЫЕ ДАННЫЕ
+save.title.load	Загрузка — выбор данных
+save.title.save	Сохранение — выбор данных
+window.title	%hs | FPS: %.2f | отрисовок: %u | %ux%u | F9: Настройки

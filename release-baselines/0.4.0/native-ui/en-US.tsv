@@ -1,0 +1,98 @@
+MACROSS_UI_STRINGS_V1	en-US
+common.close	Close
+common.defaults	Defaults
+controller.backend.sdl	Input: SDL2 %hs (DualSense, DualShock 4, Xbox, Switch Pro; USB/Bluetooth)
+controller.backend.xinput	Input: XInput (Xbox only; SDL2.dll is missing)
+controller.bindings.help	Choose a PS3 button for each controller button. Changes apply to all pads immediately.\nPress a controller button to highlight its row. Stick mappings are fixed.\nGame input is paused while this window is open.
+controller.bindings.open	Controller bindings...
+controller.bindings.title	Controller bindings
+controller.count	Connected controllers: %d
+controller.device_status	%d. %s — %s   Pressed: %s
+controller.dualsense	DualSense (PS5)
+controller.dualshock3	DualShock 3 (PS3)
+controller.dualshock4	DualShock 4 (PS4)
+controller.generic	Gamepad
+controller.left_stick	Left stick (L3)
+controller.none	None. Connect by USB or Bluetooth; hot-plugging is supported.
+controller.not_initialized	The game has not initialized controllers yet.
+controller.right_stick	Right stick (R3)
+controller.swap_confirm	Swap Cross / Circle
+controller.switch_pro	Switch Pro
+controller.test.open	Controller test...
+controller.test.title	Controller test
+controller.test.vibration	Test vibration
+controller.xbox360	Xbox 360
+controller.xbox_series	Xbox One/Series
+controller.xinput	Xbox (XInput)
+input.combined	Game input (controller + keyboard)
+input.key_code	Key 0x%02X
+input.key_prompt	Press key/mouse (Esc cancels)
+input.keyboard.help	Select an action, then press a key or mouse button. Esc cancels; Del clears.\nArrow keys also control the left stick unless bindings are assigned.
+input.keyboard.open	Key / mouse bindings...
+input.keyboard.title	Keyboard / mouse bindings
+input.keyboard_status	Keyboard: %s
+input.mouse.left	Mouse left
+input.mouse.middle	Mouse middle
+input.mouse.right	Mouse right
+input.mouse.x1	Mouse side 1
+input.mouse.x2	Mouse side 2
+input.none	(none)
+input.paused	Input is paused while this window is open. Close it to resume.
+input.pressed	Pressed
+input.waiting	Waiting (configured keyboard input is shown below)
+mouse.capture_help	Cursor locked in game · F9/Alt+Tab releases
+mouse.enable	Mouse right stick
+mouse.invert	Invert Y
+mouse.numeric_help	Enter sensitivity: 0.01–8.00 (two decimals)
+mouse.sensitivity_x	Mouse sensitivity X
+mouse.sensitivity_y	Mouse sensitivity Y
+music.choose	Choose folder
+music.folder	Music folder (MP3 / WAV)
+music.folder_error	Could not save the folder setting.
+music.help	Add music, refresh, then reopen Custom Sound editing in the game.\nDefault: CustomMusic · Up to 512 tracks, including subfolders
+music.open_folder	Open folder
+music.refresh	Refresh library
+music.scan_error	Cannot read this folder. Check its location and access permissions.
+music.title	Custom music
+music.track_count	Tracks found: %d
+options.bloom	Bloom
+options.fps_limit	Maximum FPS
+options.fps_limit.unlimited	Unlimited
+options.fullscreen	Fullscreen (F11, Alt+Enter)
+options.fullscreen.menu	Fullscreen\tF11
+options.hd_textures	High-resolution textures (restart required)
+options.hd_textures.help	Use preview textures in battle
+options.menu	Options(&O)
+options.open	Options (graphics and input)...\tF9
+options.resolution	Internal rendering resolution
+options.resolution.original	1280 x 720 (original)
+options.restart_help	Fullscreen, VSync, subtitles and FPS: live.\nResolution and HD textures: restart required.\nFPS changes retain game-speed correction.
+options.restart_help.locked	This build keeps the 30 FPS cap. Unlocking is under repair.\nResolution changes apply after restarting the game.\nFullscreen, VSync, bloom and subtitles apply immediately.
+options.rumble	Vibration
+options.rumble_strength	Vibration strength
+options.subtitles	Subtitles (movies and battle)
+options.system_menu	Options (graphics and input) (F9)
+options.title	Options (F9)
+options.uncap	Unlock 30 FPS cap
+options.uncap.unavailable	Unlock 30 FPS cap — under repair (unavailable)
+options.vsync	Vertical sync (VSync)
+save.action.back	Back
+save.action.cancel	Cancel
+save.action.confirm	OK
+save.action.load	LOAD
+save.action.overwrite	Overwrite
+save.action.save	SAVE
+save.controls.primary	↑↓ Select     ○ / Enter OK     × / Esc Cancel
+save.controls.secondary	Use keyboard or controller
+save.new.badge	NEW
+save.new.description	Save to a new slot
+save.new.title	New Data
+save.overwrite.badge	Overwrite?
+save.overwrite.hint	Confirm again to overwrite
+save.overwrite.prompt	Overwrite? ○ / Enter confirm · × / Esc back
+save.select.title	Select Save Data
+save.thumbnail.missing	NO IMAGE
+save.thumbnail.new	NEW DATA
+save.title.load	Load - Select Save Data
+save.title.save	Save - Select Save Data
+window.title	%hs | FPS: %.2f | draws: %u | %ux%u | F9: Options

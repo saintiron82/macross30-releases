@@ -1,0 +1,121 @@
+{
+  "version": "0.3.12",
+  "files": [
+    {
+      "path": "native/macross30/CMakeLists.txt",
+      "sha256": "9f8216a00c4d685607c36211b765f68faa602ad06fe89eed698d7d2ce00341e8"
+    },
+    {
+      "path": "release-baselines/0.3.12/ACCEPTANCE.json",
+      "sha256": "e3530ba071d99104cbd267f9023e5c85c2fa8a7970084f734e8a755ca2a3e128"
+    },
+    {
+      "path": "release-baselines/0.3.12/BUILD.json",
+      "sha256": "7d23d4366299f9168b900b358afb88b2b49d8a9799454ff0577431109a0e7810"
+    },
+    {
+      "path": "release-baselines/0.3.12/four-locale-display-fix-20261115.md",
+      "sha256": "c9dd5e88edf60fd8908a56445e6252c91941582106de83c75ec39facba463869"
+    },
+    {
+      "path": "release-baselines/0.3.12/korean-authored.json",
+      "sha256": "d4a7c4263fd3a6c4307837d49bc55f49a4475a7161f93f846e7de98ae314ace2"
+    },
+    {
+      "path": "release-baselines/0.3.12/PRIVACY-REVIEW.json",
+      "sha256": "b3799f9b48fce77824408b761ac7f51cd7673dbcc97802d50c367ea997ae5a0d"
+    },
+    {
+      "path": "release-baselines/0.3.12/REGRESSIONS.json",
+      "sha256": "b356623b2f2a0d64f24c0c80cae21aa649af97cd365d4306ae0acef9654ad6d4"
+    },
+    {
+      "path": "release-baselines/0.3.12/RELEASE-NOTES.txt",
+      "sha256": "ae7f44e40c4d87a853e38289ebf260995c97b3b0b0df19cdccf4c2a6495310aa"
+    },
+    {
+      "path": "tools/dist/check_dist_env.py",
+      "sha256": "57729ab99a5ce0b7c5ddd949de897f457e4c7511c1bf2b9e5830c18a7ccfc02c"
+    },
+    {
+      "path": "tools/dist/make_dist.py",
+      "sha256": "d97d65f32ee345baed36e1d19ff7a95de46fc2fae4a1807b09bdd02b399550fa"
+    },
+    {
+      "path": "tools/dist/prepare_release039_languages.py",
+      "sha256": "a80aca0920385a30fe1cba715eb3863bafab95c36bc7b0d8d26afef7536cef97"
+    },
+    {
+      "path": "tools/dist/prepare_startup_path_hotfix.py",
+      "sha256": "9e5c8a73d25f7747f2a573376950356b979a9bb81485ed491aa5928e3503fe79"
+    },
+    {
+      "path": "tools/launcher/build_language_catalog.py",
+      "sha256": "f7572a1ae1386deaf7e5530482f43b6f74e55678584983c378d9c252b0dac879"
+    },
+    {
+      "path": "tools/launcher/build_launcher.ps1",
+      "sha256": "373cc486428c3150a1acb37ebf4314edc4912667734655a027bb8a8b820c5a48"
+    },
+    {
+      "path": "tools/launcher/LauncherTests.cs",
+      "sha256": "c9f7046a998a4b53ed94876642b7ecb780e62d73c417cdb68e97c55711228ced"
+    },
+    {
+      "path": "tools/launcher-python/build.ps1",
+      "sha256": "481fbf486fd39ee29401207f139a9e9680307d2951e3a5a836f9962c94816b1a"
+    },
+    {
+      "path": "tools/launcher-python/README.md",
+      "sha256": "f3d5c60658be74ed0d3e284d89b3b3bcb6a6d41476945fd6c46e42a4244b0062"
+    },
+    {
+      "path": "tools/local_build/package.py",
+      "sha256": "05cf58f3c3737f1fa87aa1730ac96e9c2ee41635f46ccd8145ecf8768eb1cc09"
+    },
+    {
+      "path": "tools/local_build/setup_tools.ps1",
+      "sha256": "b29586bbca4849ce3f96023bac45d230a935c6e40743b53723dcbcb111816e0a"
+    },
+    {
+      "path": "tools/localization/complete_four_locale_display.py",
+      "sha256": "a61eb237862c1242cd863cb4dd701e3e22dde9014a012f62f3358a894db14f32"
+    },
+    {
+      "path": "tools/localization/korean_remaining_text.py",
+      "sha256": "59ca054aa323e8e3c9ace204dc9e5a8f30fd88c93ce7ce5189446f31bae371a8"
+    },
+    {
+      "path": "tools/play/auto_load.ps1",
+      "sha256": "27e129cfad32d7456ed4e84ec77d9d4227e04a0932009fd122fa7c8ee14d636b"
+    },
+    {
+      "path": "tools/release/measurement.py",
+      "sha256": "14a923345d467a25ff6995cbf7b946d3e301dd34a6aa00c33b92930b23151aa0"
+    },
+    {
+      "path": "tools/release/prepare_display_privacy_release.py",
+      "sha256": "b24ef210768afea3a3c7dd8e37f7717e65ad8e3ad5ad755722f4326d22809c5d"
+    },
+    {
+      "path": "tools/release/privacy.py",
+      "sha256": "2117128d5c505645de9f394b952068c2f91cd3b8d5920bf8c78bb9b1d13524fd"
+    },
+    {
+      "path": "tools/release/README.md",
+      "sha256": "f75856f75652ca883509934e5de1145236aebc4d0eeac36885fe1c5f1f37588e"
+    },
+    {
+      "path": "tools/shader_cache/build_candidate.py",
+      "sha256": "8f1ae50559d9a9a47998ea163e8405828b35775fe33fe90639a38e6375057324"
+    },
+    {
+      "path": "tools/shader_cache/shader_seed.py",
+      "sha256": "35a1154a5a3472544e77714c6c79905a2b5c8c9928708ba8bbcfb8702bb6855d"
+    },
+    {
+      "path": "tools/tests/test_setup_python_probe.py",
+      "sha256": "41b2397d03022124d547035f5d3e5edbb1c73e1c1550ebe237480dac697cf7bb"
+    }
+  ]
+}

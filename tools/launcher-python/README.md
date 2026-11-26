@@ -10,7 +10,7 @@ python -m venv .tools/launcher-python-venv
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/launcher-python/build.ps1
 ```
 
-The default output is `C:/GameDev/Macross-python-0.3.0`. `Macross30Launcher.exe` can run by itself. Build-time dependencies are not required on the user's computer. The existing first-time ISO installer still prepares its own original-data tools when needed; the launcher does not compile game code.
+The default output is `build/tests/Macross-python-0.3.0`. `Macross30Launcher.exe` can run by itself. Build-time dependencies are not required on the user's computer. The existing first-time ISO installer still prepares its own original-data tools when needed; the launcher does not compile game code.
 
 ## User flow
 
@@ -31,7 +31,7 @@ Self-update downloads a complete verified single EXE and reuses the existing .NE
 ```powershell
 .tools/launcher-python-venv/Scripts/python.exe -m unittest discover -s tools/launcher-python -p test_backend.py
 .tools/launcher-python-venv/Scripts/python.exe tools/launcher-python/app.py --preview --smoke --report native/analysis/tk-smoke.json
-C:/GameDev/Macross-python-0.3.0/Macross30Launcher.exe --preview --smoke --report C:/GameDev/Macross/native/analysis/tk-packaged-smoke.json
+build/tests/Macross-python-0.3.0/Macross30Launcher.exe --preview --smoke --report ./native/analysis/tk-packaged-smoke.json
 ```
 
 Smoke mode tests UI translations, localized notices, history filtering and language selection without downloads. Real-install integration checks replace only the final launch/select operations with stubs, preserving the user's game and active language files. Full first-time ISO installation and self-update to a future published version require separate release acceptance testing.

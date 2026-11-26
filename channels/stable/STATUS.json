@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-08T11:39:36.787125+00:00",
+  "updated_at": "2026-11-26T14:40:11.124641+00:00",
   "closed": false,
   "default_language": "ko",
   "message": {
@@ -10,30 +10,30 @@
   },
   "latest": {
     "game": {
-      "version": "0.3.10"
+      "version": "0.4.0"
     },
     "launcher": {
       "version": "0.3.9"
     },
     "language_packs": {
       "ko-KR": {
-        "version": "0.3.8"
+        "version": "0.4.0"
       },
       "en-US": {
-        "version": "0.3.8"
+        "version": "0.4.0"
       }
     },
     "text_packs": {
       "ru-RU": {
-        "version": "0.3.11",
-        "text_revision": "v6-r2"
+        "version": "0.4.0",
+        "text_revision": "v7"
       },
       "es-ES": {
-        "version": "0.3.10",
+        "version": "0.4.0",
         "text_revision": "v3"
       },
       "en-US": {
-        "version": "0.3.10",
+        "version": "0.4.0",
         "text_revision": "corrections-1980"
       }
     }
@@ -55,6 +55,19 @@
     }
   ],
   "patch_notes": [
+    {
+      "id": "game-0.4.0",
+      "component": "game",
+      "version": "0.4.0",
+      "title": {
+        "ko": "0.4.0 프레임 제한·진동·마우스·번역",
+        "en": "0.4.0 FPS cap, vibration, mouse and translations"
+      },
+      "body": {
+        "ko": "F9 최대 프레임 30/60/무제한, 새 진동과 마우스 설정, 성능·번역 개선. 런처 0.3.9 유지.",
+        "en": "Live maximum FPS: 30/60/Unlimited, new vibration and mouse controls, performance and translation improvements. Launcher remains 0.3.9."
+      }
+    },
     {
       "id": "russian-layout-v6-r2-0.3.11",
       "component": "ru-RU",

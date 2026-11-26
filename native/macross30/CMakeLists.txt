@@ -255,6 +255,9 @@ set_source_files_properties(spu_queue_backoff.c PROPERTIES
     INCLUDE_DIRECTORIES "${PS3RECOMP_DIR}/runtime")
 set_source_files_properties(native_zlib_core.c PROPERTIES
     INCLUDE_DIRECTORIES "${PS3RECOMP_DIR}/libs/codec")
+if(MSVC)
+    target_link_options(${PROJECT_NAME} PRIVATE "/PDBALTPATH:${PROJECT_NAME}.pdb")
+endif()
 if(MSVC AND MACROSS_LINK_MAP)
     target_link_options(${PROJECT_NAME} PRIVATE
         "/MAP:${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.map")
@@ -375,7 +378,7 @@ if(MACROSS_GEOM_DEBUG_LINES)
     set_property(SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/spu_gameplay/geom1/spu_recomp.c"
         APPEND PROPERTY COMPILE_OPTIONS "-gline-tables-only" "-gcodeview")
     target_link_options(${PROJECT_NAME} PRIVATE "/DEBUG:FULL"
-        "/PDB:${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pdb")
+        "/PDB:${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pdb" "/PDBALTPATH:${PROJECT_NAME}.pdb")
 endif()
 
 option(MACROSS_RSX_DEBUG_LINES "Emit optimized CodeView lines for the RSX/renderer TUs (line-level host profiling)" OFF)
@@ -393,7 +396,7 @@ if(MACROSS_RSX_DEBUG_LINES)
         TARGET_DIRECTORY ps3recomp_runtime
         APPEND PROPERTY COMPILE_OPTIONS "-gline-tables-only" "-gcodeview")
     target_link_options(${PROJECT_NAME} PRIVATE "/DEBUG:FULL"
-        "/PDB:${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pdb")
+        "/PDB:${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pdb" "/PDBALTPATH:${PROJECT_NAME}.pdb")
 endif()
 
 option(MACROSS_SPU_FUNCTION_PROFILE "Build sampled inclusive SPU function timing" OFF)

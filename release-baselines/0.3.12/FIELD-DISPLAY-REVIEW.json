@@ -1,0 +1,58 @@
+{
+  "passed": true,
+  "korean": {
+    "labels": 75,
+    "resources": 123,
+    "definitions": 1609,
+    "remaining_japanese_active_display_labels": 0,
+    "user_club_name": "마니아동아리"
+  },
+  "english": {
+    "user_club_name": "Mania Club",
+    "definitions": 60
+  },
+  "csv_encoding_checks": 1860,
+  "font_missing": 0,
+  "public_launcher_acceptance": {
+    "passed": true,
+    "public_launcher_bridge": "0.3.9",
+    "program_stage_and_inspect": true,
+    "language_installer_and_update_status": [
+      "ko-KR",
+      "en-US"
+    ],
+    "additional_pack_imports": [
+      "ru-RU",
+      "es-ES",
+      "en-US"
+    ],
+    "english_base_profile_verified": true,
+    "english_correction_overlay_retains_mania_club_both_routes": true,
+    "source_hardlink_contents_unchanged": true,
+    "synthetic_saves_settings_unchanged": true,
+    "game_started": false,
+    "full_gui_update_tested": false,
+    "visual_check": "pending"
+  },
+  "pipeline": {
+    "verified": true,
+    "release": "0.3.12",
+    "changed": [
+      "game",
+      "korean",
+      "english"
+    ],
+    "versions": {
+      "game": "0.3.12",
+      "korean": "0.3.12",
+      "english": "0.3.12",
+      "launcher": "0.3.9"
+    },
+    "files": 12
+  },
+  "owned_new_source_and_metadata_private_path_secret_check": "passed",
+  "game_started": false,
+  "user_installation_modified": false,
+  "visual_check": "pending",
+  "published": false
+}

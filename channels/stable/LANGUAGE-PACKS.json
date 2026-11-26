@@ -1,18 +1,18 @@
 {
   "ko-KR": {
-    "file": "Macross30-language-ko-KR-0.3.8.zip",
-    "bytes": 52459877,
-    "sha256": "1ae56993565407e5ca73f7b0883c21472a94423c9da2e6e2419fa25e6a90cb8b",
-    "data_id": "f3abc4733dc1e658",
-    "elf_sha256": "3e29d7c62adbabf2c7ae1e8799737cbdf16617d8b87958daeed298364aff1a0b",
-    "plan_sha256": "f3abc4733dc1e658f56a2f26ad176e3f58fcd2031c8aef894ac67c0e827f12b4"
+    "file": "Macross30-language-ko-KR-0.4.0.zip",
+    "bytes": 59068116,
+    "sha256": "6f22dfda6ea6ee53d8541a251cbad8924197b060f99de34a2b950e15534b827f",
+    "data_id": "cadef07b1e8efa40",
+    "elf_sha256": "5a542d106130634ece688fb4e3afb0a16a884eae9d638f88aab3319d7462d2fd",
+    "plan_sha256": "cadef07b1e8efa4030c7c5109012240eedd658428896ab68cd77b9cbaaa9eed7"
   },
   "en-US": {
-    "file": "Macross30-language-en-US-0.3.8.zip",
-    "bytes": 34928069,
-    "sha256": "4816978693aad12e9eea2b9c8e2fc38a7f80b889220ee6d5736aecbc83404ec2",
-    "data_id": "4bb220cd0999f5c8",
+    "file": "Macross30-language-en-US-0.4.0.zip",
+    "bytes": 34940859,
+    "sha256": "57f6b512deecfe98aba6f0c1731105d446d4cbfa0d684e794d80c899b97d7c56",
+    "data_id": "3cde72ab74b20e7c",
     "elf_sha256": "40437d598dd00f4aaadb18675ec8351452b2bfcf662e0d1075df03b3d61036ba",
-    "plan_sha256": "4bb220cd0999f5c800afc26ffe0f4182a772f29662232e73e515bbe8ae3db65e"
+    "plan_sha256": "3cde72ab74b20e7c358d0221f934d7c7c4928ccc8766a670b62d8354db3959ec"
   }
 }

@@ -6,7 +6,7 @@ from pathlib import Path
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
-BASELINE = Path('D:/Game/Macross-release-039-integration-20261107/public-release/assets')
+BASELINE = Path('build/releases/0.3.9/public-release/assets')
 CANDIDATE = ROOT/'native/subtitle-candidate/release-039-startup-path-fix-r2'
 
 

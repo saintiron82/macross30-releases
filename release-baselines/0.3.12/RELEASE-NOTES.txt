@@ -1,0 +1,15 @@
+Macross 30 0.3.12 — Korean display fixes and release privacy cleanup
+
+한국어
+- 기체·추가 장비·인물 소개 등의 누락 문구 154개를 한국어 팩에 반영했습니다. 영어·러시아어·스페인어의 같은 154개 문구는 실제 배포 입력에서 확인했습니다.
+- 설치 준비 단계의 구버전/사용 불가 Python 검사 오류 수정과 러시아어 v7의 상점·길드 문구 개선을 포함합니다.
+- 게임 EXE의 PDB 경로, 셰이더 메타데이터, 공개 소스의 개발 PC 절대경로를 정리했습니다. 실행 코드와 기존 셰이더/PSO 바이트는 유지합니다.
+- 프로그램·한국어 팩·추가 텍스트팩은 0.3.12입니다. 런처 0.3.9와 영어 기반팩 0.3.8을 사용합니다.
+- 기존 런처에서 선택한 언어로 플레이/업데이트를 실행하세요. 실제 게임 화면의 전체 잘림/줄 간격 검수는 진행 중입니다.
+
+English
+- Adds 154 missing Korean aircraft, equipment and character display strings. The corresponding English/Russian/Spanish strings were checked in the selected release inputs.
+- Includes the Python setup detection fix and Russian v7 shop/guild text improvements.
+- Removes local build-machine paths from game debug metadata, shader metadata and public source. Executable instructions and shader/PSO payload bytes are unchanged.
+- Program, Korean pack and additional text packs: 0.3.12. Launcher: 0.3.9; English base pack: 0.3.8.
+- Use Play/Update in your existing launcher. Full in-game clipping/line-spacing review remains ongoing.

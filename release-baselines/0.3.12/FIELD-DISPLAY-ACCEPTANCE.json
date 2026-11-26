@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "public_launcher_bridge": "0.3.9",
+  "program_stage_and_inspect": true,
+  "language_installer_and_update_status": [
+    "ko-KR",
+    "en-US"
+  ],
+  "additional_pack_imports": [
+    "ru-RU",
+    "es-ES",
+    "en-US"
+  ],
+  "english_base_profile_verified": true,
+  "english_correction_overlay_retains_mania_club_both_routes": true,
+  "source_hardlink_contents_unchanged": true,
+  "synthetic_saves_settings_unchanged": true,
+  "game_started": false,
+  "full_gui_update_tested": false,
+  "visual_check": "pending"
+}

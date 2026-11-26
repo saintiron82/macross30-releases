@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "public_launcher_bridge": "0.3.9",
+  "program_extract_stage_inspect": true,
+  "runtime_status": 2,
+  "korean_package_extract_and_actual_installer_readback": true,
+  "korean_strings": 154,
+  "korean_update_detected": true,
+  "same_data_id_different_elf_detected": true,
+  "public_font_verified": true,
+  "font_missing": 0,
+  "text_pack_imports": 3,
+  "old_guard_rejections": 3,
+  "failed_imports_leave_no_install": true,
+  "synthetic_saves_settings_unchanged": true,
+  "game_started": false,
+  "full_gui_update_tested": false,
+  "game_exe_sha256": "60500703c9a3c0babfb602c5d28e79ad69b6ef139b5f35ce5c3e473cc993f50c"
+}

@@ -1,5 +1,5 @@
 {
-  "version": "0.3.10",
+  "version": "0.4.0",
   "mode": "user-original-eboot",
   "min_launcher_version": "0.3.9",
   "source_only": false,
@@ -15,28 +15,28 @@
   },
   "files": {
     "program": {
-      "file": "Macross30-program-0.3.10.zip",
-      "bytes": 76155998,
-      "sha256": "be3883ce5ac67e76469451d76f5f58d505f2900e3e14a1d07d830d28885919e4",
-      "exe_sha256": "aa3a89cd8f61ac998fae8995b741c061dcfbf10931b9bab1e095720e1368a2ab"
+      "file": "Macross30-program-0.4.0.zip",
+      "bytes": 80025920,
+      "sha256": "d3e088fecb6d3ad4375fc7ce2ccd09139683d5e4107d2ee6f0a182ae6ac260c8",
+      "exe_sha256": "833d786470f25124be8a15578bcebc868400a414ac7166e9bddc659fb9814849"
     }
   },
   "language_packs": {
     "ko-KR": {
-      "file": "Macross30-language-ko-KR-0.3.8.zip",
-      "bytes": 52459877,
-      "sha256": "1ae56993565407e5ca73f7b0883c21472a94423c9da2e6e2419fa25e6a90cb8b",
-      "data_id": "f3abc4733dc1e658",
-      "elf_sha256": "3e29d7c62adbabf2c7ae1e8799737cbdf16617d8b87958daeed298364aff1a0b",
-      "plan_sha256": "f3abc4733dc1e658f56a2f26ad176e3f58fcd2031c8aef894ac67c0e827f12b4"
+      "file": "Macross30-language-ko-KR-0.4.0.zip",
+      "bytes": 59068116,
+      "sha256": "6f22dfda6ea6ee53d8541a251cbad8924197b060f99de34a2b950e15534b827f",
+      "data_id": "cadef07b1e8efa40",
+      "elf_sha256": "5a542d106130634ece688fb4e3afb0a16a884eae9d638f88aab3319d7462d2fd",
+      "plan_sha256": "cadef07b1e8efa4030c7c5109012240eedd658428896ab68cd77b9cbaaa9eed7"
     },
     "en-US": {
-      "file": "Macross30-language-en-US-0.3.8.zip",
-      "bytes": 34928069,
-      "sha256": "4816978693aad12e9eea2b9c8e2fc38a7f80b889220ee6d5736aecbc83404ec2",
-      "data_id": "4bb220cd0999f5c8",
+      "file": "Macross30-language-en-US-0.4.0.zip",
+      "bytes": 34940859,
+      "sha256": "57f6b512deecfe98aba6f0c1731105d446d4cbfa0d684e794d80c899b97d7c56",
+      "data_id": "3cde72ab74b20e7c",
       "elf_sha256": "40437d598dd00f4aaadb18675ec8351452b2bfcf662e0d1075df03b3d61036ba",
-      "plan_sha256": "4bb220cd0999f5c800afc26ffe0f4182a772f29662232e73e515bbe8ae3db65e"
+      "plan_sha256": "3cde72ab74b20e7c358d0221f934d7c7c4928ccc8766a670b62d8354db3959ec"
     }
   },
   "base_language": {
@@ -47,9 +47,11 @@
   },
   "features": {
     "fps_unlock": {
-      "available": false,
-      "status": "under_repair",
-      "enforced_cap": 30
+      "available": true,
+      "status": "available",
+      "default_cap": 30,
+      "live_toggle": true,
+      "elapsed_time_correction": true
     },
     "render_resolutions": [
       [
@@ -97,31 +99,61 @@
       "schema": 1,
       "base_locale": "en-US",
       "runtime_version": "0.3.9",
-      "runtime_release_version": "0.3.10"
+      "runtime_release_version": "0.4.0"
+    },
+    "fps_limit": {
+      "available": true,
+      "choices": [
+        30,
+        60,
+        0
+      ],
+      "unlimited_value": 0,
+      "default_cap": 30,
+      "live_toggle": true,
+      "setting": "fps_limit",
+      "legacy_setting": "fps_unlock"
+    },
+    "vibration": {
+      "available": true,
+      "strength_percent": [
+        0,
+        200
+      ],
+      "default_strength_percent": 100
+    },
+    "mouse_control": {
+      "available": true,
+      "default_enabled": false,
+      "sensitivity": [
+        0.01,
+        8.0
+      ],
+      "live_toggle": true
     }
   },
   "locale_packs": {
     "ru-RU": {
-      "file": "Macross30-text-ru-RU-0.3.11.zip",
-      "bytes": 2367889,
-      "sha256": "dc6534422d3fb3bdc3a10dff6f44e43c4f1ebc215cc488dedd184f8dd3559e61",
-      "manifest_sha256": "765b805565ca15aa502f4b755b80c4f412379cdfa5d91e2a1a4e3daa4e23e1a6",
+      "file": "Macross30-text-ru-RU-0.4.0.zip",
+      "bytes": 2368054,
+      "sha256": "f5083e431772bba590580e302e26951fd0c039c1952d2a50a5c9af5e6111327b",
+      "manifest_sha256": "ef93def4dab9dc2c96ca9f90ba9b778a431f27415c085b0f1d572596fc20e7cc",
       "label": "Русский",
-      "text_revision": "v6-r2"
+      "text_revision": "v7"
     },
     "es-ES": {
-      "file": "Macross30-text-es-ES-0.3.10.zip",
-      "bytes": 2274419,
-      "sha256": "10a4d9feda8bd7cc2ba19cf616ee60648dd0c992974abbca67dce139fbd6ec33",
-      "manifest_sha256": "9d2da238affdb19720333d35a8f07c1dac2de4eaae83198218888ab5412148f8",
+      "file": "Macross30-text-es-ES-0.4.0.zip",
+      "bytes": 2274617,
+      "sha256": "5af3808e93c653a8746cf5f67978cfb822eb17ea9af35623871d0219b2a84513",
+      "manifest_sha256": "d655b942190e5bcf4d87b7b3197a883e609c5901d7cdb1a7e5319e578ce99842",
       "label": "Español",
       "text_revision": "v3"
     },
     "en-US": {
-      "file": "Macross30-text-en-US-0.3.10.zip",
-      "bytes": 2079946,
-      "sha256": "7d0719aa31774626face4c4033364c25c3c7b2db85ff7d29fdf2e329fdf3a451",
-      "manifest_sha256": "fc9b558a3c8ed8f9487e230c423e9ab30698fb5395d4c4a667c3bf57047f1611",
+      "file": "Macross30-text-en-US-0.4.0.zip",
+      "bytes": 2080151,
+      "sha256": "2df332145eab50aeec7c1dec32a547e78457e2a7291998c89b71344052759db4",
+      "manifest_sha256": "c56cb35eb4d1dc0329d4837c084e5e33c2d511518d54274e9273ad42515726b9",
       "label": "English",
       "text_revision": "corrections-1980"
     }
