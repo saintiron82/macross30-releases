@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-26T14:40:11.124641+00:00",
+  "updated_at": "2026-11-26T16:45:01.519466+00:00",
   "closed": false,
   "default_language": "ko",
   "message": {
@@ -13,7 +13,7 @@
       "version": "0.4.0"
     },
     "launcher": {
-      "version": "0.3.9"
+      "version": "0.3.10"
     },
     "language_packs": {
       "ko-KR": {
@@ -55,6 +55,21 @@
     }
   ],
   "patch_notes": [
+    {
+      "id": "launcher-0.3.10",
+      "component": "launcher",
+      "version": "0.3.10",
+      "title": {
+        "ko": "런처 0.3.10 · 실행 버전 선택",
+        "en": "Launcher 0.3.10 · Game version selection",
+        "ja": "ランチャー0.3.10 · 実行バージョン選択"
+      },
+      "body": {
+        "ko": "설치된 게임과 다음 실행 버전을 확인하고, 이 PC에 보관된 게임과 언어팩으로 전환할 수 있습니다.",
+        "en": "See the installed and next game versions, and switch using game files and language packs kept on this PC.",
+        "ja": "導入済みのゲームと次に起動するバージョンを確認し、保存済みのゲームと言語パックを切り替えられます。"
+      }
+    },
     {
       "id": "game-0.4.0",
       "component": "game",

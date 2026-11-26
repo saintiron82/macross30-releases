@@ -67,12 +67,20 @@ class BackendTests(unittest.TestCase):
             self.assertFalse(any(Path(td).glob('.launcher-update-*')))
 
     def fixture(self):
+        # This fixture replaces all archive/installer I/O with a fake cache.
+        # Real version migration and bootstrap files are tested separately.
+        for name in ('sync_bootstrap','begin_transition'):
+            mocked=patch('backend.release_selection.'+name,return_value={})
+            mocked.start();self.addCleanup(mocked.stop)
         temporary = tempfile.TemporaryDirectory(prefix='macross-python-test-')
         self.addCleanup(temporary.cleanup)
         calls = []
         backend = Backend('unused', Path(temporary.name) / 'settings.json',
                           confirm=lambda data: calls.append('approve') or True)
         backend.config.update(folder=temporary.name, game_language='en-US')
+        original=Path(temporary.name)/'original.iso';original.write_bytes(b'installer fixture, never opened')
+        backend.config['iso']=str(original)
+        backend.prepare_disc=lambda program:str(original)
         backend.manifest = {'version': '0.3.1', 'files': {'program': {'file': 'game'}},
                             'language_packs': {'en-US': {'file': 'Macross30-language-en-US-0.3.1.zip'}}}
         backend.status, backend.stale = copy.deepcopy(STATUS), False
@@ -98,6 +106,35 @@ class BackendTests(unittest.TestCase):
     def test_independent_versions(self):
         self.assertEqual(update_plan(dict(runtime_status=2, language_status=0), 'en-US'), dict(core=False, language=True))
         self.assertEqual(update_plan(dict(runtime_status=1, language_status=2), 'ja-JP'), dict(core=True, language=False))
+
+    def test_missing_original_disc_cannot_partially_switch_runtime(self):
+        backend, _, calls=self.fixture();backend.config['iso']=''
+        backend.choose_iso=lambda:None
+        backend.play()
+        self.assertNotIn('stage',calls)
+        self.assertNotIn('launch',calls)
+        self.assertFalse(backend.busy)
+
+    def test_failed_disc_preparation_cannot_partially_switch_runtime(self):
+        backend, _, calls=self.fixture()
+        backend.prepare_disc=lambda program: (_ for _ in ()).throw(ValueError('disc preparation failed'))
+        with self.assertRaisesRegex(ValueError,'disc preparation failed'):backend.play()
+        self.assertNotIn('stage',calls)
+        self.assertNotIn('language-install',calls)
+        self.assertNotIn('launch',calls)
+        self.assertFalse(backend.busy)
+
+    def test_installer_rejects_empty_directory_and_invalid_prepared_iso(self):
+        backend, _, _=self.fixture()
+        with patch('backend.external_popen') as start:
+            for source in ('','.',backend.config['folder']):
+                backend.config['iso']=source
+                with self.assertRaises(ValueError):Backend.installer(backend,'program','payload',True)
+            source=Path(backend.config['folder'])/'original.iso'
+            backend.config['iso']=str(source)
+            backend.prepare_disc=lambda program:'.'
+            with self.assertRaises(ValueError):Backend.installer(backend,'program','payload',True)
+            start.assert_not_called()
 
     def test_one_approval_update_language_launch(self):
         backend, installed, calls = self.fixture()

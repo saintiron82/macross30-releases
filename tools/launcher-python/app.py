@@ -83,7 +83,7 @@ class Launcher(tk.Tk):
         self.last_transfer = None
         self.last_install_line = ''
         self.self_current = False
-        self.title('Macross 30 Launcher ' + VERSION)
+        self.title('Macross 30 Launcher ' + VERSION + (' [Test]' if getattr(args,'test_session',False) else ''))
         self.configure(bg=BG)
         self.geometry('1030x770')
         self.minsize(900, 735)
@@ -172,7 +172,23 @@ class Launcher(tk.Tk):
             action()
 
     def words(self):
-        return TEXT[self.state['config']['ui_language']]
+        words=TEXT[self.state['config']['ui_language']]
+        selected=self.state['config'].get('game_release','latest')
+        if selected!='latest':
+            words=dict(words,confirm=words['releaseConfirm'].format(version=selected))
+        return words
+
+    def next_game(self):
+        installed=self.state['installed'].get('installed_version','')
+        if self.backend.workspace_root:
+            return installed
+        return (self.state.get('manifest') or {}).get('version') or ''
+
+    def launch_summary(self):
+        w=self.words()
+        target=self.next_game() or w['unknown']
+        mode=w['autoMode'] if self.state['config'].get('game_release','latest')=='latest' else w['pinnedMode']
+        return w['nextGame'].format(version=target)+' · '+mode
 
     def label(self, parent, **kwargs):
         options = {'bg': BG, 'fg': DIM}
@@ -225,6 +241,8 @@ class Launcher(tk.Tk):
         self.play.grid(row=0, column=1, rowspan=3, sticky='e', pady=(0, 12))
         self.options_button = self.link(controls, self.options_clicked, font=('Segoe UI', -13))
         self.options_button.grid(row=3, column=1, sticky='e')
+        self.release_button=self.link(controls,self.release_clicked,font=('Segoe UI',-13))
+        self.release_button.grid(row=4,column=1,sticky='e')
         self.local_partial = tk.BooleanVar(value=False)
         self.local_partial_check = ttk.Checkbutton(controls, text='부분 테스트 팩 허용 · 미번역 내용은 대체 언어 사용',
             variable=self.local_partial, command=lambda: self.backend.allow_local_preview(self.local_partial.get()))
@@ -319,7 +337,8 @@ class Launcher(tk.Tk):
 
     def draw_hero(self, width=None):
         width = max(900, width or self.hero.winfo_width())
-        hero_state = (width, self.state['config']['ui_language'], self.state['installed'].get('installed_version'), (self.state.get('manifest') or {}).get('version'), self.checking)
+        last_version=(self.state.get('last_session') or {}).get('game_version')
+        hero_state = (width, self.state['config']['ui_language'], self.state['installed'].get('installed_version'), self.launch_summary(), last_version, self.checking)
         if getattr(self, '_hero_state', None) == hero_state:
             return
         self._hero_state = hero_state
@@ -338,9 +357,10 @@ class Launcher(tk.Tk):
         current = installed.get('installed_version', '')
         if not re.search(r'\d+\.\d+\.\d+', current):
             current = w['missing']
-        latest = (self.state.get('manifest') or {}).get('version', w['unknown'])
-        self.outlined(350, 29, w['game']+' '+current, ('Segoe UI', -13), tags='drawing')
-        self.outlined(350, 50, w['latest']+' '+latest, ('Segoe UI', -13), tags='drawing')
+        self.outlined(350, 29, w['installedGame'].format(version=current), ('Segoe UI', -13), tags='drawing')
+        if last_version and not self.backend.workspace_root:
+            self.outlined(350, 50, w['lastGame'].format(version=last_version), ('Segoe UI', -13), tags='drawing')
+        self.outlined(350, 76, self.launch_summary() if not self.backend.workspace_root else w['game']+' '+self.next_game(), ('Segoe UI', -15,'bold'), fill=GOLD,tags='drawing')
         self.outlined(550, 40, w['unknown'] if self.checking else w['check'], ('Segoe UI', -13), tags=('drawing', 'check'))
         self.hero.tag_bind('check', '<Button-1>', lambda _: self.check_clicked())
         self.hero.tag_bind('check', '<Enter>', lambda _: self.hero.configure(cursor='hand2'))
@@ -354,14 +374,21 @@ class Launcher(tk.Tk):
                                   tags=('drawing', tag))
             self.hero.tag_bind(tag, '<Button-1>', lambda _, action=command: action())
 
-    def needs_update(self):
-        return bool(self.state['manifest'] and any(update_plan(self.state['installed'], self.state['config']['game_language']).values()))
-
     def render(self):
         w, config, installed = self.words(), self.state['config'], self.state['installed']
         locked = self.worker_active or self.state['busy'] or self.state['running']
         locks = launcher_control_locks(bool(self.backend.workspace_root), self.worker_active, self.readonly_worker, self.state['busy'], self.state['running'], self.state.get('local_verified',False))
         settings_locked = locks['settings']
+        self.release_button.configure(text=w['releaseChoose'],state='disabled' if settings_locked or self.backend.workspace_root else 'normal')
+        if getattr(self,'release_window',None) and self.release_window.winfo_exists() and self.release_online:
+            choices=self.state.get('game_releases',['latest'])
+            selected=self.release_value.get()
+            self.release_ids=choices
+            self.release_combo.configure(values=[w['releaseLatest'] if v=='latest' else v for v in choices])
+            if choices:
+                index=choices.index(selected) if selected in choices else 0
+                self.release_combo.current(index)
+                self.release_value.set(choices[index])
         self.ui_language.current(('ko', 'en', 'ja').index(config['ui_language']))
         rows = self.state.get('local_packs') if self.backend.workspace_root else None
         if rows:
@@ -392,7 +419,21 @@ class Launcher(tk.Tk):
         self.ui_language.configure(state='disabled' if settings_locked else 'readonly')
         self.locale.configure(state='disabled' if settings_locked else 'readonly')
         self.play.enabled = not locks['play']
-        self.play.text = w['running'] if self.state['running'] else w['working'] if self.state['busy'] else w['unknown'] if self.checking else w['update']+'  ↓' if self.needs_update() else w['play']+'  ▶'
+        plan = update_plan(installed, config['game_language']) if self.state['manifest'] else {}
+        if self.state['running']:
+            self.play.text = w['running']
+        elif self.state['busy']:
+            self.play.text = w['working']
+        elif self.checking:
+            self.play.text = w['unknown']
+        elif self.state.get('local_switch'):
+            self.play.text=w['switchAndPlay'].format(version=self.next_game())
+        elif plan.get('core'):
+            self.play.text = w['updateToGame'].format(version=self.next_game())
+        elif plan.get('language'):
+            self.play.text = w['updatePack' if installed.get('language_ready') else 'installPack']
+        else:
+            self.play.text = (w['play']+' '+self.next_game()).strip()+'  ▶'
         self.play.draw()
         locale = config['game_language']
         if self.backend.workspace_root:
@@ -406,9 +447,11 @@ class Launcher(tk.Tk):
                 version = '—' if installed.get('language_ready') else w['missing']
             channel = self.state['manifest'] or {}
             latest = version_from((channel.get('locale_packs') or {}).get(locale) or (channel.get('language_packs') or {}).get(locale, {})) or w['unknown']
-            version_text = w['pack']+' '+version+' · '+w['latest']+' '+latest
+            version_text = w['packInstalled'].format(version=version)
+            if latest != version or plan.get('language'):
+                version_text += ' · '+w['packRequired'].format(version=latest)
         self.language_version.configure(text=version_text)
-        status = w['unknown'] if self.checking else w['needsUpdate'] if self.message_key == 'ready' and self.needs_update() else w.get(self.message_key, self.message_key)
+        status = w['unknown'] if self.checking else w['switchLocal'] if self.state.get('local_switch') and not locked else w['needsUpdate'] if self.message_key == 'ready' and any(plan.values()) else w.get(self.message_key, self.message_key)
         active = not self.state['running'] and (self.state['busy'] or (self.worker_active and not self.checking))
         if self.last_transfer and active:
             transfer = self.last_transfer
@@ -648,6 +691,49 @@ class Launcher(tk.Tk):
 
     def pick_iso_path(self):
         return filedialog.askopenfilename(parent=self, filetypes=[('PS3 ISO', '*.iso')])
+
+    def release_clicked(self, online=False):
+        if self.worker_active or self.state['busy'] or self.state['running'] or self.backend.workspace_root:return
+        if getattr(self,'release_window',None) and self.release_window.winfo_exists():
+            self.release_window.lift();return
+        w=self.words();window=tk.Toplevel(self);self.release_window=window
+        self.release_online=online
+        window.title(w['getRelease'] if online else w['releaseChoose']);window.configure(bg=BG);window.resizable(False,False)
+        window.transient(self)
+        self.release_ids=self.state.get('game_releases',[]) if online else self.backend.installed_game_releases()
+        help_text=w['releaseHelp'] if online else w['localReleaseHelp'] if self.release_ids else w['noInstalledRelease']
+        self.label(window,text=self.launch_summary(),fg=GOLD).pack(padx=24,pady=(16,0),anchor='w')
+        self.label(window,text=help_text,wraplength=450,justify='left').pack(padx=24,pady=(20,14),anchor='w')
+        initial=self.state['config'].get('game_release','latest')
+        self.release_value=tk.StringVar(value=initial)
+        self.release_combo=ttk.Combobox(window,state='readonly',width=39,
+            values=[w['releaseLatest'] if v=='latest' else v for v in self.release_ids])
+        selected=self.release_value.get()
+        if self.release_ids:
+            index=self.release_ids.index(selected) if selected in self.release_ids else 0
+            self.release_combo.current(index)
+            self.release_value.set(self.release_ids[index])
+        self.release_combo.pack(padx=24,fill='x')
+        self.release_combo.bind('<<ComboboxSelected>>',lambda _:
+            self.release_value.set(self.release_ids[self.release_combo.current()]))
+        row=tk.Frame(window,bg=BG);row.pack(padx=24,pady=20,fill='x')
+        def open_downloads():
+            if self.worker_active:return
+            window.destroy()
+            self.release_clicked(online=True)
+        if online:
+            self.link(row,lambda:self.run(self.backend.load_game_releases),text=w['releaseRefresh']).pack(side='left')
+        else:
+            self.link(row,open_downloads,text=w['getRelease']).pack(side='left')
+        def apply():
+            if self.worker_active or self.state['busy'] or self.state['running']:return
+            value=self.release_value.get()
+            if value not in self.release_ids:return
+            window.destroy()
+            self.run(lambda:self.backend.select_game_release(value))
+        if online or self.release_ids:
+            self.link(row,apply,text=w['releaseApply'],fg=GOLD).pack(side='right')
+        if online:self.run(self.backend.load_game_releases)
 
     def options_clicked(self):
         if self.backend.workspace_root and self.state['running']:return
@@ -976,6 +1062,7 @@ def main():
     parser.add_argument('--channel-dir', help=argparse.SUPPRESS)
     parser.add_argument('--text-pack-check', help=argparse.SUPPRESS)
     parser.add_argument('--config')
+    parser.add_argument('--test-session', action='store_true', help=argparse.SUPPRESS)
     parser.add_argument('--update-health')
     parser.add_argument('--skip-launcher-update', action='store_true', help=argparse.SUPPRESS)
     parser.add_argument('--acceptance', action='store_true', help=argparse.SUPPRESS)
@@ -986,6 +1073,8 @@ def main():
     parser.add_argument('--iso-capture',help=argparse.SUPPRESS)
     parser.add_argument('--report-acceptance', action='store_true', help=argparse.SUPPRESS)
     args = parser.parse_args()
+    if args.test_session and (not args.config or not args.channel_dir):
+        parser.error('Test session requires isolated config and staged metadata')
     if args.text_pack_check:
         if not args.config or not args.report or not args.channel_dir:
             parser.error('Text-pack check requires --config, --report and --channel-dir')
@@ -1027,7 +1116,7 @@ def main():
             result={'ok':True,'info':backend.inspect_iso()}
             if args.iso_prepare:
                 if not args.program:parser.error('ISO preparation requires a verified program directory')
-                result['prepared']=backend.prepare_disc(args.program)
+                result['prepared']=backend.installation_iso(args.program)
         except Exception as error:result={'ok':False,'error':str(error)}
         Path(args.report).write_text(json.dumps(result,indent=2),encoding='utf-8')
         raise SystemExit(0 if result['ok'] else 1)
@@ -1048,7 +1137,11 @@ def main():
     except (AttributeError, OSError):
         pass
     # A single instance avoids competing installers or a self-update replacing an open launcher.
-    mutex = ctypes.windll.kernel32.CreateMutexW(None, False, 'Local\\Macross30PythonLauncherLocal' if detect_workspace_root() else 'Local\\Macross30PythonLauncher') if os.name == 'nt' and not args.preview else None
+    mutex_name='Local\\Macross30PythonLauncherLocal' if detect_workspace_root() else 'Local\\Macross30PythonLauncher'
+    if args.test_session:
+        import hashlib
+        mutex_name+='Test-'+hashlib.sha256(str(Path(args.config).resolve()).encode('utf8')).hexdigest()[:20]
+    mutex = ctypes.windll.kernel32.CreateMutexW(None, False, mutex_name) if os.name == 'nt' and not args.preview else None
     if mutex and ctypes.windll.kernel32.GetLastError() == 183:
         return
     try:

@@ -19,6 +19,8 @@ import uuid
 import graphics_prep
 import launch_options
 import network_tls
+import release_selection
+import local_versions
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'local_build'))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'play'))
 import aircraft_hd
@@ -26,7 +28,7 @@ import aircraft_hd
 BASE = 'https://github.com/saintiron82/macross30-releases/releases/latest/download/'
 METADATA_BASE = 'https://raw.githubusercontent.com/saintiron82/macross30-releases/main/channels/stable/'
 LOCALES = ('ko-KR', 'en-US', 'ja-JP')
-VERSION = '0.3.9'
+VERSION = '0.3.10'
 REPORT_ENDPOINT = 'https://macross30-log-relay.saintiron82.workers.dev'
 NO_WINDOW = getattr(subprocess, 'CREATE_NO_WINDOW', 0)
 EXTERNAL_PROCESS_LOCK = threading.Lock()
@@ -133,7 +135,10 @@ class Backend:
         self.last_log = None
         self.logs = []
         self.config = {'folder': str(Path(os.environ.get('LOCALAPPDATA', tempfile.gettempdir())) / 'Macross30'),
-                       'iso': '', 'disc_key': '', 'game_language': 'ja-JP', 'ui_language': 'ko'}
+                       'iso': '', 'disc_key': '', 'game_language': 'ja-JP', 'ui_language': 'ko', 'game_release':'latest'}
+        self.release_choices=[]
+        self.local_switch=False
+        self.local_archive_checks={}
         self.iso_info=None
         self.iso_hash_cache={}
         self.prepared_iso=None
@@ -150,6 +155,8 @@ class Backend:
         if self.workspace_root:self.config['folder']=str(self.workspace_root/'native')
         if self.config['ui_language'] not in ('ko', 'en', 'ja'):
             self.config['ui_language'] = 'ko'
+        try:release_selection.selection(self.config['game_release'])
+        except ValueError:self.config['game_release']='latest'
         try:
             self.status = self.validate_status(json.loads(self.config_path.with_name('status-cache.json').read_text(encoding='utf-8-sig')))
         except (OSError, ValueError):
@@ -328,8 +335,14 @@ class Backend:
         if self.channel_dir:
             if Path(name).name != name or not re.fullmatch(r'[A-Za-z0-9_.-]+', name):
                 raise ValueError('Invalid test-channel asset name')
-            return child(self.channel_dir, name).open('rb')
-        if name in ('BOOT-INSTALL.json', 'STATUS.json', 'PYTHON-LAUNCHER.json', 'LAUNCHER.json'):
+            selected=self.config.get('game_release','latest')
+            local=child(self.channel_dir/('versions/'+selected),name) if name=='BOOT-INSTALL.json' and selected!='latest' else child(self.channel_dir,name)
+            if local.is_file():return local.open('rb')
+            if selected=='latest' or name in ('STATUS.json','PYTHON-LAUNCHER.json','LAUNCHER.json'):
+                return local.open('rb')
+        if name=='BOOT-INSTALL.json':
+            url=release_selection.manifest_url(self.config.get('game_release','latest'))
+        elif name in ('STATUS.json', 'PYTHON-LAUNCHER.json', 'LAUNCHER.json'):
             url = METADATA_BASE + name
         else:
             version = re.search(r'-(\d+\.\d+\.\d+)\.(?:zip|exe)$', name)
@@ -400,7 +413,55 @@ class Backend:
                                       language_status=2 if base_ready and pack['ready'] and pack['current'] and allowed else 0,
                                       language_version=pack.get('version', ''), text_pack_error=pack.get('error'))
                 self.local_allow_partial = self.portable_consent(pack)
+        self.local_switch=False
+        if self.manifest:
+            locale=self.config['game_language']
+            portable=self.portable_target(locale)
+            base=self.bridge('inspect',locale='en-US',manifest=self.manifest) if portable else self.installed
+            plan=update_plan(base,'en-US' if portable else locale)
+            self.local_switch=any(plan.values()) and self.local_inputs(plan,'en-US' if portable else locale)
+            if portable and not (pack['ready'] and pack['current']):
+                self.local_switch=False
         return self.installed
+
+    def local_inputs(self,plan,locale):
+        root=Path(self.config['folder'])
+        def archive(row):
+            digest=row.get('sha256','')
+            if not re.fullmatch('[0-9a-f]{64}',digest):return False
+            candidates=[child(root,'.local-build/downloads/'+digest+'.zip')]
+            if self.channel_dir:candidates.append(child(self.channel_dir,row['file']))
+            for path in candidates:
+                if not path.is_file():continue
+                stat=path.stat()
+                if stat.st_size!=row.get('bytes'):continue
+                stamp=(stat.st_mtime_ns,stat.st_ctime_ns,stat.st_size,stat.st_ino,digest)
+                if self.local_archive_checks.get(path)==stamp:return True
+                if sha(path)==digest:
+                    self.local_archive_checks[path]=stamp
+                    return True
+            return False
+        core=self.manifest['files']['program']
+        if plan['core'] and not (local_versions.program_for(root,core) or archive(core)):return False
+        if plan['language']:
+            row=self.manifest['language_packs'][locale]
+            return local_versions.retained(root,locale,row) or archive(row)
+        return True
+
+    def obtain_program(self,row,**options):
+        cached=local_versions.program_for(self.config['folder'],row,verify=True)
+        if cached:return cached
+        return self.bridge('extract',archive=str(self.download(row)),artifact=row,**options)['path']
+
+    def apply_language(self,program,locale,row):
+        def install():
+            archive=self.download(row)
+            payload=self.bridge('extract-language',locale=locale,archive=str(archive),artifact=row)['path']
+            self.installer(program,payload,language_only=True,locale=locale)
+        import portable_locale
+        with portable_locale.stopped(Path(self.config['folder'])):
+            local_versions.switch_language(self.config['folder'],locale,row,install)
+        self.bridge('record-language',locale=locale,version=version_from(row))
 
     def portable_target(self, locale=None):
         if self.workspace_root:
@@ -421,9 +482,10 @@ class Backend:
                               'running': self.running, 'checked_at': self.checked_at, 'version': VERSION,
                               'last_session': self.last_session(), 'workspace_root': str(self.workspace_root) if self.workspace_root else None,
                               'local_packs': self.local_packs, 'local_allow_partial': self.local_allow_partial,
-                              'local_checking': self.local_checking, 'local_verified': self.local_verified})
+                              'local_checking': self.local_checking, 'local_verified': self.local_verified,
+                              'game_releases':self.release_choices,'local_switch':self.local_switch})
 
-    def check(self):
+    def check(self,refresh_status=True):
         if self.workspace_root:
             with self.local_state_lock:
                 if self.local_checking:return self.snapshot()
@@ -443,11 +505,19 @@ class Backend:
             return self.snapshot()
         self.event('checking', value=True)
         try:
-            self.check_status()
-            manifest = self.json('BOOT-INSTALL.json')
+            if refresh_status:self.check_status()
+            pin=self.config.get('game_release','latest')
+            cached=child(self.config['folder'],'.local-build/release-metadata/'+pin+'.json')
+            manifest = local_versions.read(cached) if pin!='latest' and cached.is_file() else self.json('BOOT-INSTALL.json')
             self.bridge('validate', manifest=manifest)
+            selected=self.config.get('game_release','latest')
+            if selected!='latest' and manifest['version']!=selected:
+                raise ValueError('Release metadata does not match the selected game version.')
             import portable_locale
             portable_locale.metadata(manifest)
+            version=release_selection.selection(manifest['version'])
+            if Path(self.config['folder']).is_dir():
+                local_versions.write(child(self.config['folder'],'.local-build/release-metadata/'+version+'.json'),manifest)
             self.manifest = manifest
             self.checked_at = time.time()
             if not self.running:
@@ -462,17 +532,42 @@ class Backend:
             if self.busy or self.running:
                 raise RuntimeError('Wait for the current operation')
             for key, value in changes.items():
-                if key not in ('folder', 'iso', 'disc_key', 'game_language', 'ui_language') or not isinstance(value, str) or '\0' in value:
+                if key not in ('folder', 'iso', 'disc_key', 'game_language', 'ui_language', 'game_release') or not isinstance(value, str) or '\0' in value:
                     raise ValueError('Invalid setting')
+                if key=='game_release':release_selection.selection(value)
                 supported = tuple(p['locale'] for p in self.local_packs if p.get('locale'))
                 if key == 'game_language' and value not in (supported if self.workspace_root else LOCALES + supported) or key == 'ui_language' and value not in ('ko', 'en', 'ja'):
                     raise ValueError('Unsupported language')
             if changes.get('game_language') != self.config['game_language'] and 'game_language' in changes:
                 self.local_allow_partial=False
+            if 'folder' in changes and Path(changes['folder']).resolve() != Path(self.config['folder']).resolve():
+                self.config['game_release']='latest'
+                self.manifest=None
             self.config.update(changes)
+            if 'game_release' in changes:
+                self.manifest=None
             self.save()
             self.inspect()
             self.event('state', state=self.snapshot())
+
+    def installed_game_releases(self):
+        state=self.inspect()
+        version=state.get('installed_version')
+        versions=[version] if state.get('core_ready') and isinstance(version,str) and release_selection.VERSION.fullmatch(version) else []
+        return list(dict.fromkeys([*versions,*local_versions.programs(self.config['folder'])]))
+
+    def load_game_releases(self):
+        self.release_choices=release_selection.catalog(self.opener)
+        self.event('state',state=self.snapshot())
+        return self.release_choices
+
+    def select_game_release(self,value):
+        if self.workspace_root:raise RuntimeError('Release selection is unavailable for development workspaces')
+        release_selection.selection(value)
+        self.bridge('stopped')
+        self.settings(game_release=value)
+        cached=child(self.config['folder'],'.local-build/release-metadata/'+value+'.json')
+        return self.check(refresh_status=value=='latest' or not cached.is_file())
 
     def iso_tools(self):
         return self.bridge_path.parent/'iso-tools' if getattr(sys,'frozen',False) else Path(__file__).resolve().parents[2]/'.tools/iso-tools'
@@ -577,16 +672,26 @@ class Backend:
             pending.unlink(missing_ok=True)
         return target
 
+    def installation_iso(self, program):
+        from i18n import TEXT
+        words=TEXT[self.config['ui_language']]
+        source=self.config.get('iso','')
+        if not source or not Path(source).is_file():
+            raise ValueError(words['isoNoFile']+' '+words['isoChoose'])
+        prepared=self.prepare_disc(program)
+        if not prepared or not Path(prepared).is_file():
+            raise ValueError(words['isoCacheInvalid'])
+        return str(Path(prepared).resolve())
+
     def installer(self, program, payload, language_only=False, locale=None):
         locale = locale or self.config['game_language']
         root = Path(self.config['folder'])
-        prepared_iso=self.prepare_disc(program) if self.config['iso'] and Path(self.config['iso']).is_file() else self.config['iso']
+        prepared_iso=self.installation_iso(program)
         entry = Path(program) / 'tools/local_build' / ('install_language.ps1' if language_only else 'install_prebuilt.ps1')
         args = [str(Path(os.environ.get('SystemRoot', 'C:/Windows')) / 'System32/WindowsPowerShell/v1.0/powershell.exe'),
                 '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', str(entry),
                 '-Root', str(root), '-Payload', str(payload), '-Language', locale if language_only else 'ja-JP']
-        if prepared_iso:
-            args += ['-Iso', prepared_iso]
+        args += ['-Iso', prepared_iso]
         if not language_only:
             args += ['-Program', str(program), '-ReleaseVersion', self.manifest['version']]
         logs = child(root, 'play')
@@ -689,6 +794,11 @@ class Backend:
 
     def play(self):
         if self.workspace_root:return self.play_local()
+        root=Path(self.config['folder'])
+        for language in ('en-US','ko-KR'):
+            if child(root,'.local-build/retained-languages/'+language+'/pending.json').is_file():
+                import portable_locale
+                with portable_locale.stopped(root):local_versions.recover(root,language)
         if self.portable_target():return self.play_portable()
         if self.busy or self.running:
             return
@@ -707,7 +817,13 @@ class Backend:
                 self.require_disc(self.inspect_iso())
             locale = self.config['game_language']
             plan = update_plan(self.installed, locale) if self.manifest else {'core': False, 'language': False}
-            if any(plan.values()):
+            needs_disc=plan['language'] and not local_versions.retained(self.config['folder'],locale,self.manifest['language_packs'][locale])
+            if needs_disc and (not self.config['iso'] or not Path(self.config['iso']).is_file()):
+                selected=self.choose_iso()
+                if not selected:return
+                self.config['iso']=selected;self.save()
+                self.require_disc(self.inspect_iso())
+            if any(plan.values()) and not self.local_inputs(plan,locale):
                 self.check_status()
                 if self.stale or self.status['closed']:
                     raise RuntimeError('Service status is unavailable or downloads are closed. Use Update Check to retry.')
@@ -720,9 +836,13 @@ class Backend:
             core_row = self.manifest['files']['program'] if self.manifest else None
             if plan['core']:
                 self.message('coreUpdate', stage=1)
-                archive = self.download(core_row)
-                program = self.bridge('extract', archive=str(archive), artifact=core_row)['path']
+                program = self.obtain_program(core_row)
+            if needs_disc or not self.installed.get('core_ready'):
+                self.installation_iso(program)
+            if plan['core']:
+                previous=release_selection.begin_transition(self.config['folder'],self.manifest['version'])
                 self.bridge('stage', program=program, version=self.manifest['version'], artifact=core_row)
+                release_selection.sync_bootstrap(self.config['folder'],program,previous)
             self.inspect()
             if not self.installed['core_ready']:
                 if not program or not self.manifest:
@@ -741,16 +861,14 @@ class Backend:
             if plan['language']:
                 self.message('languageUpdate', stage=2)
                 row = self.manifest['language_packs'][locale]
-                archive = self.download(row)
-                payload = self.bridge('extract-language', archive=str(archive), artifact=row)['path']
-                self.installer(program, payload, language_only=True)
-                self.bridge('record-language', version=version_from(row))
+                self.apply_language(program,locale,row)
             self.inspect()
             if not self.installed['language_ready']:
                 raise RuntimeError('The selected language is not installed')
             self.bridge('select', ui=self.config['ui_language'])
             import portable_locale
             portable_locale.deactivate(self.config['folder'])
+            release_selection.sync_bootstrap(self.config['folder'],program)
             self.prepare_graphics()
             if self.launch_aborted:
                 self.message('graphicsPrepareCancelled')
@@ -784,10 +902,16 @@ class Backend:
             row = portable_locale.metadata(self.manifest).get(locale)
             plan = dict(core=base.get('runtime_status') != 2,
                         language=base.get('language_status') != 2)
+            needs_disc=plan['language'] and not local_versions.retained(root,'en-US',self.manifest['language_packs']['en-US'])
+            if (needs_disc or not base.get('core_ready')) and (not self.config['iso'] or not Path(self.config['iso']).is_file()):
+                selected=self.choose_iso()
+                if not selected:return
+                self.config['iso']=selected;self.save()
+                self.require_disc(self.inspect_iso())
             need_pack = not pack['ready'] or not pack['current']
             if need_pack and not row:
                 raise RuntimeError('Import the selected language pack before playing')
-            if any(plan.values()) or need_pack:
+            if need_pack or (any(plan.values()) and not self.local_inputs(plan,'en-US')):
                 self.check_status()
                 if self.stale or self.status['closed']:
                     raise RuntimeError('Downloads are currently unavailable')
@@ -803,9 +927,13 @@ class Backend:
             core = self.manifest['files']['program']
             if plan['core']:
                 self.message('coreUpdate', stage=1)
-                archive = self.download(core)
-                program = self.bridge('extract', locale='en-US', archive=str(archive), artifact=core)['path']
+                program = self.obtain_program(core,locale='en-US')
+            if needs_disc or not base.get('core_ready'):
+                self.installation_iso(program)
+            if plan['core']:
+                previous=release_selection.begin_transition(self.config['folder'],self.manifest['version'])
                 self.bridge('stage', locale='en-US', program=program, version=self.manifest['version'], artifact=core)
+                release_selection.sync_bootstrap(self.config['folder'],program,previous)
             base = self.bridge('inspect', locale='en-US', manifest=self.manifest)
             if not base['core_ready']:
                 if not self.config['iso'] or not Path(self.config['iso']).is_file():
@@ -820,10 +948,7 @@ class Backend:
             base = self.bridge('inspect', locale='en-US', manifest=self.manifest)
             if base.get('language_status') != 2:
                 language = self.manifest['language_packs']['en-US']
-                archive = self.download(language)
-                payload = self.bridge('extract-language', locale='en-US', archive=str(archive), artifact=language)['path']
-                self.installer(program, payload, language_only=True, locale='en-US')
-                self.bridge('record-language', locale='en-US', version=version_from(language))
+                self.apply_language(program,'en-US',language)
             # Verify the compatible runtime and actual English image bytes before
             # replacing a pack. A failed cache build leaves the old pack installed.
             portable_locale.base_profile(root)
@@ -837,6 +962,7 @@ class Backend:
                 raise RuntimeError('Verify the selected pack and explicitly allow an unfinished test pack')
             self.bridge('select', locale='en-US', ui=self.config['ui_language'])
             portable_locale.activate(root, locale, allow_partial=allow)
+            release_selection.sync_bootstrap(self.config['folder'],program)
             self.prepare_graphics()
             if self.launch_aborted:
                 return

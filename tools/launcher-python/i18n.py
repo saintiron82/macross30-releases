@@ -110,3 +110,28 @@ TEXT['ja']['tlsCertificateFailed'] = '更新サーバーの証明書を確認で
 TEXT['ko'].update(packImport='언어팩 가져오기…', packPartial='미완성 테스트 팩 허용 · 대체 언어 사용', packEnglishBase='영어 이미지 기반 데이터')
 TEXT['en'].update(packImport='Import language pack…', packPartial='Allow unfinished test pack with fallback', packEnglishBase='English image base')
 TEXT['ja'].update(packImport='言語パックを読み込む…', packPartial='未完成のテストパックと代替言語を許可', packEnglishBase='英語画像の基盤データ')
+
+TEXT['ko'].update(releaseChoose='실행 버전 선택…',releaseSelected='선택 버전',releaseLatest='최신 버전 자동 사용',
+ releaseHelp='선택한 배포 버전에 맞춰 게임과 언어팩을 적용합니다. 런처는 최신 상태로 유지하며, 버전 변경 전 세이브와 설정을 백업합니다.',
+ releaseRefresh='목록 새로 고침',releaseApply='이 버전 선택',releaseConfirm='선택한 {version} 버전을 적용할까요?')
+TEXT['ko'].update(installPack='언어팩 설치', updatePack='언어팩 업데이트')
+TEXT['ko'].update(switchAndPlay='{version} 전환 후 실행',switchLocal='이 PC에 보관된 파일로 전환합니다.')
+TEXT['en'].update(switchAndPlay='Switch to {version} ▶',switchLocal='Switch using files on this PC.')
+TEXT['ja'].update(switchAndPlay='{version} に切替・起動',switchLocal='このPCに保存されたファイルで切り替えます。')
+TEXT['ko']['lastGame']='마지막 실행 게임 {version}'
+TEXT['en']['lastGame']='Last played {version}'
+TEXT['ja']['lastGame']='前回起動したゲーム {version}'
+TEXT['ko'].update(installedGame='설치된 게임 {version}',nextGame='다음 실행 게임 {version}',autoMode='최신 자동',pinnedMode='버전 고정',updateToGame='{version} 적용 후 실행',packInstalled='설치된 언어팩 {version}',packRequired='필요한 언어팩 {version}')
+TEXT['en'].update(installedGame='Installed game {version}',nextGame='Next launch: game {version}',autoMode='Auto-update',pinnedMode='Pinned',updateToGame='Apply {version} & play',packInstalled='Installed pack {version}',packRequired='Required pack {version}')
+TEXT['ja'].update(installedGame='導入済みのゲーム {version}',nextGame='次に起動するゲーム {version}',autoMode='最新版を自動適用',pinnedMode='バージョン固定',updateToGame='{version} 適用後に起動',packInstalled='導入済み言語パック {version}',packRequired='必要な言語パック {version}')
+TEXT['ko'].update(getRelease='다른 버전 받기…',localReleaseHelp='이 폴더에 설치했거나 보관한 게임 버전을 선택하세요.',noInstalledRelease='이 폴더에 설치된 게임이 없습니다.')
+TEXT['en'].update(getRelease='Get another version…',localReleaseHelp='Choose a game version installed or kept in this folder.',noInstalledRelease='No game is installed in this folder.')
+TEXT['ja'].update(getRelease='別のバージョンを入手…',localReleaseHelp='このフォルダーに導入済み、または保存済みのゲームを選択してください。',noInstalledRelease='このフォルダーにはゲームがインストールされていません。')
+TEXT['en'].update(installPack='Install pack', updatePack='Update pack')
+TEXT['ja'].update(installPack='言語パック導入', updatePack='言語パック更新')
+TEXT['en'].update(releaseChoose='Choose game version…',releaseSelected='Selected',releaseLatest='Use the latest release automatically',
+ releaseHelp='Use the game and language packs from the selected release. The launcher stays current. Saves and settings are backed up before changing versions.',
+ releaseRefresh='Refresh list',releaseApply='Select version',releaseConfirm='Apply the selected {version} release?')
+TEXT['ja'].update(releaseChoose='実行バージョンを選択…',releaseSelected='選択中',releaseLatest='常に最新リリースを使用',
+ releaseHelp='選択したリリースのゲームと言語パックを適用します。ランチャーは最新のままです。変更前にセーブと設定をバックアップします。',
+ releaseRefresh='一覧を更新',releaseApply='このバージョンを選択',releaseConfirm='選択した {version} を適用しますか？')

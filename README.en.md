@@ -1,16 +1,16 @@
 # Macross 30 — English setup guide
 
-**Russian text pack 0.3.11 (v6-r2) improves hangar, pilot and options text layout. Game: 0.3.10; launcher: 0.3.9; Korean/English base packs: 0.3.8. English corrections and Spanish v3 are retained.**
+See the installed and next game versions, and switch using game files and language packs kept on this PC.
 
-**720p through 4K supported. FPS unlocking is under repair and unavailable; the 30 FPS cap remains enabled.**
+720p to 4K. Game 0.4.0 frame limits: 30 FPS, 60 FPS or Unlimited.
 
-**[Download the Windows launcher](https://github.com/saintiron82/macross30-releases/releases/download/v0.3.9/Macross30-launcher-0.3.9.zip)**
+**[Download the Windows launcher](https://github.com/saintiron82/macross30-releases/releases/download/launcher-v0.3.10/Macross30-launcher-0.3.10.zip)**
 
-Game **0.4.0** · Launcher **0.3.9** · Windows x64 test release.
+Game **0.4.0** · Launcher **0.3.10** · Windows x64 test release.
 
 ## Install and play
 
-1. Download `Macross30-launcher-0.3.9.zip` and extract it to a folder.
+1. Download `Macross30-launcher-0.3.10.zip` and extract it to a folder.
 2. Run `Macross30Launcher.exe`.
 3. Choose **English** as your play language. The launcher display language and game language are separate settings.
 4. Press **Play/Update** and approve the required downloads. The launcher installs the common program and the selected language pack.

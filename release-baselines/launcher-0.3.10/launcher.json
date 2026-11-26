@@ -1,0 +1,25 @@
+{
+  "launcher": {
+    "sha256": "1b7593eb0fedd02e3fbbbcfeb085eb0aafbc745185d790c38618746100fdf5c5",
+    "version": "0.3.10",
+    "bytes": 16751075,
+    "file": "Macross30Launcher-0.3.10.exe"
+  },
+  "zip": {
+    "file": "Macross30-launcher-0.3.10.zip",
+    "sha256": "3faf41544647af1063fdb3da91b226ee62fa94f2a9f2051bef84d4c8f4020652"
+  },
+  "game": "0.4.0",
+  "source_sha256": {
+    "app.py": "43250243b6b3a01f60832ddd2b5e6a43649288b20d7742f7d348b8188dfa05ea",
+    "backend.py": "bcd92d5550b054212646515fa38313e70bddb7e630a1e91c3f1c9032ee5deb8f",
+    "i18n.py": "353d09090dd71f3a753c728b7ea4c84664cfca2003b70186757e88c9aa077088",
+    "local_versions.py": "b66ff56965c6a45229ccc8c26a38cbc9cc22df16f98f2474af74575479cfbe17",
+    "release_selection.py": "090919ce1012fba5fe473529640f3b7fe68037afa9f4b158d882c8a8ba849776",
+    "version.txt": "7b8233690e31ba1a4c68825cfa63b4f9134ff5c903fab9b026ca88b22dd2cd04",
+    "USAGE.txt": "810394f638096d101247756bd4d87fae0404273cd00d1f4db101fdcf9d1e1d0d",
+    "test_local_versions.py": "1bfa60cb29ba2c79e3e228ee0d357be7736e7ea84c70ea2fc009406aba970c8f",
+    "test_backend.py": "d87ed54d3ae4f6edb1dd92076def80ca2d862753023c20ad65708f111b2b8131",
+    "test_release_selection.py": "e6f2d6ccdabed1d1afb04e5c7e243921067e517c438697eb8f6722d4e86a8430"
+  }
+}
